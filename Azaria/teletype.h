@@ -21,7 +21,7 @@
 #define __TELETYPE_INCLUDED__
 
 #include "physics.h"
-#include "viewmast.h"
+#include "viewMast.h"
 #include "scrollview.h"
 #include "textutil.h"
 
@@ -67,33 +67,34 @@ public:
   int m_last_message;
 
 public:		// makers/breakers
-  TELETYPE(int view_id);
-  TELETYPE::~TELETYPE();
-
-  virtual int  TELETYPE::Keycmd(int key, int flags);
-  virtual int  TELETYPE::Msg(int key, int flags);
-  virtual void TELETYPE::Paint(int etime, int flags);
-  virtual WORD TELETYPE::QueryCursor(SRECT r);
-  virtual WORD Grab(POINT p, BOOL bClickOnly, POINT *obj_pos);
+    TELETYPE(int view_id);
+    ~TELETYPE();
+    
+    virtual int  Keycmd(int key, int flags);
+    virtual int  Msg(int key, int flags);
+    virtual void Paint(int etime, int flags);
+    virtual WORD QueryCursor(SRECT r);
+    virtual WORD Grab(POINT p, BOOL bClickOnly, POINT *obj_pos);
 
   void Invalidate() {m_text_dirty = TRUE; SCROLLVIEW::Invalidate();}
 
 private:
-  void TELETYPE::_AppendMessage(DWORD pid, char *message, BYTE freq, BYTE lang); 
+    void _AppendMessage(DWORD pid, char *message, BYTE freq, BYTE lang); 
+    //void Msg( DWORD pid, const LPSTR fmt, ... );
 
 public:
-  static void TELETYPE::Dump();
-  static void TELETYPE::Msg( DWORD pid, LPSTR fmt, ... );
-  inline static void TELETYPE::AppendMessage(DWORD pid, char *message, BYTE freq, BYTE lang) 
+    static void Dump();
+    static void Msg( DWORD pid, const LPSTR fmt, ... );
+    inline static void AppendMessage(DWORD pid, char *message, BYTE freq, BYTE lang) 
 		{if (c_teletype) c_teletype->_AppendMessage(pid, message, freq, lang);}
-  inline static BYTE TELETYPE::GetFreq() {return c_freq;}
+    inline static BYTE GetFreq() {return c_freq;}
 
   inline static void SetLang(int x) {c_lang = x;}
   inline static void Refresh() {if (c_teletype) c_teletype->Invalidate();}
 
-  static void TELETYPE::DelPlayer(DWORD pid)
+    static void DelPlayer(DWORD pid)
 		{if (c_teletype) c_teletype->_DelPlayer(pid);}
-  void TELETYPE::_DelPlayer(DWORD pid);
+    void _DelPlayer(DWORD pid);
 
 private:
   inline void InitBuffer()
@@ -110,8 +111,8 @@ public:
   static BYTE c_m;
 public:
 	GDBT_MESSAGES():GDB_TABLE(IDT_MESSAGES){};
-	void GDBT_MESSAGES::SendMessage(char * msg, int length, BYTE freq, BYTE lang);
-	void GDBT_MESSAGES::SendFreqData(WORD to_group);
+    void SendMessage(char * msg, int length, BYTE freq, BYTE lang);
+    void SendFreqData(WORD to_group);
 private:
 	static void chk(char *s, int l);
   	virtual void ReceiveUpdate(DPID from, DPID to, WORD proc, UDATA *data);

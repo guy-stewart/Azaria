@@ -20,8 +20,10 @@
 ; 
 ----------------------------------------------------------------------------*/
 
+#ifdef _WIN32
 #include <io.h>
 #include <direct.h>
+#endif
 
 #include "maya.h"
 #include "paths.h"
@@ -31,8 +33,8 @@
 #include "viewman.h"
 #include "player.h"
 
-#include "data\database\ids.h"
-#include "data\database\idv.h"
+#include "Data/Database/Ids.h"
+#include "Data/Database/idv.h"
 
 #include "netctrl.h"
 
@@ -93,7 +95,7 @@ void CFGPLYR::OnEvent(int control_id, int iParm)
 	  viewman.Load(IDV_TOPMENU);
 	  break;
 	case 3: // SAVE
-	  _makepath(path, NULL, plyrPath, control[1]->GetStrValue(), plyrExt);
+	  makepath(path, NULL, plyrPath, control[1]->GetStrValue(), plyrExt);
 	  local_player->Save(path);
 
 	  egos->SetCount(CfgDir(0, plyrPath, plyrExt));
@@ -101,7 +103,7 @@ void CFGPLYR::OnEvent(int control_id, int iParm)
 	  break;
 	case 4: // LOAD
 	  name = CfgStrings(control[0]->GetIntValue());
-	  _makepath(path, NULL, plyrPath, name, plyrExt);
+	  makepath(path, NULL, plyrPath, name, plyrExt);
 	  local_player->Load(path);
 	  local_player->SetName(name);
 	  control[1]->SetStrValue(name);
@@ -109,8 +111,8 @@ void CFGPLYR::OnEvent(int control_id, int iParm)
 	  break;
 	case 5: // DELETE
 	  name = CfgStrings(control[0]->GetIntValue());
-	  _makepath(path, NULL, plyrPath, name, plyrExt);
-	  _unlink(path);
+	  makepath(path, NULL, plyrPath, name, plyrExt);
+	  unlink(path);
 
 	  egos->SetCount(CfgDir(0, plyrPath, plyrExt));
 	  egos->Refresh();

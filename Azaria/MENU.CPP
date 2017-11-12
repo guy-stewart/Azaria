@@ -24,7 +24,7 @@
 #include "viewman.h"
 #include "controls.h"
 
-#include "data\database\idv.h"
+#include "Data/Database/idv.h"
 
 extern BOOL bPostQuitMessage;
 
@@ -48,7 +48,7 @@ int menuCallMenu(ZLISTBOX *panel, int menu_id);
 int menuCallView(ZLISTBOX *panel, int view_id);
 int menuEsc(ZLISTBOX *panel, int parm1);
 
-#include "Data\Database\Menu.h"
+#include "Data/Database/MENU.H"
 
 static int tbl_menus_count = sizeof(tbl_menus) / sizeof(MENU);
 static int tbl_menu_items_count = sizeof(tbl_menu_items) / sizeof(MENU_ITEM);
@@ -75,7 +75,7 @@ MENU *menuGet(int menu_id)
 	return NULL;
 }
 
-menuGetItemCount(int menu_id)
+int menuGetItemCount(int menu_id)
 {
 	int i;
 	int count=0;

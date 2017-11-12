@@ -20,9 +20,9 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#include "stdapp.h"
-#include <one.h>
-#include "fblt.h"
+#include "../include/stdapp.h"
+#include "../include/one.h"
+#include "../include/fblt.h"
 #include "tables.h"
 #include "spr_pool.h"
 #include "spirit.h"

@@ -60,14 +60,14 @@ private:
   FBLT_DSCR m_fbd;		// 
 
 public:
-  CONTROL::CONTROL(CFGVIEW *view, WORD cid, WORD ids, int x, int y);
-  CONTROL::~CONTROL();
+    CONTROL(CFGVIEW *view, WORD cid, WORD ids, int x, int y);
+    ~CONTROL();
 
   virtual int Keycmd(int key, int flags)=0;
-  virtual WORD CONTROL::Grab(POINT p)=0;
-  virtual void CONTROL::SetFocus(POINT p, BOOL bHasFocus)=0;
-  virtual void CONTROL::Refresh();
-  virtual BOOL CONTROL::PtInRect(POINT p);
+    virtual WORD Grab(POINT p)=0;
+    virtual void SetFocus(POINT p, BOOL bHasFocus)=0;
+    virtual void Refresh();
+    virtual BOOL PtInRect(POINT p);
 
   char *GetStrValue() {return StrVal;}
   void  SetStrValue(char *newStr);
@@ -80,12 +80,12 @@ public:
 class LISTBOX : public CONTROL {
   typedef char *(*STRVAL)(int position);
 public:
-  LISTBOX::LISTBOX(CFGVIEW *view, 
+    LISTBOX(CFGVIEW *view, 
 					WORD ids, 
 					int x, int y,				// location of control within the view
 					int xo, int yo,				// offset of text into the contol image
 					int xCount, 
-					STRVAL xStrVal);
+                    STRVAL const xStrVal);
   ~LISTBOX();
 private:
   int left, top;
@@ -102,10 +102,10 @@ public:
   void Init();
   void Write(int position, COLORREF color);
 
-  virtual int  LISTBOX::Keycmd(int key, int flags);
-  virtual WORD LISTBOX::Grab(POINT p);
-  virtual void LISTBOX::SetFocus(POINT p, BOOL bHasFocus);
-  virtual void LISTBOX::Refresh();
+    virtual int  Keycmd(int key, int flags);
+    virtual WORD Grab(POINT p);
+    virtual void SetFocus(POINT p, BOOL bHasFocus);
+    virtual void Refresh();
 
   void ChangeSel(int new_selection);
 };
@@ -116,20 +116,20 @@ protected:
   SPIRIT *sprBtn;
   SPIRIT *sprHilight;
 public:
-  BUTTON::BUTTON(CFGVIEW *view,		// Surface on which to paint the button
+    BUTTON(CFGVIEW *view,		// Surface on which to paint the button
 				int control_id,
 				int x, int y,		// position on the canvas
 				WORD ids_image,		// image of the button
 				WORD ids_image_hi);	// image of the highlighted button
 
-  BUTTON::~BUTTON();
+    ~BUTTON();
 
-  virtual int  BUTTON::Keycmd(int key, int flags);
-  virtual WORD BUTTON::Grab(POINT p);
-  virtual void BUTTON::SetFocus(POINT p, BOOL bHasFocus);
-  virtual void BUTTON::Refresh();
+    virtual int  Keycmd(int key, int flags);
+    virtual WORD Grab(POINT p);
+    virtual void SetFocus(POINT p, BOOL bHasFocus);
+    virtual void Refresh();
 
-  SPIRIT *BUTTON::LoadBtnImage(ONE *canvas,
+    SPIRIT *LoadBtnImage(ONE *canvas,
 								WORD view_id,
 								WORD sprite_id,
 								int x, int y);
@@ -141,14 +141,14 @@ class CHECKBOX : public BUTTON {
   BOOL bIsChecked;
 
 public:
-  CHECKBOX ::CHECKBOX (CFGVIEW *view,	// Surface on which to paint the button
+    CHECKBOX (CFGVIEW *view,	// Surface on which to paint the button
 				int control_id,
 				int x, int y,		// position on the canvas
 				WORD ids_image,		// image of the button
 				WORD ids_image_hi);	// image of the highlighted button
 
-  virtual WORD CHECKBOX::Grab(POINT p);
-  virtual void CHECKBOX::SetFocus(POINT p, BOOL bHasFocus);
+    virtual WORD Grab(POINT p);
+    virtual void SetFocus(POINT p, BOOL bHasFocus);
 
   void SetChecked(BOOL bChecked);
 };
@@ -162,22 +162,22 @@ class EDITBOX : public CONTROL {
   int left, top;
 
 public:
-  EDITBOX::EDITBOX(CFGVIEW *view, 
+    EDITBOX(CFGVIEW *view, 
 					WORD ids, 
 					int x, int y,				// location of control within the view
 					int xo, int yo,				// offset of text into the contol image
 					char *intial_value, 
 					int max_len);
 
-  EDITBOX::~EDITBOX();
+    ~EDITBOX();
 
-  BOOL EDITBOX::Init(char *defStr, int maxlen);
-  void EDITBOX::Write(char *buff, int color);
+    BOOL Init(char *defStr, int maxlen);
+    void Write(char *buff, int color);
 
-  virtual int  EDITBOX::Keycmd(int key, int flags);
-  virtual WORD EDITBOX::Grab(POINT p);
-  virtual void EDITBOX::SetFocus(POINT p, BOOL bHasFocus);
-  virtual void EDITBOX::Refresh();
+    virtual int  Keycmd(int key, int flags);
+    virtual WORD Grab(POINT p);
+    virtual void SetFocus(POINT p, BOOL bHasFocus);
+    virtual void Refresh();
 };
 
 //----------------------------------------------------------------------------
@@ -190,7 +190,7 @@ class SLIDER : public CONTROL {
   int min, max, value,width, granularity;
   int x, y;
 public:
-  SLIDER::SLIDER(CFGVIEW *view,	// Surface on which to paint the button
+    SLIDER(CFGVIEW *view,	// Surface on which to paint the button
 				int control_id,
 				int x, int y,		// position on the canvas
 				int value,
@@ -200,24 +200,24 @@ public:
 				WORD ids_image,		// image of the button
 				WORD ids_image_hi);	// image of the highlighted button
 
-  virtual WORD SLIDER::Grab(POINT p);
-  virtual void SLIDER::SetFocus(POINT p, BOOL bHasFocus);
-  virtual int  SLIDER::Keycmd(int key, int flags);
-  virtual BOOL SLIDER::PtInRect(POINT p);
+    virtual WORD Grab(POINT p);
+    virtual void SetFocus(POINT p, BOOL bHasFocus);
+    virtual int  Keycmd(int key, int flags);
+    virtual BOOL PtInRect(POINT p);
 };
 
 //----------------------------------------------------------------------------
 // acts just like a button,  except for the Grab && Setfocus functions
 class LABEL : public CONTROL {
 public:
-  LABEL::LABEL(CFGVIEW *view,	// Surface on which to paint the button
+    LABEL(CFGVIEW *view,	// Surface on which to paint the button
 				int control_id,
 				int x, int y,		// position on the canvas
 				WORD ids_image);	// image of the label
 
-  virtual WORD LABEL::Grab(POINT p);
-  virtual void LABEL::SetFocus(POINT p, BOOL bHasFocus);
-  virtual int  LABEL::Keycmd(int key, int flags);
+    virtual WORD Grab(POINT p);
+    virtual void SetFocus(POINT p, BOOL bHasFocus);
+    virtual int  Keycmd(int key, int flags);
 };
 
 

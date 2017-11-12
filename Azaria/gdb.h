@@ -53,7 +53,9 @@ typedef unsigned char UDATA;
 // Global Database Tables:
 //
 class GDB_TABLE {
-
+public:
+    ~GDB_TABLE();
+    
 	// The Table of all Global Database Tables:
 private:
 	static int c_count;
@@ -78,7 +80,7 @@ public:
 
 	GDB_TABLE(BYTE global_table_id);
 
-	static Poll();
+	static int Poll(void);
 
 	//*************************************************
 	// The following tranactions are called by the application.

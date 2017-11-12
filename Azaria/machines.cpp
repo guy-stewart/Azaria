@@ -31,10 +31,10 @@
 #include "machterp.h"
 #include "machines.h"
 
-#include "data\database\tbl_wave.h"
-#include "data\database\idents.h"
-#include "data\database\idv.h"
-#include "data\database\ids.h"
+#include "data/database/tbl_wave.h"
+#include "data/database/idents.h"
+#include "data/database/idv.h"
+#include "data/database/ids.h"
 
 //----------------------------------------------------------------------------
 #define SYNC_FOULWIND		0x0000
@@ -178,7 +178,7 @@ IDD_SPELL01,
 IDD_SPELL01,
 };
 
-#include "data\database\tbl_mach.h"
+#include "Data/Database/tbl_mach.h"
 
 // used by machines to lookup the table in the tbl_map_table
 enum {
@@ -1973,7 +1973,7 @@ static MACHINE tbl_machines[] = {
 #define PLANTBIN(ID, VIEW_ID, X,Y,H,W, IDD, IDS, GROWTIME) \
 	{NAME(ID), VIEW_ID, M_PLANTBIN,  {X,Y,X+W,Y+H}, REG_SHOW(IDS,FALSE), L_INTERNAL, {IDD, IDS, GROWTIME}}
 
-#include "data\database\plants.h"
+#include "Data/Database/plants.h"
 
 	// Scene 22: Reading scrolls. ----------------------------------------------
 	{NAME(S22_SCROLLMAN),	IDV_PARCHPAN, M22_SCROLLMAN, {0, 0, 0, 0}, REG_INIT, L_INTERNAL},

@@ -25,11 +25,11 @@
 
 class COMPASS : public VIEW {
 public:
-  COMPASS::COMPASS(WORD view_id);
-  COMPASS::~COMPASS();
+    COMPASS(WORD view_id);
+    ~COMPASS();
 
-  virtual int COMPASS::Action(int etime, int flags);
-  virtual WORD COMPASS::QueryCursor(SRECT p);
+    virtual int Action(int etime, int flags);
+    virtual WORD QueryCursor(SRECT p);
 };
 
 

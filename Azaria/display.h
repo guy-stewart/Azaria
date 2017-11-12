@@ -22,6 +22,7 @@
 #ifndef __DISPLAY_INCLUDED__
 #define __DISPLAY_INCLUDED__
 
+#include "includes.h"
 #include "palette.h"
 
 // Video Adapter Direct Draw Extenstion object.
@@ -43,7 +44,7 @@ private:
 	int 	maintRestBfrs;
 
 	LPDIRECTDRAWSURFACE     lpFrontBuffer;
-	LPDIRECTDRAWSURFACE     lpBackBuffer;
+	IDirectDrawSurface     *lpBackBuffer;
 	LPDIRECTDRAWPALETTE     lpDDPalette;
 
 	LPDIRECTDRAW            lpDD;
@@ -56,18 +57,25 @@ private:
 	//	WS_POPUPWINDOW	-	border, title, close button
 	//	WS_CAPTION		-	title bar
 
+#ifdef _MSC_VER // Windows
 	enum {
 		FULLSCREEN_STYLE = WS_SYSMENU|WS_POPUP,
 		WINDOWED_STYLE = WS_POPUPWINDOW|WS_CAPTION,
 	};
-
+#else
+    enum {
+        FULLSCREEN_STYLE = 0,
+        WINDOWED_STYLE = 1,
+    };
+#endif
+    
 private:
 	BOOL _Restore();
 
 	void Restore();
 	BOOL Enable( void );
 	BOOL CreateFlippingSurface( void );
-	void Display::ReadPalFile( char *path, char *filename, PALETTE *pal);
+    void ReadPalFile( char *path, char *filename, PALETTE *pal);
 
 	BOOL SwapBuffers(void);
 	BOOL RestoreAll(void);
@@ -97,7 +105,7 @@ public: // interface for application configuration:
 	BOOL AttachPalette();
 	void ReleasePalette();
 	// for debug of palette:
-	void Display::PrintPalette();
+    void PrintPalette();
 
 	// All backbuffers need repainting
 	inline void SetAllDirty()
@@ -122,7 +130,7 @@ public: // interface for game run-time:
 	inline LPDIRECTDRAWPALETTE GetPalette() {return lpDDPalette;}
 
 	inline int GetBackBufferId() {return m_current_buffer;}
-	inline LPDIRECTDRAWSURFACE GetBackBuffer() {return lpBackBuffer;}
+	inline IDirectDrawSurface * GetBackBuffer() {return lpBackBuffer;}
 	int Flip();				// returns new backubuffer number.
 
 	char *GetDdError(HRESULT hr);

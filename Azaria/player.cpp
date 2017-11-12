@@ -142,7 +142,7 @@ PLAYER *GDBT_PLAYERS::GetByName(char *name)
 	int i;
 	for (i=0;i<m_count;i++)
 	{
-		if (!stricmp(m_players[i].GetName(), name))
+		if (!strcasecmp(m_players[i].GetName(), name))
 		{
 			return &m_players[i];
 		}
@@ -164,7 +164,7 @@ PLAYER *GDBT_PLAYERS::GetByTouching(WORD view_id, POINT p)
 
 		SetRect(&r,pp.x, pp.y, pp.x+20, pp.y+20);
 
-		if (PtInRect(&r, p))
+		if (sPtInRect(&r, p))
 		{
 			// tell the player we want to know her innermost attributes.
 			SendIntimate(player->GetPid(), TRUE);

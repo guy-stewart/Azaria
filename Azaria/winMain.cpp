@@ -18,20 +18,22 @@
 ; 01/18/95  gas  Created.
 ; 
 ----------------------------------------------------------------------------*/
+#ifdef _WIN32
 
+#include "ptypes.h"
 #include "stdapp.h"
-#include <vfw.h>
-#include <dsWave.h>
+//#include <vfw.h>
+#include "dsWave.h"
 #include "music.h"
 
 #include "paths.h"
 
 #define __WAVETABLE_OWNER__
-#include "data\database\tbl_wave.h"
+#include "Data/Database/tbl_wave.h"
 
 // Managers
 #include "user.h"
-#include "GameMan.h"
+#include "gameman.h"
 #include "display.h"
 #include "netctrl.h"
 #include "rcids.h"      // for MAYA_ICON
@@ -42,7 +44,7 @@
 #define GAME_BPP 8
 
 static HWND		hWndMain;
-RECT			rcWindow;
+SRECT			rcWindow;
 BOOL bWasIconic = FALSE;
 BOOL			bIsActive;
 BOOL			bPaused;
@@ -560,4 +562,6 @@ FileError:
     return msg.wParam;
 
 } /* WinMain */
+
+#endif
 

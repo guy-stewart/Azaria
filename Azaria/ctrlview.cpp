@@ -19,9 +19,10 @@
 ; 08/20/96  gas  Created.
 ; 
 ----------------------------------------------------------------------------*/
-
+#ifdef _MSC_VER // Windows
 #include <io.h>
 #include <direct.h>
+#endif
 
 #include "maya.h"
 #include "dsWave.h"
@@ -35,8 +36,8 @@
 #include "gdb.h"
 #include "player.h"
 
-#include "data\database\ids.h"
-#include "data\database\idv.h"
+#include "Data/Database/Ids.h"
+#include "Data/Database/idv.h"
 
 #include "netctrl.h"
 

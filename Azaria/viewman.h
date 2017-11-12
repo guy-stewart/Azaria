@@ -38,8 +38,8 @@ typedef struct {
 	BYTE backgroundAudio:7;
 	WORD view_type;	// ACTOR, ICON, or CURSOR, VC_VIEWSCREEN etc
 	WORD behavior_id; // slowly being phased out.
-	char *portal_filename; // if portal, this is its name
-	char *surface_filename;
+	const char *portal_filename; // if portal, this is its name
+	const char *surface_filename;
 	VIEW *view;		// RAM instantiation of the view. NULL if not instantiated.
 	BYTE player_count; // number of players in this view.
 } VIEW_DESCRIPTION;
@@ -52,13 +52,13 @@ class ViewMan
 private:
   VIEW_DESCRIPTION *m_tbl_views;
   static VIEW *c_focus;
-  static char *c_where;
+  static const char *c_where;
   static WORD c_view_id;
 
 public:
-	ViewMan::ViewMan();
+    ViewMan();
 private:
-	void ViewMan::ReleaseClass(int class_id, WORD except_view_id);
+    void ReleaseClass(int class_id, WORD except_view_id);
 
 private:
 	VIEW_DESCRIPTION *GetFirstbyClass(int type, int *position);
@@ -73,13 +73,13 @@ public: // interface:
 	void Tick(int etime);
 	BOOL Release(int view_id);
 	void Release(VIEW_DESCRIPTION *view);
-	void ViewMan::PauseMusic();
-	void ViewMan::ResumeMusic();
+    void PauseMusic();
+    void ResumeMusic();
 
 	// view tables access:
 	void SetFocus(int view_id);
 	VIEW *GetFocus();
-	char *GetWhere();
+	const char *GetWhere();
 	WORD GetWhereId();
 
 	static VIEW *GetView(int view_id);

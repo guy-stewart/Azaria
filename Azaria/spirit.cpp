@@ -133,11 +133,7 @@ void SPIRIT::ON()
 //----------------------------------------------------------------------------
 void SPIRIT::OFF()
 {
-
 	assert(this);
-	if (!this)
-		return;
-
 	if (m_on)  // don't replace the background if we are not on the canvas:
 	{
 		// replace the background:
@@ -163,7 +159,7 @@ BOOL SPIRIT::PtInSpirit(POINT p)
 {
 	RECT rect;
 	GetRect(&rect);
-	return PtInRect(&rect, p);
+	return sPtInRect(&rect, p);
 }
 
 //----------------------------------------------------------------------------

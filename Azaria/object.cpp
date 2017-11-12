@@ -19,12 +19,12 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#include "stdapp.h"
+#include "includes.h"
 #include "tables.h"
 
-#include "data\database\idents.h"
-#include "data\database\ids.h"
-#include "data\database\tbl_objects.h"
+#include "Data/Database/Idents.h"
+#include "Data/Database/Ids.h"
+#include "Data/Database/tbl_objects.h"
 
 static int tbl_look_rows = sizeof(tbl_look)/sizeof(tbl_look[0]);
 static int count_objects_defs = sizeof(tbl_object_def)/sizeof(tbl_object_def[0]);
@@ -59,7 +59,7 @@ WORD objdefGetIDByName(char *name)
 	int i;
 
 	for (i=0; i<count_objects_defs; i++)
-		if (!stricmp(tbl_object_def[i].name, name))
+		if (!strcasecmp(tbl_object_def[i].name, name))
 			return tbl_object_def[i].object_id;
 
 	return 0;

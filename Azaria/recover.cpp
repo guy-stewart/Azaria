@@ -18,11 +18,10 @@
 ; 02/03/96  gas  Created.
 ; 
 ----------------------------------------------------------------------------*/
-#include "stdapp.h"
-#include <xfile.h>
-
-#include <recover.h>
+#include "includes.h"
 #include "display.h"
+#include <stdio.h>
+#include <stdarg.h>
 
 char missing_file_path1[_MAX_PATH];
 char missing_file_path2[_MAX_PATH];
@@ -31,7 +30,7 @@ char missing_file_name[_MAX_FNAME];
 class LOGGER : XFile {
   int flushcount;
 public:
-	LOGGER::LOGGER()	
+    LOGGER()
 	{
 		Open("mayalog.txt",  modeWriteText);
 	}
@@ -51,12 +50,17 @@ LOGGER logger;
 void WarnUser( LPSTR fmt, ... )
 {
     char buff[256];
-	int rc;
 
-    wvsprintf( buff, fmt, (char*)(&fmt+1) );
-    lstrcat( buff, "\r\n" );
+    va_list args;
+    va_start (args, fmt);
+    
+    vsprintf( buff, fmt, args );
+    strcat( buff, "\r\n" );
 
 	display.Disable(TRUE);
+    assert(false);
+#ifdef _WIN32
+    int rc;
 	rc = MessageBox(NULL, buff, buff, MB_ABORTRETRYIGNORE);
 	switch (rc)
 	{
@@ -68,14 +72,19 @@ void WarnUser( LPSTR fmt, ... )
 	case IDIGNORE:
 		break;
 	}
-
+#endif
 }
 
-void errorCriticalStop(char * msg)
+void __cdecl Msg( const LPSTR fmt, ... );
+
+void errorCriticalStop(const char * msg)
 {
 	Msg(msg);
 	display.Disable(TRUE);
+    assert(false);
+#ifdef _WIN32
 	MessageBox(NULL, msg, msg, MB_OK);
+#endif
 	exit(2);
 }
 
@@ -83,21 +92,30 @@ void errorCriticalStop(char * msg)
 /*
  * Msg
  */
-void __cdecl Msg( LPSTR fmt, ... )
+void OutputDebugString(const char * buff)
+{
+    printf("%s", buff);
+}
+
+void __cdecl Msg( const LPSTR fmt, ... )
 {
     char        buff[256];
-
-    wvsprintf( buff, fmt, (char*)(&fmt+1));
-    lstrcat( buff, "\n" );
+    va_list args;
+    va_start (args, fmt);
+    
+    vsprintf( buff, fmt, args);
+    strcat( buff, "\n" );
     OutputDebugString( buff );
 
 	logger.Writeln(buff);
 } /* Msg */
 
-void __cdecl _Msg( LPSTR fmt, ... )
+void __cdecl _Msg( const LPSTR fmt, ... )
 {
     char        buff[256];
-    wvsprintf( buff, fmt, (char*)(&fmt+1));
+    va_list args;
+    va_start (args, fmt);
+    vsprintf( buff, fmt, args);
     OutputDebugString( buff );
 	logger.Writeln(buff);
 }

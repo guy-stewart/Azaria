@@ -20,8 +20,10 @@
 ; 
 ----------------------------------------------------------------------------*/
 
+#ifdef _MSC_VER // Windows
 #include <io.h>
 #include <direct.h>
+#endif
 
 #include "maya.h"
 #include "paths.h"
@@ -34,8 +36,8 @@
 #include "machterp.h"
 #include "gameman.h"
 
-#include "data\database\ids.h"
-#include "data\database\idv.h"
+#include "Data/Database/Ids.h"
+#include "Data/Database/idv.h"
 
 #include "netctrl.h"
 
@@ -94,8 +96,8 @@ void CFGGAME::OnEvent(int control_id, int event_id)
 	  break;
 	case 5: // DELETE
 	  name = CfgStrings(control[0]->GetIntValue());
-	  _makepath(path, NULL, gamePath, name, gameExt);
-	  _unlink(path);
+	  makepath(path, NULL, gamePath, name, gameExt);
+	  unlink(path);
 
 	  games->SetCount(CfgDir(0, gamePath, gameExt));
 	  games->Refresh();

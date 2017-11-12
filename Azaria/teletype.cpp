@@ -19,14 +19,17 @@
 ; 
 ----------------------------------------------------------------------------*/
 
+#include "../include/ptypes.h"
 #include "maya.h"
 #include "user.h"
 #include "gdb.h"
 #include "player.h"
 #include "teletype.h"
 #include "spell.h"
+#include <stdarg.h>
+#include <stdio.h>
 
-#include "data\database\ids.h"
+#include "Data/Database/Ids.h"
 
 #define BLACK	  0
 #define RED		  249
@@ -343,11 +346,14 @@ int TELETYPE::Keycmd(int key, int flags)
 }
 
 //----------------------------------------------------------------------------
-void TELETYPE::Msg( DWORD pid, LPSTR fmt, ... )
+void TELETYPE::Msg( DWORD pid, const LPSTR fmt, ... )
 {
     char        buff[256];
-
-    wvsprintf( buff, fmt, (char*)(&fmt+1));
+    
+    va_list a_list;
+    va_start( a_list, fmt );
+    
+    vsprintf( buff, fmt, a_list);
 	AppendMessage(pid, buff, 4, 0);
 } /* Msg */
 
@@ -447,7 +453,7 @@ void TELETYPE::_DelPlayer(DWORD pid)
 		{
 			m_message[i].pid = 0;
 			strncpy(m_message[i].name, name, MAX_NAME-1);
-			m_message[i].name[MAX_NAME] = 0;
+			m_message[i].name[MAX_NAME-1] = 0;
 		}
   }
 }

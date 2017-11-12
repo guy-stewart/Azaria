@@ -19,18 +19,17 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#include "stdapp.h"
+#include "includes.h"
 
 #include <assert.h>
 
+#ifdef _WIN32
 #include <windows.h>
 #include <windowsx.h> 
 #include <mmsystem.h>
 #include <ddraw.h>
 #include <dsound.h>
-
-#include <one.h>
-#include "fblt.h"
+#endif
 
 #include "display.h"
 
@@ -53,6 +52,7 @@ static TBL_FONTS tbl_fonts[] = {
 };
 static int tbl_fonts_count = sizeof(tbl_fonts) / sizeof(TBL_FONTS);
 
+#ifdef _WIN32
 HFONT fontCreate(int font_id)
 {
 	HFONT hFont;
@@ -172,4 +172,5 @@ int oneTextOut(ONE *one, int font_id, COLORREF color, int sx, int sy, char *buff
 	}
 	return rc;
 }
+#endif
 

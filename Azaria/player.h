@@ -58,7 +58,7 @@ protected:
 	char friendly_name[MAX_FRIENDLY_NAME+1];
 
 public:
-	PLAYER::PLAYER(DPID pid=0) 
+    PLAYER(DPID pid=0) 
 	{
 	  m_pid=pid; m_view_id=0; m_intimate=FALSE;
 	  strncpy(friendly_name, "Nameless", MAX_FRIENDLY_NAME);
@@ -136,14 +136,14 @@ public:
 	void SendIntimate(DWORD to, BOOL intimate);
 	BOOL SetOtherPlayer();
 	BOOL AddPlayer(DWORD pid, BOOL bOwner);
-	void GDBT_PLAYERS::DelPlayer(DWORD pid);
+    void DelPlayer(DWORD pid);
 	PLAYER *Get(DWORD pid) {return BPD_TABLE::PGet(pid);}
 	PLAYER *GetPlayer(int index) {return &(m_players[index]);};
 	DWORD GetPlayerPid(int index) {return m_players[index].GetPid();};
 	PLAYER *GetNextByView(WORD view_id, int *position);
-	PLAYER *GDBT_PLAYERS::GetByTouching(WORD view_id, POINT p);
-	PLAYER *GDBT_PLAYERS::GetByName(char *name);
-	BOOL GDBT_PLAYERS::GetPlayerName(DWORD pid, char *name, int len);
+    PLAYER *GetByTouching(WORD view_id, POINT p);
+    PLAYER *GetByName(char *name);
+    BOOL GetPlayerName(DWORD pid, char *name, int len);
 };
 
 extern GDBT_PLAYERS gdbt_players;
@@ -198,8 +198,8 @@ public:
 		m_knows[LANG_CITY] = FALSE; // city
 	}
 
-	void INTIMATE_PLAYER::GetDetailsPkt(INTIMATE_DETAILS_PKT *pkt);
-	void INTIMATE_PLAYER::SetDetailsPkt(INTIMATE_DETAILS_PKT *pkt);
+    void GetDetailsPkt(INTIMATE_DETAILS_PKT *pkt);
+    void SetDetailsPkt(INTIMATE_DETAILS_PKT *pkt);
 
 	inline WORD GetKarma() {return m_Karma;}
 	inline WORD GetEnergy() {return m_Energy;}
@@ -280,8 +280,8 @@ public:
 	void SendIntimateDetails(DWORD to);
 	void SendEmote(int emotion);
 
-	BOOL LOCAL_PLAYER::Save(char *filename);
-	WORD LOCAL_PLAYER::Load(char *filename); // returns view player was in when exiting.
+    BOOL Save(char *filename);
+    WORD Load(char *filename); // returns view player was in when exiting.
 };
 
 class OTHER_PLAYER : public INTIMATE_PLAYER {

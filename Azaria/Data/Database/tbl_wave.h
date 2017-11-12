@@ -1,4 +1,7 @@
 
+#ifndef _tbl_wave_h
+#define _tbl_wave_h
+
 enum  WAVE_FILEID
 {
     SOUND_CHOOSE = 0,
@@ -39,7 +42,7 @@ enum WAVE_RAMID
 // I want to leave these here so they will be easier to edit:
 #ifdef __WAVETABLE_OWNER__
 // data\\sounds\\wave
-static char *waveRamFileNames[] = {
+static const char *waveRamFileNames[] = {
 	"startup",
 	"BtnDrag",
 	"BtnPress",
@@ -60,3 +63,6 @@ static char *waveRamFileNames[] = {
 	"BuzzFuzz",
 };
 #endif
+
+#endif
+

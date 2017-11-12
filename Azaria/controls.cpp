@@ -23,14 +23,21 @@
 #include "maya.h"
 #include "textutil.h"
 #include "controls.h"
-#include <dsWave.h>
 #include "viewMast.h"
 #include "cfgview.h"
 
-#include "data\database\ids.h"
-#include "data\database\tbl_wave.h"
+#include "Data/Database/Ids.h"
+#include "Data/Database/tbl_wave.h"
 
 #include "user.h"
+
+void SetRect(RECT * rect, int xLeft, int yTop, int xRight, int yBottom)
+{
+    rect->left = xLeft;
+    rect->top = yTop;
+    rect->right = xRight;
+    rect->bottom = yBottom;
+}
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -66,7 +73,7 @@ CONTROL::~CONTROL()
 //----------------------------------------------------------------------------
 BOOL CONTROL::PtInRect(POINT p)
 {
-  return ::PtInRect(&rect, p);
+    return sPtInRect(&rect, p);
 }
 
 //----------------------------------------------------------------------------
@@ -223,7 +230,7 @@ LISTBOX::LISTBOX(CFGVIEW *xView,
 				 int x, int y, 
 				 int xo, int yo,	// offset of text into the control bitmap
 				 int xCount, 
-				 STRVAL xStrVal):
+				 const STRVAL xStrVal):
 CONTROL(xView, 0, ids, x, y),
 font(IDS_FONTTNB14)
 {

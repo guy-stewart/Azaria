@@ -1,7 +1,8 @@
 
 
-#include "stdapp.h"
-#include <dsWave.h>
+#include "../include/stdapp.h"
+#include "../include/dsWave.h"
+#include "../include/xfile.h"
 #include "paths.h"
 #include "music.h"
 
@@ -17,7 +18,7 @@ void Music::Init()
   char path[_MAX_PATH];
   for (i=0;i<BACKGROUND_MUSIC_COUNT;i++)
   {
-	_makepath(path, NULL, AltWavePath, backgroundMusic[i][0], ".wav");
+	makepath(path, NULL, AltWavePath, backgroundMusic[i][0], ".wav");
 	waveBackground[i].Play(path, TRUE);
   }
 

@@ -1,12 +1,12 @@
 
-#include "stdapp.h"
+#include "includes.h"
 #include "math.h"
 
 #include "display.h"
-#include <one.h>
 
 extern PALETTE					palPalette;
 
+#ifdef _MSC_VER // Windows
 extern HWND                    hWndMain;
 
 void oneRealizePalette(PALETTEENTRY *src)
@@ -178,3 +178,5 @@ oneFixPal(ONE *one)
 
 	return 0;
 }
+#endif
+

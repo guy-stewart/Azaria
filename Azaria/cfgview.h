@@ -36,17 +36,17 @@ protected:
   int focus; // which control has the focus?
 public:
 
-	CFGVIEW::CFGVIEW(int view_id);
-	virtual CFGVIEW::~CFGVIEW();
+    CFGVIEW(int view_id);
+    virtual ~CFGVIEW();
 
-	int  CFGVIEW::Keycmd(int key, int flags);
-	WORD CFGVIEW::QueryCursor(SRECT srect);
-	WORD CFGVIEW::Grab(POINT p, BOOL bClickOnly, POINT *obj_pos);
+    int  Keycmd(int key, int flags);
+    WORD QueryCursor(SRECT srect);
+    WORD Grab(POINT p, BOOL bClickOnly, POINT *obj_pos);
 
-	virtual void CFGVIEW::OnEvent(int control_id, int event_id);
+    virtual void OnEvent(int control_id, int event_id);
 
-	static int CFGVIEW::CfgDir(int startat, char *dir, char *ext);
-	static char *CFGVIEW::CfgStrings(int index);
+    static int CfgDir(int startat, char *dir, char *ext);
+    static char *CfgStrings(int index);
 };
 
 class LISTBOX;
@@ -63,15 +63,15 @@ class CFGNET :public CFGVIEW {
   static HANDLE Die;
   static HANDLE Dead;
 public:
-  CFGNET::CFGNET(int view_id);
-  CFGNET::~CFGNET();
-  virtual void CFGNET::OnEvent(int control_id, int event_id);
+    CFGNET(int view_id);
+    ~CFGNET();
+    virtual void OnEvent(int control_id, int event_id);
 
 private:
   typedef unsigned int (__stdcall* Entry)(void*);
-  static void CFGNET::EnumThread(CFGNET *thing);
-  void CFGNET::CloseEnumThread();
-  void CFGNET::OpenEnumThread();
+    static void EnumThread(CFGNET *thing);
+    void CloseEnumThread();
+    void OpenEnumThread();
 };
 
 //----------------------------------------------------------------------------
@@ -82,23 +82,23 @@ class CFGPLYR :public CFGVIEW {
   CHECKBOX * btn_fem;
   CHECKBOX * btn_male;
 public:
-  CFGPLYR::CFGPLYR(int view_id);
-  virtual void CFGPLYR::OnEvent(int control_id, int event_id);
+    CFGPLYR(int view_id);
+    virtual void OnEvent(int control_id, int event_id);
 };
 
 //----------------------------------------------------------------------------
 class CFGGAME :public CFGVIEW {
   LISTBOX *games;
 public:
-  CFGGAME::CFGGAME(int view_id);
-  virtual void CFGGAME::OnEvent(int control_id, int event_id);
+    CFGGAME(int view_id);
+    virtual void OnEvent(int control_id, int event_id);
 };
 
 //----------------------------------------------------------------------------
 class CFGAV :public CFGVIEW {
 public:
-  CFGAV::CFGAV(int view_id);
-  virtual void CFGAV::OnEvent(int control_id, int event_id);
+    CFGAV(int view_id);
+    virtual void OnEvent(int control_id, int event_id);
 };
 
 //----------------------------------------------------------------------------
@@ -107,9 +107,9 @@ public:
 	static CTRL_VIEW *myname;
 	static CTRL_VIEW *yourname;
 public:
-  CTRL_VIEW::CTRL_VIEW(int view_id);
-  CTRL_VIEW::~CTRL_VIEW();
-  virtual void CTRL_VIEW::OnEvent(int control_id, int event_id);
+    CTRL_VIEW(int view_id);
+    ~CTRL_VIEW();
+    virtual void OnEvent(int control_id, int event_id);
 
   void SetName(char *name);
 };

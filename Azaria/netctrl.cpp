@@ -20,7 +20,7 @@
 ----------------------------------------------------------------------------*/
 
 #define INITGUID
-#include "stdapp.h"
+#include "includes.h"
 #include "netctrl.h"
 #include "gameman.h"
 
@@ -64,6 +64,7 @@ NetManager::~NetManager()
 {
 	Release();
 }
+#ifdef _WIN32
 
 #define CS(X,MSG) case X: return (bNice)?MSG:#X;
 char * NetManager::error(int hr, BOOL bNice)
@@ -590,4 +591,5 @@ char *NetManager::GetProviderDesc(int index)
 		return tbl_sp[index].DrvDesc;
 	}
 }
+#endif
 

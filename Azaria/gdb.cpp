@@ -20,7 +20,7 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#include <dplay.h>
+#include "dplay.h"
 #include "maya.h"
 #include "gdb.h"
 

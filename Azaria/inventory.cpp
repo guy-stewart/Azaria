@@ -24,7 +24,7 @@
 #include "gdb.h"
 #include "inventory.h"
 #include "user.h"
-#include "data\database\ids.h"
+#include "data/database/ids.h"
 
 #define Y_POS 10
 

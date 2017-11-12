@@ -49,7 +49,7 @@ typedef struct {
 // OBJECT:  Object definitions.  STATIC.
 #define NAME(X) #X,X
 typedef struct {
-	char *name;
+	const char *name;
 	WORD object_id;
 	WORD unique_flags;
 	WORD class_id;

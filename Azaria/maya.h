@@ -17,22 +17,17 @@
 #ifndef __MAYA_INCLUDED__
 #define __MAYA_INCLUDED__
 
-#include "stdapp.h"
-
-#include <one.h>
-#include "fblt.h"
+#include "includes.h"
 
 #include "tables.h"
-
 #include "spr_pool.h"
-
 #include "spirit.h"
 
 /*
  * fn prototypes
  */
 DWORD VideoThread(LPVOID lParam);
-oneFixPal(ONE *one);
+int oneFixPal(ONE *one);
 BOOL makeFontStuff( void );
 
 #define QUOTE(x) #x

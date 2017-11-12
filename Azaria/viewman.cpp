@@ -21,7 +21,7 @@
 ;				  layered views such as those found in the Azaria strategy rooms.
 ; 
 ----------------------------------------------------------------------------*/
-#include "Maya.h"
+#include "maya.h"
 #include "textutil.h"
 #include "paths.h"
 #include "music.h"
@@ -33,22 +33,23 @@
 #include "teletype.h"
 #include "cfgview.h"
 #include "inventory.h"
-#include "GameMan.h"
+#include "gameman.h"
 #include "display.h"
 #include "player.h"
 #include "cursor.h"
 #include "user.h"
 #include "trigger.h"
+#include <string.h>
 
-#include "data\database\idv.h"
-#include "data\database\tbl_views.h"
+#include "Data/Database/idv.h"
+#include "Data/Database/tbl_views.h"
 
 extern BOOL bPostQuitMessage;
 
 static int tbl_view_count = sizeof(tbl_views)/sizeof(VIEW_DESCRIPTION);
 
 VIEW *ViewMan::c_focus = NULL; // the view that has the current focus.
-char *ViewMan::c_where = "";
+const char *ViewMan::c_where = "";
 WORD ViewMan::c_view_id = 0;
 
 VIEW_DESCRIPTION *GetViewDesc(int view_id);
@@ -111,7 +112,7 @@ VIEW *ViewMan::Load(int view_id)
   if ((tbl_view->view_type & VC_MASK) == VC_VIEWSCREEN)
   {
 	if (holding)
-	  return FALSE;
+	  return NULL;
 
 	c_where = tbl_view->surface_filename;
 	c_view_id = view_id;
@@ -186,7 +187,7 @@ VIEW* ViewMan::Load(char *filename, BOOL bSurround)
 {
 	int i;
 	for (i=0;i<tbl_view_count;i++)
-		if (!stricmp(filename, tbl_views[i].surface_filename))
+		if (!strcasecmp(filename, tbl_views[i].surface_filename))
 			return Load(tbl_views[i].view_id);
 
 	return NULL;
@@ -244,7 +245,7 @@ VIEW *ViewMan::GetFocus()
 }
 
 //----------------------------------------------------------------------------
-char *ViewMan::GetWhere()
+const char *ViewMan::GetWhere()
 {
 	return c_where;
 }

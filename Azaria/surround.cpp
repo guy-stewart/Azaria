@@ -30,7 +30,7 @@
 #include "spell.h"
 #include "trigger.h"
 
-#include "data\database\ids.h"
+#include "Data/Database/Ids.h"
 
 #define USE_PARTICLE_PHYSICS TRUE
 

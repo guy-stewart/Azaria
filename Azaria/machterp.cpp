@@ -22,11 +22,9 @@
 #define __MACHINES_CPP__
 
 #include "maya.h"
-#include <dsWave.h>
-#include <xfile.h>
 
-#include "data\database\tbl_wave.h"
-#include "data\database\ids.h"
+#include "Data/Database/tbl_wave.h"
+#include "Data/Database/Ids.h"
 
 #include "gdb.h"
 #include "btable.h"
@@ -51,7 +49,7 @@ WORD MACHINE::c_ViewId;
 DPID MACHINE::c_Pid;
 WORD MACHINE::c_RefMachine;
 
-void __cdecl _Msg( LPSTR fmt, ... );
+void __cdecl _Msg( const LPSTR fmt, ... );
 
 #define MACH_LOWER_DEBUG_LIMIT 0x0100
 BOOL mon_machines = FALSE;

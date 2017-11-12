@@ -42,7 +42,7 @@ public:
 	virtual int  Action(int etime, int flags);
 	virtual void Paint(int etime, int flags);
 	virtual int  Keycmd(int key, int flags);
-	virtual WORD SURROUND::QueryCursor(SRECT r);
+    virtual WORD QueryCursor(SRECT r);
 
 	virtual long GetCanvasWidth() {return surface.GetHeight();}
 	virtual long GetCanvasHeight() {return surface.GetWidth();}

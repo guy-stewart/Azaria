@@ -20,11 +20,11 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#include <io.h>
-#include <direct.h>
+//#include <io.h>
+//#include <direct.h>
 
 #include "maya.h"
-#include "dsWave.h"
+#include "../include/dsWave.h"
 #include "gameman.h"
 #include "music.h"
 #include "controls.h"
@@ -33,8 +33,8 @@
 #include "viewman.h"
 #include "player.h"
 
-#include "data\database\ids.h"
-#include "data\database\idv.h"
+#include "Data/Database/Ids.h"
+#include "Data/Database/idv.h"
 
 #include "netctrl.h"
 

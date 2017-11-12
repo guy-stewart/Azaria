@@ -55,24 +55,24 @@ private:
 	BYTE m_i_own_it:1;
 	BYTE bMoreFrames:1;
 public:
-	SPIRIT::SPIRIT(ONE *canvas, int sprite_id, int style);
-	SPIRIT::~SPIRIT();
+    SPIRIT(ONE *canvas, int sprite_id, int style);
+    ~SPIRIT();
 
 public: // interface:
 	void ON();
 	void OFF();
 	void Move(int x, int y, int flags);
 	void SetFrame(int frame);
-	BOOL SPIRIT::PtInSpirit(POINT p);
+    BOOL PtInSpirit(POINT p);
 	void Animate(WORD view_id, BOOL bLoop, BOOL bStartFromEnd=FALSE, BOOL bRewind=FALSE, BOOL bDestroy=FALSE);
 	void DeAnimate();
 
 	static void Video(WORD view_id, WORD x, WORD y, WORD ids, BOOL bStartFromEnd, BOOL bLoop, BOOL bRewind);
-	static void SPIRIT::VideoCut(WORD view_id);
+    static void VideoCut(WORD view_id);
 	static void Tick(int etime);
 	static void Paint(WORD view_id);
-	static void SPIRIT::VideoON(WORD view_id);
-	static void SPIRIT::VideoOFF(WORD view_id);
+    static void VideoON(WORD view_id);
+    static void VideoOFF(WORD view_id);
 
 	WORD LastFrame() {return m_spr->sprite.GetFrames()-1;}
 	WORD CurrFrame() {return m_fbd.GetFrame();}
@@ -81,7 +81,7 @@ public: // interface:
 	void GetRect(RECT *rect);
 	int GetWidth() {return m_spr->sprite.GetWidth();}
 private:
-	BOOL SPIRIT::SetNextFrame(int etime);
+    BOOL SetNextFrame(int etime);
 };
 
 int objdefGetClass(WORD object_id);

@@ -30,7 +30,7 @@
 #include "cursor.h"
 #include "player.h"
 
-#include "data\database\ids.h"
+#include "Data/Database/Ids.h"
 
 CursorMan cursorman;
 
@@ -44,8 +44,8 @@ class HELD_OBJECT;
 //----------------------------------------------------------------------------
 class CURSOR {
 public:
-	CURSOR::CURSOR();
-	CURSOR::CURSOR(int hSprite, POINT p) {Init(hSprite, p);};
+    CURSOR();
+    CURSOR(int hSprite, POINT p) {Init(hSprite, p);};
 private:
 	static CFONT *font;
 	POINT m_pos;
@@ -84,7 +84,7 @@ public: // interface:
 	inline void MoveTo(POINT p) {m_pos = p;}
 	inline POINT GetPos() {return m_pos;}
 	inline void SetName(char *_name) 
-	{strncpy(name, _name, MAX_NAME_LEN); name[MAX_NAME_LEN] = 0; m_HasName = TRUE;}
+	{strncpy(name, _name, MAX_NAME_LEN); name[MAX_NAME_LEN-1] = 0; m_HasName = TRUE;}
 
 	// how to tell the state of a cursor:
 public:
@@ -113,7 +113,7 @@ public:
 	BOOL m_AnotherObject; // pick up another object before end of flip sequence
 
 public:
-	HELD_OBJECT::HELD_OBJECT();
+    HELD_OBJECT();
 
 private:
 	virtual void kill();

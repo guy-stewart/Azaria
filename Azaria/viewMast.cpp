@@ -20,7 +20,7 @@
 ; 01/18/95  gas  Created.
 ; 
 ----------------------------------------------------------------------------*/
-#include "Maya.h"
+#include "maya.h"
 
 #include "user.h"
 #include "gdb.h"
@@ -31,7 +31,7 @@
 #include "player.h"
 #include "trigger.h"
 
-#include "data\database\ids.h"
+#include "Data/Database/Ids.h"
 
 #define DEBUG_VIEW FALSE
 
@@ -94,7 +94,7 @@ BOOL VIEW::PtInView(POINT p)
   // right edge of the display,  esp when running full screen.
   testRect.right++;
 
-  if (PtInRect(&testRect, p))
+  if (sPtInRect(&testRect, p))
   {
 	// flip the point if it is a surround view.
 	if (fbd.m_style == BLT_LENSED)
@@ -312,7 +312,7 @@ void VIEW::Move(int x_delta, int y_delta)
 }
 
 //----------------------------------------------------------------------------
-VIEW::VIEW(int _view_id, char *_name, int _style)
+VIEW::VIEW(int _view_id, const char *_name, int _style)
 {
 	VIEW_DESCRIPTION *p_tbl_view;
 

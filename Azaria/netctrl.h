@@ -21,6 +21,11 @@
 #ifndef __NETCTRL_INCLUDED__
 #define __NETCTRL_INCLUDED__
 
+typedef struct
+{
+    DWORD           dwType;
+} DPMSG_GENERIC;
+
 class  NetManager {
 private:
 	LPDIRECTPLAY FAR lpDP;		// the global Direct Play object.
@@ -48,7 +53,7 @@ public: // interface
 						 DWORD friendly_len, 
 						 char *formal,
 						 DWORD formal_len);
-	HRESULT NetManager::SetPlayerName(
+    HRESULT SetPlayerName(
 						DPID pidID,
 						char *lpPlayerFriendlyName,
 						char *lpPlayerFormalName);

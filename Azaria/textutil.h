@@ -28,11 +28,11 @@ private:
   SPR_OBJECT *spr; // pointer to the font sprite.
   FBLT_DSCR fbd;	// handy fast blit descriptor
 public:
-  CFONT::CFONT(int font_id);
-  CFONT::~CFONT();
+    CFONT(int font_id);
+    ~CFONT();
 
-  int CFONT::TextOut(ONE *surface, int color, int sx, int sy, char *buff);
-  void CFONT::Print(ONE *surface, char *buffer, char color)
+    int TextOut(ONE *surface, int color, int sx, int sy, char *buff);
+    void Print(ONE *surface, const char *buffer, char color)
   {
 	fbd.m_dst_x += fbd.Print(surface, &spr->sprite, buffer, color);
   }
@@ -48,15 +48,15 @@ public:
 	fbd.m_dst_y = y;
   }
 
-  void CFONT::CR()
+    void CR()
   {
 	fbd.m_dst_x = 0;
 	fbd.m_dst_y += GetHeight();
   }
 
 
-  int CFONT::GetX() {return fbd.m_dst_x;}
-  int CFONT::GetY() {return fbd.m_dst_y;}
+    int GetX() {return fbd.m_dst_x;}
+    int GetY() {return fbd.m_dst_y;}
 
   FBLT_DSCR *GetFBD() {return &fbd;}
 

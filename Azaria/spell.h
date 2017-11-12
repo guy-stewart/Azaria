@@ -57,11 +57,11 @@ class WIZARD {
 	static DWORD spell_time[NUMBER_OF_SPELLS];
 
 public:
-  static void WIZARD::Cast(int spell, int target);    // The game cast a spell
-  static void WIZARD::CastMe(int spell, int target);  // a spell was cast on my id
-  static void WIZARD::CastYou(int spell, int target); // I cast a spell on another id
-  static BOOL WIZARD::Parse(char *buffer);
-  static void WIZARD::Excorsize();
-  static void WIZARD::Tick(DWORD etime);
+    static void Cast(int spell, int target);    // The game cast a spell
+    static void CastMe(int spell, int target);  // a spell was cast on my id
+    static void CastYou(int spell, int target); // I cast a spell on another id
+    static BOOL Parse(char *buffer);
+    static void Excorsize();
+    static void Tick(DWORD etime);
 };
 

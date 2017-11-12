@@ -26,7 +26,7 @@
 ; 01/28/96  gas  Created.
 ----------------------------------------------------------------------------*/
 
-#include "stdapp.h"
+#include "includes.h"
 #include "user.h"
 #include "gameman.h"
 
@@ -112,6 +112,7 @@ int userTranslateKey(int key)
 {
 	user.keyControl = FALSE;
 
+#ifdef _MSC_VER // Windows
 	// do some translation on the input:
 	switch( key )
 	{
@@ -146,6 +147,8 @@ int userTranslateKey(int key)
 	default:
 	  key = 0;
 	}
+#endif
+    
 	return key;
 }
 

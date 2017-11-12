@@ -23,7 +23,7 @@
 #include "compass.h"
 #include "player.h"
 
-#include "data\database\ids.h"
+#include "Data/Database/Ids.h"
 
 COMPASS::COMPASS(WORD view_id):
 VIEW(view_id, "compass", BLT_PORTAL)

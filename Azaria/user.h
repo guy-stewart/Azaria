@@ -17,6 +17,7 @@
 ; 
 ----------------------------------------------------------------------------*/
 
+#include "ptypes.h"
 
 void User(); // process any user actions that affect the display.
 

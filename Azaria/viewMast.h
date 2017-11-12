@@ -50,7 +50,7 @@
 class VIEW {
 
 public:
-	VIEW(int view_id, char *name, int style);
+	VIEW(int view_id, const char *name, int style);
 	virtual ~VIEW();
 
 private:
@@ -92,7 +92,7 @@ public:
 	BOOL PtInView(POINT p);
 
 	BOOL ChangeSurface(char *newSurfaceName);
-	void VIEW::Move(int x_delta, int y_delta);
+    void Move(int x_delta, int y_delta);
 
 public:
 	inline BOOL NeedsPainting(int frame) 

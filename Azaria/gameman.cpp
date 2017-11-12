@@ -20,12 +20,8 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#include "stdapp.h"
+#include "includes.h"
 #include "netctrl.h"
-#include "dsWave.h"
-
-#include <one.h>
-#include "fblt.h"
 #include "tables.h"
 #include "spr_pool.h"
 #include "spirit.h"
@@ -44,14 +40,14 @@
 #include "display.h"
 #include "cursor.h"
 
-#include "data\database\idv.h"
-#include "data\database\ids.h"
+#include "Data/Database/idv.h"
+#include "Data/Database/Ids.h"
 
-char *plyrPath = "Egos";
-char *plyrExt = "ego";
+const char *plyrPath = "Egos";
+const char *plyrExt = "ego";
 
-char *gamePath = "Games";
-char *gameExt = "Mx7";
+const char *gamePath = "Games";
+const char *gameExt = "Mx7";
 #define NewGameName	"New"
 #define NewGameExt	""
 
@@ -79,8 +75,9 @@ static DWORD m_last_view_time;	// last time we updated the views
 static DWORD m_last_agenda_time;	// last time we updated the agenda
 static DWORD m_last_poll_time;
 
-static char * baseKey = "SOFTWARE\\Singularity\\Azaria";
+static const char * baseKey = "SOFTWARE\\Singularity\\Azaria";
 
+#ifdef _MSC_VER // Windows
 //----------------------------------------------------------------------------
 Game::Game()
 {
@@ -594,4 +591,4 @@ BOOL Game::New()
   _makepath(path, NULL, gamePath, NewGameName, NewGameExt);
   return gdbt_machines.Load(path);
 }
-
+#endif

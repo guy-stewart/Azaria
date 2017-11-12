@@ -44,7 +44,7 @@ public:
 	static BOOL Fire(WORD view_id, WORD cardinal, BOOL bFire);
 
 	// are there any hands in this direction?
-	static void TBL_CARDINALS::CardHands(int view_id, CARDINALS *hands);
-	static BOOL TBL_CARDINALS::InView(int from_view_id, int to_view_id);
+    static void CardHands(int view_id, CARDINALS *hands);
+    static BOOL InView(int from_view_id, int to_view_id);
 };
 

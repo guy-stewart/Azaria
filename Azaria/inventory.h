@@ -32,11 +32,11 @@ class INVENTORY : public VIEW {
 public:
 	INVENTORY(int view_id);
 public:
-	virtual WORD INVENTORY::QueryCursor(SRECT r);
-	virtual WORD INVENTORY::Grab(POINT p, BOOL bClickOnly, POINT *obj_pos);
-	virtual BOOL INVENTORY::Drop(WORD *obj_def_id, POINT p);
-	virtual int  INVENTORY::Keycmd(int key, int flags);
-	virtual void INVENTORY::Paint(int etime, int flags);
+    virtual WORD QueryCursor(SRECT r);
+    virtual WORD Grab(POINT p, BOOL bClickOnly, POINT *obj_pos);
+    virtual BOOL Drop(WORD *obj_def_id, POINT p);
+    virtual int  Keycmd(int key, int flags);
+    virtual void Paint(int etime, int flags);
 
 };
 

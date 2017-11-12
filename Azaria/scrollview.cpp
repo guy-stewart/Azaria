@@ -21,8 +21,8 @@
 
 #include "maya.h"
 #include "btable.h"
-#include "data\database\idv.h"
-#include "data\database\ids.h"
+#include "data/database/idv.h"
+#include "data/database/ids.h"
 #include "user.h"
 #include "player.h"
 #include "scrollview.h"

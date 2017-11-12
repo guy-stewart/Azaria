@@ -25,8 +25,8 @@
 #include "btable.h"
 #include "trigger.h"
 
-#include "data\database\idv.h"
-#include "data\database\ids.h"
+#include "Data/Database/idv.h"
+#include "Data/Database/Ids.h"
 
 //----------------------------------------------------------------------------
 class PANEL_NAV {
@@ -73,7 +73,7 @@ public:
 	WORD QueryCursor(int view_id, POINT p);
 };
 
-#include "data\database\tbl_triggers.h"
+#include "Data/Database/tbl_triggers.h"
 
 static TBL_CARDINALS tbl_cardinals(cardinals, sizeof(cardinals)/sizeof(CARDINALS));
 static TBL_TRIGGERS  tbl_triggers(triggers, sizeof(triggers)/sizeof(TRIGGER));

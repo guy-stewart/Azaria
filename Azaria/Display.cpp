@@ -19,7 +19,7 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#include "stdapp.h"
+#include "includes.h"
 #include "paths.h" // for path the palette.
 #include "display.h"
 
@@ -33,6 +33,8 @@ PALETTE palPalette;
 
 Display display;	// The one and only video display adapter.
 
+#ifdef IOS
+#else
 /*
  * intitilize the display manager.
  */
@@ -1161,4 +1163,4 @@ int Display::SetBlind(int delta)
   m_PalChanged = TRUE;
   return blindness;
 }
-
+#endif

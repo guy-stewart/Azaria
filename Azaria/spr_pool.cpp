@@ -27,19 +27,19 @@
 
 // The object table is private.
 static SPR_OBJECT spr_pool[MAX_RAM_SPRITES];
-static lastObject = 0;
+static int lastObject = 0;
 
 typedef struct {
 	int sprite_id;
-	char *filename;
+	const char *filename;
 } STR_ENTRY;
 
-#include "data\database\ids.h"
-#include "data\database\tbl_sprnames.h"
+#include "Data/Database/Ids.h"
+#include "Data/Database/tbl_sprnames.h"
 
 static int names_count = sizeof(tbl_spr_names)/sizeof(STR_ENTRY);
 
-char *sprGetName(int sprite_id)
+const char *sprGetName(int sprite_id)
 {
   int i;
   for (i=0;i<names_count; i++)

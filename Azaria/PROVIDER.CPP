@@ -30,7 +30,7 @@
 #include "netctrl.h"
 #include "display.h"
 
-#include "data\database\idv.h"
+#include "data/database/idv.h"
 
 //----------------------------------------------------------------------------
 int provSelect(ZLISTBOX *panel, int item)

@@ -19,7 +19,7 @@
 #define __SCROLLVIEW_INCLUDED__
 
 #include "physics.h"
-#include "viewmast.h"
+#include "viewMast.h"
 
 class SCROLLVIEW : public VIEW {
 
@@ -40,7 +40,7 @@ public:
 	SCROLLVIEW(int view_id);
 	virtual int  Keycmd(int key, int flags);
 	virtual int Action(int etime, int flags);
-	virtual WORD SCROLLVIEW::QueryCursor(SRECT srect);
+    virtual WORD QueryCursor(SRECT srect);
 
 	void SlewTo(WORD x, WORD y);
 	void SlewRel(int x, int y);

@@ -20,14 +20,14 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#include <direct.h>
+//#include <direct.h>
 
 #include "maya.h"
 #include "controls.h"
 #include "viewMast.h"
 #include "cfgview.h"
 
-#include "data\database\ids.h"
+#include "Data/Database/Ids.h"
 
 char CFGVIEW::names[NAMES_PER_PAGE][MAX_NAME_LEN];
 
@@ -121,43 +121,46 @@ WORD CFGVIEW::QueryCursor(SRECT r)
   return PANEL::QueryCursor(r);
 }
 
+#include <dirent.h>
+
 //----------------------------------------------------------------------------
 int CFGVIEW::CfgDir(int startat, char *dir, char *ext)
 {
-  int current = 0;
-  int index = 0;
-  struct _finddata_t fileinfo;
-  long handle;
-  char path[_MAX_PATH];
-
-  _makepath(path, NULL, dir, "*", ext);
-
-  _mkdir(dir);
-  handle = _findfirst(path, &fileinfo);
-
-  if (handle != -1L)
-  {
-	do
-	{
-	  current++;
-	  if (current >= startat)
-	  {
-		char fname[_MAX_FNAME];
-		strncpy(fname,fileinfo.name, _MAX_FNAME);
-		fname[_MAX_FNAME-1] = 0;
-		_splitpath(fname, NULL, NULL, fname, NULL);
-
-		strncpy(names[index],fname, MAX_NAME_LEN);
-		names[index][MAX_NAME_LEN-1] = 0;
-		index++;
-		if (index >= NAMES_PER_PAGE)
-		  break;
-	  }
-	} while( _findnext( handle, &fileinfo ) == 0 );
-	_findclose(handle);
-  }
-
-  return index;
+    int current = 0;
+    int index = 0;
+    char path[_MAX_PATH];
+    
+    makepath(path, NULL, dir, "*", ext);
+    mkdir(dir, 0777);
+    struct dirent **namelist;
+    int n;
+    n = scandir(path, &namelist, 0, alphasort);
+    
+    if (n < 0)
+        perror("scandir");
+    else {
+        while(n--) {
+            printf("%s\n", namelist[n]->d_name);
+            current++;
+            if (current >= startat)
+            {
+                char fname[_MAX_FNAME];
+                strncpy(fname,namelist[n]->d_name, _MAX_FNAME);
+                fname[_MAX_FNAME-1] = 0;
+                splitpath(fname, NULL, NULL, fname, NULL);
+                
+                strncpy(names[index],fname, MAX_NAME_LEN);
+                names[index][MAX_NAME_LEN-1] = 0;
+                index++;
+                free(namelist[n]);
+                if (index >= NAMES_PER_PAGE)
+                    break;
+            }
+            free(namelist);
+        }
+    }
+    
+    return index;
 }
 
 //----------------------------------------------------------------------------

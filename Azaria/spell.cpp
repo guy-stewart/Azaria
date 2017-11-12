@@ -19,12 +19,11 @@
 ; 06/05/96  gas  Created.
 ; 
 ----------------------------------------------------------------------------*/
-#include "stdapp.h"
+#include "includes.h"
+
 #include "display.h"
 #include "gameman.h"
 
-#include <one.h>
-#include "fblt.h"
 #include "tables.h"
 #include "spr_pool.h"
 #include "spirit.h"
@@ -44,8 +43,8 @@
 #include "machines.h"
 #include "teletype.h"
 
-#include "data\database\idents.h"
-#include "data\database\idv.h"
+#include "Data/Database/Idents.h"
+#include "Data/Database/idv.h"
 
 extern BOOL mon_machines;
 
@@ -62,8 +61,8 @@ private:
 public:
 	GDBT_SPELLS():GDB_TABLE(IDT_SPELLS){};
 
-	void GDBT_SPELLS::CastMe(int spell, int target);
-	void GDBT_SPELLS::CastYou(int spell, int target);
+    void CastMe(int spell, int target);
+    void CastYou(int spell, int target);
 };
 
 GDBT_SPELLS gdbt_spells;
@@ -79,7 +78,7 @@ WORD WIZARD::current_object;
 DWORD WIZARD::spell_time[NUMBER_OF_SPELLS];
 static POINT last_pos;
 static WORD WhereWasI;
-static spell_caster = 0;
+static int spell_caster = 0;
 static BOOL protect = FALSE;
 
 

@@ -33,7 +33,7 @@
 
 // Game Manager.
 class Game {
-  static char m_InstallDir[MAX_PATH];
+  static char m_InstallDir[_MAX_PATH];
   static DPID c_owner;
   static int musicVolume;
   static int sfxVolume;

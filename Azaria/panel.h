@@ -24,11 +24,11 @@
 
 class PANEL : public VIEW {
 public:
-	PANEL::PANEL(int view_id);
-	PANEL::~PANEL();
+    PANEL(int view_id);
+    ~PANEL();
 
-	int PANEL::Keycmd(int key, int flags);
-	WORD PANEL::QueryCursor(SRECT srect);
+    int Keycmd(int key, int flags);
+    WORD QueryCursor(SRECT srect);
 };
 
 #endif // __PANEL_INCLUDED__

@@ -20,7 +20,15 @@
 ; 
 ----------------------------------------------------------------------------*/
 
+#ifdef _MSC_VER // Windows
+#include <windows.h>
+#include <direct.h>
 #include <process.h>
+#else // Linux
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#endif /*_MSC_VER*/
 
 #include "maya.h"
 #include "controls.h"
@@ -30,8 +38,8 @@
 #include "player.h"
 #include "teletype.h"
 
-#include "data\database\ids.h"
-#include "data\database\idv.h"
+#include "Data/Database/Ids.h"
+#include "Data/Database/idv.h"
 
 #include "netctrl.h"
 #include "display.h"
@@ -46,6 +54,7 @@ int CFGNET::lastProvider = 0;
 HANDLE CFGNET::Die;
 HANDLE CFGNET::Dead;
 
+#ifdef _MSC_VER // Windows
 //----------------------------------------------------------------------------
 char *provStrings(int position)
 {
@@ -270,4 +279,4 @@ void CFGNET::OnEvent(int control_id, int event_id)
   }
   return;
 }
-
+#endif

@@ -59,7 +59,7 @@ public:
 // Input operations:	BYTE
 
 #ifdef __MACHINES_CPP__
-char *strAutoOps[] = {
+const char *strAutoOps[] = {
 	"EPSILON",
 	"PLAYWAVE",
 	"WTOPWAVE",
@@ -387,9 +387,9 @@ public:
 	TBL_MACHINE_DEF(TRANSITION *table, int count):
 	  BMT_TABLE (table, count, count) {}
 
-	TRANSITION *TBL_MACHINE_DEF::FindTransition(MACHINE *machine, BYTE state, BYTE input, BYTE bParm, WORD wParm);
-	TRANSITION *TBL_MACHINE_DEF::FindFirstAutoTrans(WORD machine_id, BYTE state, int *position);
-	TRANSITION *TBL_MACHINE_DEF::FindNextAutoTrans(WORD machine_id, BYTE state, int *position);
+    TRANSITION *FindTransition(MACHINE *machine, BYTE state, BYTE input, BYTE bParm, WORD wParm);
+    TRANSITION *FindFirstAutoTrans(WORD machine_id, BYTE state, int *position);
+    TRANSITION *FindNextAutoTrans(WORD machine_id, BYTE state, int *position);
 };
 
 //----------------------------------------------------------------------------
@@ -441,7 +441,7 @@ public:
 	static DPID c_Pid;		  // PID of player responsible for current transaction.
 	static WORD c_RefMachine; // machine being referenced by current transaction.
 public:
-	char *m_name;
+	const char *m_name;
 	WORD m_id;
 	WORD m_view_id;
 	WORD m_machine_id;
@@ -466,9 +466,9 @@ public:
   WIP m_wip;
 
 public: // should be private
-	WORD MACHINE::GetRegVal(BYTE reg_id);
-	void MACHINE::SetRegVal(BYTE reg_id, WORD value);
-	BOOL MACHINE::Tick(int etime);
+    WORD GetRegVal(BYTE reg_id);
+    void SetRegVal(BYTE reg_id, WORD value);
+    BOOL Tick(int etime);
 
 public:
 	void SendState(DPID pid, WORD group);
@@ -493,7 +493,7 @@ public:
 	BOOL isDirtySprite() {return m_Dirty;}
 
 	// execute the given transition
-	InitiateTransition(WORD proc, WORD obj_def, BOOL local, BOOL autoTrans);
+	BOOL InitiateTransition(WORD proc, WORD obj_def, BOOL local, BOOL autoTrans);
 	void Transition(TRANSITION *trans, BYTE bParm);
 	BOOL AutoTransition(int etime);
 	void SlamState(REGISTERS *reg); // slam the machine into a new state. Deal with it!
@@ -523,13 +523,13 @@ public:
 	void Init();		// engine initialization
 	void MachInit();	// game specific initialization
 
-	int GDBT_MACHINES::CompressMachine(BYTE *output, REGISTERS *r);
-	int GDBT_MACHINES::UncompressMachine(BYTE *input, REGISTERS *r);
-	void GDBT_MACHINES::SendAllStates(DWORD pid);
-	BOOL GDBT_MACHINES::UncompressAllStates(BYTE *pkt);
+    int CompressMachine(BYTE *output, REGISTERS *r);
+    int UncompressMachine(BYTE *input, REGISTERS *r);
+    void SendAllStates(DWORD pid);
+    BOOL UncompressAllStates(BYTE *pkt);
 
-	BOOL GDBT_MACHINES::Load(char *filename);
-	BOOL GDBT_MACHINES::Save(char *filename);
+    BOOL Load(char *filename);
+    BOOL Save(char *filename);
 
 	// Callbacks for the global database engine:
 private:
@@ -539,20 +539,20 @@ public:
 	void SendObject(DWORD to, WORD obj_def_id);
 	void SendSync(WORD machine_id, WORD syncpoint);
 
-	MACHINE *GDBT_MACHINES::Get(WORD id) {return UGet(id);}  // get a machine by unique machine id.
-	BOOL GDBT_MACHINES::Drop(WORD view_id, WORD *obj_def_id, POINT p);
-	BOOL GDBT_MACHINES::Drop(WORD machine_sid, WORD *obj_def_id);
-	WORD GDBT_MACHINES::Grab(WORD view_id, POINT p, BOOL bClickOnly, POINT *obj_pos);
-	WORD GDBT_MACHINES::Drag(WORD view_id, WORD obj_def_id, POINT p);
-	void GDBT_MACHINES::Signal(WORD machine_sid, WORD wParm);
+    MACHINE *Get(WORD id) {return UGet(id);}  // get a machine by unique machine id.
+    BOOL Drop(WORD view_id, WORD *obj_def_id, POINT p);
+    BOOL Drop(WORD machine_sid, WORD *obj_def_id);
+    WORD Grab(WORD view_id, POINT p, BOOL bClickOnly, POINT *obj_pos);
+    WORD Drag(WORD view_id, WORD obj_def_id, POINT p);
+    void Signal(WORD machine_sid, WORD wParm);
 
-	WORD GDBT_MACHINES::QueryCursor(WORD view_id, WORD obj_def_id, POINT p);
+    WORD QueryCursor(WORD view_id, WORD obj_def_id, POINT p);
 
-	void GDBT_MACHINES::Paint(ONE *canvas, WORD view_id);
-	void GDBT_MACHINES::Init(WORD view_id);
-	void GDBT_MACHINES::Release(WORD view_id);
-	void GDBT_MACHINES::Tick(int etime);
-	void GDBT_MACHINES::AddAgenda(MACHINE *machine);
+    void Paint(ONE *canvas, WORD view_id);
+    void Init(WORD view_id);
+    void Release(WORD view_id);
+    void Tick(int etime);
+    void AddAgenda(MACHINE *machine);
 };
 
 extern GDBT_MACHINES gdbt_machines;
@@ -580,8 +580,8 @@ public:
 public:	// callbacks for B_TABLE:
   inline int GetGroupKey() {return m_view_id;}
 
-  void ALTVIEW::Paint(ONE *canvas);
-  void ALTVIEW::Erase();
+    void Paint(ONE *canvas);
+    void Erase();
   void Release();
   inline SRECT *GetRegion() {return &m_region;}
 };
@@ -595,7 +595,7 @@ public:
 		{}
 
 	void Paint(ONE *canvas, WORD view_id);
-	BOOL TBL_ALTVIEWS::Link(WORD view_id, POINT p, BOOL bFire);
+    BOOL Link(WORD view_id, POINT p, BOOL bFire);
 	void Release(WORD view_id);
 };
 
