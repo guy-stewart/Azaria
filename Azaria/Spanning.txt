@@ -1,0 +1,39 @@
+
+transport layer
+
+S-TREE TABLE.
+node-id,	ip address & port.
+
+ROUTING TABLE. (for a given session).
+player_id, node-id, player_friendly-name, player_formal_name.
+
+
+spanning trees and the GDK directPlay:
+
+OPEN(guid, &ses_id, max_players, &curr_players, create/open, ses_name, passwd, user_data)
+	Create.
+	Places the owners IP address on the name-server.  The creator becomes the name server
+	for the game session. This provides an initial connection point for subsequent players
+	to initiate a connection.
+
+	Join.
+	Get the owner IP from the name server.  Node contacts the s-tree owner to join the
+	session.  The s-tree owner adds the node to the s-tree,  broadcasts an add-node command
+	to all nodes on the s-tree,  and sends the entire s-tree and the routing table to the 
+	new node.  The s-tree may be large need to be broken up for transmission. This does not
+	add a player to the session.
+
+
+CREATEPLAYER(&player_id, friendly_name, formal_name, (event))
+	This creates a logical entity in the s-tree.  An entry is added to the routing table.
+	The transaction is relayed to all nodes.
+
+DESTROY PLAYER(player_id)
+	Removes the player entry from the routing table.
+
+CLOSE(service) - (this would make more sense if it were a session
+	Closes the session opened with this service.  This must mean that a service provider
+	is only expected to support a single session per/process.
+
+SEND(player_id, message)
+
