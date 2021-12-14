@@ -23,6 +23,7 @@
 #define __DISPLAY_INCLUDED__
 
 #include "includes.h"
+
 #include "palette.h"
 
 // Video Adapter Direct Draw Extenstion object.
@@ -43,12 +44,12 @@ private:
 
 	int 	maintRestBfrs;
 
-	LPDIRECTDRAWSURFACE     lpFrontBuffer;
+	IDirectDrawSurface     *lpFrontBuffer;
 	IDirectDrawSurface     *lpBackBuffer;
-	LPDIRECTDRAWPALETTE     lpDDPalette;
+	IDirectDrawPalette     *lpDDPalette;
 
-	LPDIRECTDRAW            lpDD;
-	LPDIRECTDRAWCLIPPER     lpClipper;
+	IDirectDraw            *lpDD;
+	IDirectDrawClipper     *lpClipper;
 
 	int     nBufferCount;
 
@@ -75,13 +76,12 @@ private:
 	void Restore();
 	BOOL Enable( void );
 	BOOL CreateFlippingSurface( void );
-    void ReadPalFile( char *path, char *filename, PALETTE *pal);
+    void ReadPalFile( const char *path, const char *filename, PALETTE *pal);
 
 	BOOL SwapBuffers(void);
 	BOOL RestoreAll(void);
 
-
-	LPDIRECTDRAWSURFACE CreateSurface( DWORD width, DWORD height, BOOL sysmem, BOOL trans );
+	IDirectDrawSurface *CreateSurface( DWORD width, DWORD height, BOOL sysmem, BOOL trans );
 
 	//-------------------------------------------------------
 public: // interface for application configuration:
@@ -127,13 +127,13 @@ public: // interface for game run-time:
 
 	// the game likes to change the palette on the fly:
 	BOOL SetPalette(PALETTEENTRY *pal, BOOL bAll);
-	inline LPDIRECTDRAWPALETTE GetPalette() {return lpDDPalette;}
+	inline PALETTEENTRY *GetPalette() {return m_palette;};
 
 	inline int GetBackBufferId() {return m_current_buffer;}
 	inline IDirectDrawSurface * GetBackBuffer() {return lpBackBuffer;}
 	int Flip();				// returns new backubuffer number.
 
-	char *GetDdError(HRESULT hr);
+	const char *GetDdError(HRESULT hr);
 
 	// FUN STUFF - for use by games
 private:

@@ -1,0 +1,326 @@
+Load gui
+Load namefill
+Load namefill
+Load inventor
+Load id
+Load you
+Load teletype
+Load spacemen
+Load compass
+Load ctysmith
+Normal Exit:
+reshape..
+mouse(x:641, y:672)
+Load ckeyvend
+mouse(x:641, y:672)
+mouse(x:361, y:90)
+SMP_VIAL: 1 -GRAB(0x51)->1
+mouse(x:375, y:148)
+SMP_VIAL: 1 -DRAG(0x0)->2
+S04_VIAL: 0 -DRAG(0x0)->1
+SMP_VIAL: 1 -DRAG(0x0)->2
+S04_VIAL: 2 -DRAG(0x0)->3
+mouse(x:120, y:864)
+mouse(x:120, y:864)
+mouse(x:553, y:686)
+S04_BIN: 3 -GRAB(0x200)->4
+mouse(x:259, y:667)
+mouse(x:152, y:887)
+mouse(x:152, y:887)
+mouse(x:704, y:711)
+Load ctysmith
+mouse(x:704, y:711)
+mouse(x:386, y:524)
+Load ckeycf01
+mouse(x:386, y:524)
+mouse(x:407, y:460)
+S04_REDSLIDER_2: 0 -GRAB(0x0)->1
+mouse(x:407, y:460)
+mouse(x:147, y:860)
+mouse(x:764, y:513)
+S04_KEYCLAMP_2: 1 -DROP(0x200)-> 2
+mouse(x:407, y:464)
+S04_REDSLIDER_2: 0 -GRAB(0x0)->1
+mouse(x:407, y:464)
+mouse(x:407, y:464)
+S04_REDSLIDER_2: 0 -GRAB(0x0)->1
+mouse(x:407, y:464)
+mouse(x:474, y:429)
+S04_GRNSLIDER_2: 0 -GRAB(0x0)->1
+mouse(x:474, y:429)
+mouse(x:474, y:429)
+S04_GRNSLIDER_2: 0 -GRAB(0x0)->1
+mouse(x:474, y:429)
+mouse(x:474, y:429)
+S04_GRNSLIDER_2: 0 -GRAB(0x0)->1
+mouse(x:474, y:429)
+mouse(x:519, y:506)
+S04_BLUSLIDER_2: 0 -GRAB(0x0)->1
+mouse(x:519, y:506)
+mouse(x:752, y:449)
+S04_KEYCLAMP_2: 15 -GRAB(0x0)->16
+mouse(x:344, y:560)
+mouse(x:794, y:449)
+mouse(x:794, y:449)
+S04_KEYCLAMP_2: 1 -DROP(0x22d)-> 2
+mouse(x:761, y:464)
+S04_KEYCLAMP_2: 15 -GRAB(0x0)->16
+mouse(x:287, y:581)
+mouse(x:115, y:869)
+mouse(x:115, y:869)
+mouse(x:424, y:683)
+Load ctysmith
+mouse(x:424, y:683)
+mouse(x:352, y:524)
+Load ckeycf01
+mouse(x:352, y:524)
+mouse(x:123, y:853)
+mouse(x:654, y:568)
+mouse(x:752, y:441)
+mouse(x:752, y:441)
+S04_KEYCLAMP_1: 1 -DROP(0x22d)-> 2
+mouse(x:755, y:462)
+S04_KEYCLAMP_1: 15 -GRAB(0x0)->16
+mouse(x:520, y:602)
+mouse(x:99, y:855)
+mouse(x:99, y:855)
+mouse(x:661, y:723)
+Load ctysmith
+mouse(x:661, y:723)
+mouse(x:836, y:557)
+Load ctyc
+mouse(x:836, y:557)
+mouse(x:836, y:557)
+Load ctya
+mouse(x:836, y:557)
+mouse(x:836, y:557)
+Load ctyb
+mouse(x:836, y:557)
+mouse(x:836, y:557)
+Load ctyhouse
+mouse(x:836, y:557)
+mouse(x:709, y:539)
+Load chouse3
+mouse(x:709, y:539)
+mouse(x:233, y:762)
+SMP_INV_RIGHT: 0 -GRAB(0x0)->1
+mouse(x:233, y:762)
+mouse(x:158, y:857)
+mouse(x:379, y:438)
+SMP_VIAL: 1 -DRAG(0x0)->2
+mouse(x:99, y:865)
+mouse(x:99, y:865)
+mouse(x:152, y:860)
+mouse(x:365, y:354)
+SMP_VIAL: 1 -DRAG(0x0)->5
+mouse(x:129, y:871)
+mouse(x:129, y:871)
+mouse(x:566, y:690)
+Load ctyhouse
+mouse(x:566, y:690)
+mouse(x:671, y:554)
+Load ctyb
+mouse(x:671, y:554)
+mouse(x:740, y:489)
+Load ctye
+mouse(x:740, y:489)
+mouse(x:740, y:488)
+Load ctyf
+mouse(x:740, y:488)
+mouse(x:740, y:488)
+Load ctyh
+mouse(x:740, y:488)
+mouse(x:740, y:488)
+Load ctyi
+mouse(x:740, y:488)
+mouse(x:815, y:160)
+SMP_MAPBUTTON: 0 -GRAB(0x0)->1
+Load contin~1
+mouse(x:815, y:160)
+mouse(x:717, y:416)
+Load ctya
+mouse(x:717, y:416)
+mouse(x:120, y:437)
+mouse(x:120, y:437)
+mouse(x:803, y:483)
+Load ctyd
+mouse(x:803, y:483)
+mouse(x:803, y:483)
+Load ctyn
+mouse(x:803, y:483)
+mouse(x:367, y:499)
+Load ctyd
+mouse(x:367, y:499)
+mouse(x:787, y:457)
+Load ctye
+mouse(x:787, y:457)
+mouse(x:824, y:465)
+Load ctyf
+mouse(x:824, y:465)
+mouse(x:824, y:465)
+Load ctyh
+mouse(x:824, y:465)
+mouse(x:824, y:465)
+Load ctyi
+mouse(x:824, y:465)
+mouse(x:512, y:538)
+Load ctyj
+mouse(x:512, y:538)
+mouse(x:981, y:483)
+mouse(x:981, y:483)
+mouse(x:795, y:334)
+Load ctylib2a
+mouse(x:795, y:334)
+mouse(x:811, y:500)
+Load ctylib2b
+mouse(x:811, y:500)
+mouse(x:713, y:562)
+Load MONITOR
+mouse(x:713, y:562)
+mouse(x:375, y:78)
+SMP_VIAL: 1 -GRAB(0x51)->1
+mouse(x:320, y:218)
+SMP_VIAL: 1 -DRAG(0x0)->2
+SMP_VIAL: 1 -DRAG(0x0)->5
+mouse(x:1132, y:121)
+mouse(x:1132, y:121)
+SOD_SPELL: 0 -DROP(0x51)-> 1
+mouse(x:219, y:770)
+SMP_INV_RIGHT: 0 -GRAB(0x0)->1
+mouse(x:219, y:770)
+mouse(x:123, y:850)
+mouse(x:343, y:755)
+mouse(x:149, y:858)
+mouse(x:149, y:858)
+mouse(x:583, y:731)
+Load ctylib2b
+mouse(x:583, y:731)
+mouse(x:425, y:653)
+Load ctylib2a
+mouse(x:425, y:653)
+mouse(x:386, y:506)
+Load ctylib2b
+mouse(x:386, y:506)
+mouse(x:386, y:506)
+mouse(x:386, y:506)
+mouse(x:700, y:552)
+Load MONITOR
+mouse(x:700, y:552)
+mouse(x:671, y:550)
+mouse(x:671, y:550)
+mouse(x:665, y:583)
+mouse(x:665, y:583)
+mouse(x:493, y:557)
+Load ctylib2b
+mouse(x:493, y:557)
+mouse(x:656, y:600)
+Load MONITOR
+mouse(x:656, y:600)
+mouse(x:655, y:587)
+mouse(x:655, y:587)
+mouse(x:536, y:720)
+Load ctylib2b
+mouse(x:536, y:720)
+mouse(x:661, y:436)
+Load ctylib2a
+mouse(x:661, y:436)
+mouse(x:661, y:436)
+Load ctyj
+mouse(x:661, y:436)
+mouse(x:621, y:473)
+Load ctyi
+mouse(x:621, y:473)
+mouse(x:621, y:473)
+Load ctyp
+mouse(x:621, y:473)
+mouse(x:621, y:473)
+Load ctyq
+mouse(x:621, y:473)
+mouse(x:621, y:473)
+Load ctyr
+mouse(x:621, y:473)
+mouse(x:400, y:545)
+Load ctytrade
+mouse(x:400, y:545)
+mouse(x:719, y:493)
+mouse(x:719, y:493)
+mouse(x:599, y:546)
+Load ctyr
+mouse(x:599, y:546)
+mouse(x:742, y:480)
+Load ctyq
+mouse(x:742, y:480)
+mouse(x:602, y:494)
+Load ctyp
+mouse(x:602, y:494)
+mouse(x:602, y:494)
+Load ctyi
+mouse(x:602, y:494)
+mouse(x:192, y:495)
+mouse(x:192, y:495)
+mouse(x:563, y:471)
+Load ctyp
+mouse(x:563, y:471)
+mouse(x:563, y:471)
+Load ctyq
+mouse(x:563, y:471)
+mouse(x:563, y:471)
+Load ctyr
+mouse(x:563, y:471)
+mouse(x:720, y:514)
+Load ctyl
+mouse(x:720, y:514)
+mouse(x:363, y:554)
+Load ctys
+mouse(x:363, y:554)
+mouse(x:579, y:518)
+Load ctychem
+mouse(x:580, y:517)
+mouse(x:600, y:666)
+Load chempan
+mouse(x:600, y:666)
+mouse(x:266, y:474)
+S05_UP: 0 -GRAB(0x0)->1
+mouse(x:266, y:474)
+mouse(x:266, y:474)
+S05_UP: 0 -GRAB(0x0)->1
+mouse(x:266, y:474)
+mouse(x:266, y:474)
+S05_UP: 0 -GRAB(0x0)->1
+mouse(x:266, y:474)
+mouse(x:266, y:474)
+S05_UP: 0 -GRAB(0x0)->1
+mouse(x:266, y:474)
+mouse(x:266, y:474)
+S05_UP: 0 -GRAB(0x0)->1
+mouse(x:266, y:474)
+mouse(x:266, y:474)
+S05_UP: 0 -GRAB(0x0)->1
+mouse(x:266, y:474)
+mouse(x:266, y:474)
+S05_UP: 0 -GRAB(0x0)->1
+mouse(x:266, y:474)
+mouse(x:232, y:771)
+SMP_INV_RIGHT: 0 -GRAB(0x0)->1
+mouse(x:232, y:771)
+mouse(x:156, y:878)
+mouse(x:533, y:350)
+SMP_VIAL: 1 -DRAG(0x0)->2
+S05_VIAL: 0 -DRAG(0x0)->1
+SMP_VIAL: 1 -DRAG(0x0)->2
+SMP_VIAL: 1 -DRAG(0x0)->5
+SMP_VIAL: 1 -DRAG(0x0)->2
+S05_VIAL: 0 -DRAG(0x0)->1
+SMP_VIAL: 1 -DRAG(0x0)->2
+S05_VIAL: 0 -DRAG(0x0)->1
+SMP_VIAL: 1 -DRAG(0x0)->2
+S05_VIAL: 0 -DRAG(0x0)->1
+SMP_VIAL: 1 -DRAG(0x0)->2
+S05_VIAL: 0 -DRAG(0x0)->1
+mouse(x:218, y:824)
+mouse(x:218, y:824)
+mouse(x:926, y:595)
+S05_CHEM: 20 -GRAB(0x507)->21
+mouse(x:625, y:563)
+mouse(x:71, y:870)
+mouse(x:71, y:870)

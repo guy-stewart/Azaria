@@ -31,7 +31,7 @@ public:
     CFONT(int font_id);
     ~CFONT();
 
-    int TextOut(ONE *surface, int color, int sx, int sy, char *buff);
+    int TextOut(ONE *surface, int color, int sx, int sy, const char *buff);
     void Print(ONE *surface, const char *buffer, char color)
   {
 	fbd.m_dst_x += fbd.Print(surface, &spr->sprite, buffer, color);

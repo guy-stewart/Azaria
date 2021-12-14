@@ -21,6 +21,7 @@
 #define __CFGVIEW_INCLUDED__
 
 #include "panel.h"
+#include <pthread.h>
 
 class CONTROL;
 //----------------------------------------------------------------------------
@@ -46,7 +47,7 @@ public:
     virtual void OnEvent(int control_id, int event_id);
 
     static int CfgDir(int startat, char *dir, char *ext);
-    static char *CfgStrings(int index);
+    static const char *CfgStrings(int index);
 };
 
 class LISTBOX;
@@ -56,7 +57,7 @@ class CHECKBOX;
 
 //----------------------------------------------------------------------------
 class CFGNET :public CFGVIEW {
-  unsigned thid; /* NULL if thread is not active */
+  pthread_t thid; /* NULL if thread is not active */
   LISTBOX *listbox;
   BOOL bKeepLooking;
   static int lastProvider;
@@ -68,7 +69,7 @@ public:
     virtual void OnEvent(int control_id, int event_id);
 
 private:
-  typedef unsigned int (__stdcall* Entry)(void*);
+    typedef void * (*Entry)(void *);
     static void EnumThread(CFGNET *thing);
     void CloseEnumThread();
     void OpenEnumThread();
@@ -111,7 +112,7 @@ public:
     ~CTRL_VIEW();
     virtual void OnEvent(int control_id, int event_id);
 
-  void SetName(char *name);
+  void SetName(const char *name);
 };
 
 #endif // __CFGVIEW_INCLUDED__

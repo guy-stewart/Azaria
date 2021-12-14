@@ -136,8 +136,10 @@ int CFGVIEW::CfgDir(int startat, char *dir, char *ext)
     int n;
     n = scandir(path, &namelist, 0, alphasort);
     
-    if (n < 0)
+    if (n < 0) {
+        printf("scandir(%s, ...)\n", path);
         perror("scandir");
+    }
     else {
         while(n--) {
             printf("%s\n", namelist[n]->d_name);
@@ -164,7 +166,7 @@ int CFGVIEW::CfgDir(int startat, char *dir, char *ext)
 }
 
 //----------------------------------------------------------------------------
-char *CFGVIEW::CfgStrings(int index)
+const char *CFGVIEW::CfgStrings(int index)
 {
   return names[index];
 }

@@ -22,41 +22,116 @@
 #ifndef __dsWave_INCLUDED__
 #define __dsWave_INCLUDED__
 #include "includes.h"
-#include "tbl_wave.h"
+#include "Data/Database/tbl_wave.h"
+#include <pthread.h>
 
 //typedef enum WAVE_RAMID;
 //typedef enum WAVE_FILEID;
 
-typedef  struct {
-    int nada;
-} HMMIO;
+#define DS_OK 1
+#define DSERR_GENERIC 2
+#define DSERR_NODRIVER 3
+#define DSERR_INVALIDCALL 4
 
-typedef  struct {
-    int cksize;
-} MMCKINFO;
+#define DSBCAPS_PRIMARYBUFFER       0x00000001
+#define DSBCAPS_STATIC              0x00000002
+#define DSBCAPS_LOCHARDWARE         0x00000004
+#define DSBCAPS_LOCSOFTWARE         0x00000008
+#define DSBCAPS_CTRLFREQUENCY       0x00000020
+#define DSBCAPS_CTRLPAN             0x00000040
+#define DSBCAPS_CTRLVOLUME          0x00000080
+#define DSBCAPS_CTRLDEFAULT  DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY
+#define DSBCAPS_CTRLALL             0x000000E0  // All control capabilities
+#define DSBCAPS_STICKYFOCUS         0x00004000
+#define DSBCAPS_GETCURRENTPOSITION2 0x00010000  // More accurate play cursor under emulation
 
-typedef  struct {
-    int nSamplesPerSec;
-} WAVEFORMATEX;
+#define DSBCAPS_STATIC 0x00000002
 
-typedef  struct {
-    int nada;
-} MMIOINFO;
+#define DSBPLAY_LOOPING 1
 
-typedef  struct {
-    int nada;
-} DIRECTSOUND;
+#define WAVE_FORMAT_PCM     1
 
-typedef  struct {
-    int nada;
-} DIRECTSOUNDBUFFER;
+//https://msdn.microsoft.com/en-us/library/microsoft.directx_sdk.reference.waveformatex(v=vs.85).aspx
+typedef struct WAVEFORMATEX {
+    WORD wFormatTag;
+    WORD nChannels;
+    DWORD nSamplesPerSec;
+    DWORD nAvgBytesPerSec;
+    WORD nBlockAlign;
+    WORD wBitsPerSample;
+    WORD cbSize;
+} WAVEFORMATEX, *LPWAVEFORMATEX;
 
+// https://msdn.microsoft.com/en-us/library/microsoft.directx_sdk.reference.dsbufferdesc(v=vs.85).aspx
+typedef struct DSBUFFERDESC {
+    DWORD dwSize;
+    DWORD dwFlags;
+    DWORD dwBufferBytes;
+    DWORD dwReserved;
+    LPWAVEFORMATEX lpwfxFormat;
+    GUID guid3DAlgorithm;
+} DSBUFFERDESC,  *LPDSBUFFERDESC;
 
-typedef MMCKINFO * LPMMCKINFO;
+typedef const DSBUFFERDESC *LPCDSBUFFERDESC;
 
-typedef DIRECTSOUND * LPDIRECTSOUND;
+class IDirectSoundBuffer : public IUnknown {
+    // https://msdn.microsoft.com/en-us/library/mt708923(v=vs.85).aspx
+public:
+    HRESULT SetCurrentPosition(
+                               DWORD dwNewPosition
+                               ){return 0;};
+    HRESULT GetCurrentPosition(
+                               LPDWORD lpdwCurrentPlayCursor,
+                               LPDWORD lpdwCurrentWriteCursor
+                               ) {return 0;};
+    HRESULT SetVolume(
+                      LONG lVolume
+                      ){return 0;};
+    HRESULT Play(
+                 DWORD dwReserved1,
+                 DWORD dwReserved2,
+                 DWORD dwFlags
+                 ){return 0;};
+    HRESULT Stop(){return 0;};
+    HRESULT SetPan(
+                   LONG lPan
+                   ){return 0;};
+    HRESULT SetFrequency(
+                         DWORD dwFrequency
+                         ){return 0;};
+    HRESULT Lock(
+                 DWORD dwWriteCursor,
+                 DWORD dwWriteBytes,
+                 LPVOID lplpvAudioPtr1,
+                 LPDWORD lpdwAudioBytes1,
+                 LPVOID lplpvAudioPtr2,
+                 LPDWORD lpdwAudioBytes2,
+                 DWORD dwFlags
+                 ) {return 0;};
+    HRESULT Unlock(
+                   LPVOID lpvAudioPtr1,
+                   DWORD dwAudioBytes1,
+                   LPVOID lpvAudioPtr2,
+                   DWORD dwAudioBytes2
+                   ){return 0;};
+};
+typedef IDirectSoundBuffer *LPDIRECTSOUNDBUFFER;
+typedef LPDIRECTSOUNDBUFFER *LPLPDIRECTSOUNDBUFFER;
 
-typedef DIRECTSOUNDBUFFER * LPDIRECTSOUNDBUFFER;
+class IDirectSound  : public IUnknown {
+    // https://msdn.microsoft.com/en-us/library/mt708922(v=vs.85).aspx
+public:
+    HRESULT CreateSoundBuffer(
+                              LPCDSBUFFERDESC lpcDSBufferDesc,
+                              LPLPDIRECTSOUNDBUFFER lplpDirectSoundBuffer,
+                              IUnknown FAR* pUnkOuter
+                              ){return 0;};
+    HRESULT SetCooperativeLevel(
+                                HWND hwnd,
+                                DWORD dwLevel
+                                ){return 0;};
+};
+typedef IDirectSound *LPDIRECTSOUND;
 
 class Wave
 {
@@ -95,7 +170,9 @@ public:
 	// Size, in bytes, of the data member of the chunk. 
 	// The size of the data member does not include the 4-byte chunk identifier, 
 	//	the 4-byte chunk size, or the optional pad byte at the end of the data member.
+#ifdef _WIN32
 	DWORD GetCkSize() {return mmckInRIFF.cksize;}
+#endif
 	BOOL IsLooping() {return bLoopFile;}
 	BOOL IsPlaying() {return bPlaying;}
 	void SetLooping(BOOL bLoop) {bLoopFile = bLoop;}
@@ -113,21 +190,20 @@ private: // file I/O stuff
 	int CloseReadFile();
 
 private:
+#ifdef _WIN32
 	int CreateFile(char *, HMMIO *, WAVEFORMATEX *, MMCKINFO *, MMCKINFO *);
 	int StartDataWrite(HMMIO *, MMCKINFO *, MMIOINFO *);
 	int WriteFile(HMMIO, UINT, BYTE *, MMCKINFO *, UINT *, MMIOINFO *);
 	int CloseWriteFile(HMMIO *, MMCKINFO *, MMCKINFO *, MMIOINFO *, DWORD);
-
+    int SaveFile(char *, UINT, DWORD, WAVEFORMATEX *);
+    static int CopyUselessChunks(HMMIO *, MMCKINFO *, MMCKINFO *, HMMIO *,
+                                 MMCKINFO *, MMCKINFO *);
+    static BOOL riffCopyChunk(HMMIO hmmioSrc, HMMIO hmmioDst, const LPMMCKINFO lpck);
+#endif
 	int LoadFile(char *filename);
 	BOOL TransferDataToDirectSoundBuffer();
-	int SaveFile(char *, UINT, DWORD, WAVEFORMATEX *);
 
-	static int CopyUselessChunks(HMMIO *, MMCKINFO *, MMCKINFO *, HMMIO *,
-									MMCKINFO *, MMCKINFO *);
-	static BOOL riffCopyChunk(HMMIO hmmioSrc, HMMIO hmmioDst, const LPMMCKINFO lpck);
-
-  typedef unsigned int (__stdcall* Entry)(void*);
-
+    typedef void * (*Entry)(void *);
 private:
   static LPDIRECTSOUND  lpDS;
   static int			dbSfx;
@@ -137,9 +213,11 @@ private:
   static Wave			**ramWave;
 private:
     WAVEFORMATEX         *pwfx;             /* Wave Format data structure */
+#ifdef _WIN32
     HMMIO                hmmio;             /* MM I/O handle for the WAVE */
     MMCKINFO             mmck;              /* Multimedia RIFF chunk */
     MMCKINFO             mmckInRIFF;        /* Use in opening a WAVE file */
+#endif
     LPDIRECTSOUNDBUFFER  lpDSBStreamBuffer; /* Points to DirectSoundBuffer */
     DWORD                dwBufferSize;      /* Size of the entire buffer */
     DWORD                dwNextWriteOffset; /* Offset to next buffer segment */
@@ -154,7 +232,7 @@ private:
 	short				 deltaVolume;
 	short				 currentVolume;
 	short				 finalVolume;
-	unsigned			 thid;				/* NULL if thread is not active */
+	pthread_t			 thid;				/* NULL if thread is not active */
 	// used specifically for static wave files:
 	UINT				 cbSize;
 	BYTE				 *pbData;

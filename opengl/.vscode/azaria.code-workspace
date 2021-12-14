@@ -1,0 +1,34 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../Azaria"
+		},
+		{
+			"path": "../../Source/Blitters"
+		},
+		{
+			"path": "../../Source/dsWave"
+		},
+		{
+			"path": "../../Source/OneFile"
+		},
+		{
+			"path": "../../include"
+		},
+		{
+			"path": "../../Data"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"array": "cpp",
+			"string_view": "cpp",
+			"initializer_list": "cpp",
+			"utility": "cpp",
+			"random": "cpp"
+		}
+	}
+}

@@ -96,7 +96,7 @@ int SURROUND::Action(int etime, int flags)
 		{
 		  // Are we getting dizzy???
 		  dizziness += etime;
-		  if (dizziness > 20000) // this will take about 10 seconds
+		  if (dizziness > 200000) // this will take about 10 seconds
 		  {
 			WIZARD::Cast(SPELL_SPIN, TARGET_ME);
 			dizziness = 0;

@@ -20,16 +20,6 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#ifdef _MSC_VER // Windows
-#include <windows.h>
-#include <direct.h>
-#include <process.h>
-#else // Linux
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#endif /*_MSC_VER*/
-
 #include "maya.h"
 #include "controls.h"
 #include "viewMast.h"
@@ -44,27 +34,93 @@
 #include "netctrl.h"
 #include "display.h"
 
-char *provStrings(int position);
-BOOL provSelect(int item);
+#include <pthread.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include <limits.h>
 
-char *sesStrings(int position);
-BOOL sesSelect(int item);
+static const char *provStrings(int position);
+static BOOL provSelect(int item);
+
+static const char *sesStrings(int position);
+static BOOL sesSelect(int item);
 
 int CFGNET::lastProvider = 0;
 HANDLE CFGNET::Die;
 HANDLE CFGNET::Dead;
 
-#ifdef _MSC_VER // Windows
 //----------------------------------------------------------------------------
-char *provStrings(int position)
+const char *provStrings(int position)
 {
 	return netman.GetProviderDesc(position);
 }
 
 //----------------------------------------------------------------------------
-char *sesStrings(int position)
+const char *sesStrings(int position)
 {
 	return netman.GetSessionDesc(position);
+}
+
+#define LPSECURITY_ATTRIBUTES WORD
+#define RC_OBJECT_NOT_CREATED 0
+typedef struct
+{
+    pthread_mutex_t mutex;
+    pthread_cond_t      condition;
+    int         semCount;
+}sem_struct;
+
+HANDLE CloseSemaphore(HANDLE handle)
+{
+    sem_struct *token = (sem_struct *) handle;
+    pthread_mutex_destroy(&(token->mutex));
+    pthread_cond_destroy(&(token->condition));
+    free(token);
+    return 0;
+}
+HANDLE CreateSemaphore (LPSECURITY_ATTRIBUTES   lpSemaphoreAttributes,
+                        LONG            lInitialCount,
+                        LONG            lMaximunCount,
+                        const char *   lpName)
+{
+    int rc;
+    sem_struct *token;
+    token = (sem_struct *) malloc(sizeof(sem_struct));
+    rc = pthread_mutex_init(&(token->mutex), NULL);
+    if(rc)
+    {
+        free(token);
+        return RC_OBJECT_NOT_CREATED;
+    }
+    rc = pthread_cond_init(&(token->condition), NULL);
+    if(rc)
+    {
+        pthread_mutex_destroy( &(token->mutex) );
+        free(token);
+        return RC_OBJECT_NOT_CREATED;
+    }
+    token->semCount = 0;
+    return (void *)token;
+}
+BOOL WINAPI ReleaseSemaphore(HANDLE hSemaphore,
+                             LONG   lReleaseCount,
+                             LPLONG lpPreviousCount)
+{
+    return true;
+}
+int WaitForSingleObject(HANDLE handle, int timeInMs)
+{
+    struct timespec timeToWait;
+    struct timeval now;
+    int rt;
+    gettimeofday(&now,NULL);
+    timeToWait.tv_sec = now.tv_sec+5;
+    timeToWait.tv_nsec = (now.tv_usec+1000UL*timeInMs)*1000UL;
+    sem_struct *token = (sem_struct *) handle;
+    pthread_mutex_lock(&token->mutex);
+    rt = pthread_cond_timedwait(&(token->condition), &(token->mutex), &timeToWait);
+    pthread_mutex_unlock(&token->mutex);
+    return rt;
 }
 
 //----------------------------------------------------------------------------
@@ -79,7 +135,7 @@ void CFGNET::EnumThread(CFGNET *thing)
 	count = netman.EnumSessions();
 	// display.FlipToGdi(TRUE);
 
-	if (WAIT_OBJECT_0 == WaitForSingleObject(Die,1000))
+	if (0 == WaitForSingleObject(Die,1000))
 	  break;
 
 	thing->listbox->SetCount(count);
@@ -89,13 +145,15 @@ void CFGNET::EnumThread(CFGNET *thing)
   ReleaseSemaphore(Dead,1,0);
 }
 
+
+
 //----------------------------------------------------------------------------
 void CFGNET::OpenEnumThread()
 {
   Die = CreateSemaphore(NULL, 0, 1, NULL);
   Dead = CreateSemaphore(NULL, 0, 1, NULL);
 
-	_beginthreadex(NULL, 0, (Entry)EnumThread, this, 0, &thid);
+    pthread_create(&thid, NULL, (Entry)EnumThread, this);
 }
 
 //----------------------------------------------------------------------------
@@ -142,9 +200,10 @@ CFGVIEW(view_id)
 	  OpenEnumThread();
 	  break;
 	case IDV_CFGNEWSESS:
-	  char gamename[128];
-	  unsigned long len = 128;
-	  GetComputerName(gamename, &len);
+         //   char buffer[128];
+            const char *gamename = "gethostname";
+	  //size_t len = 128;
+            // TODO: gethostname(gamename, &len);
 
 	  control[0] = new EDITBOX(this, IDS_STD_EDITBOXM, 160, 50, LB_BORDER, LB_BORDER, gamename, 16);
 	  control[1] = new BUTTON(this, 1, 160, 250, IDS_BTN_OK, IDS_BTN_OK_HI);
@@ -164,8 +223,8 @@ CFGNET::~CFGNET()
 	lastProvider = listbox->GetIntValue();
 	break;
   case IDV_CFGSESS:
-	CloseHandle(Die);
-	CloseHandle(Dead);
+	CloseSemaphore(Die);
+	CloseSemaphore(Dead);
 	break;
   case IDV_CFGNEWSESS:
 	break;
@@ -279,4 +338,4 @@ void CFGNET::OnEvent(int control_id, int event_id)
   }
   return;
 }
-#endif
+

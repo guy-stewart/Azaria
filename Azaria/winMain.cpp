@@ -18,11 +18,10 @@
 ; 01/18/95  gas  Created.
 ; 
 ----------------------------------------------------------------------------*/
-#ifdef _WIN32
+#include "azaria.h"
 
-#include "ptypes.h"
+#include "includes.h"
 #include "stdapp.h"
-//#include <vfw.h>
 #include "dsWave.h"
 #include "music.h"
 
@@ -39,12 +38,54 @@
 #include "rcids.h"      // for MAYA_ICON
 #include "resource.h"
 
+#include <GL/freeglut.h>
+
+
 #define GAME_SX 640
 #define GAME_SY 480
 #define GAME_BPP 8
 
+#define WM_QUERYNEWPALETTE 1001
+#define  WM_DISPLAYCHANGE 19002
+#define  WM_CREATE 19003
+#define  WM_SETCURSOR 19004
+#define  WM_NCMOUSEMOVE 19005
+#define  WM_CAPTURECHANGED 19006
+#define  WM_MOUSEMOVE 19007
+#define  WM_LBUTTONDBLCLK 19008
+#define  WM_LBUTTONDOWN 19009
+#define  WM_LBUTTONUP 190010
+#define  WM_RBUTTONDBLCLK 190011
+#define  WM_RBUTTONDOWN 190012
+#define  WM_RBUTTONUP 190013
+#define  WM_SYSKEYDOWN 190014
+#define  WM_CHAR 190015
+#define  WM_KEYUP 190016
+#define  WM_KEYDOWN 190017
+#define  WM_PAINT    190018
+#define  WM_DESTROY  190019
+#define  WM_SYSKEYUP 190020
+
+#define WM_SIZE 100
+#define WM_MOVE 101
+#define WM_ACTIVATEAPP 201
+#define WM_PALETTECHANGED 300
+
+#define VK_RETURN 700100
+#define VK_F1  700101
+#define VK_F2  700102
+#define VK_F3  700103
+#define VK_F4  700104
+#define VK_F5  700105
+#define VK_F6  700106
+#define VK_F7  700107
+#define VK_F8  700108
+#define VK_F9  700109
+#define VK_F10 700110
+#define VK_F11 700111
+
 static HWND		hWndMain;
-SRECT			rcWindow;
+RECT			rcWindow;
 BOOL bWasIconic = FALSE;
 BOOL			bIsActive;
 BOOL			bPaused;
@@ -53,6 +94,35 @@ BOOL			bPostQuitMessage = FALSE;
 BOOL			bIsForeground;
 static SIZE		GameMode;   // display mode size
 static UINT		GameBPP;    // the bpp we want
+
+void InvalidateRect(HWND, int, int)
+{
+    assert(false);
+}
+HWND GetForegroundWindow()
+{
+    return hWndMain;
+}
+bool GetClientRect(HWND hWnd, RECT *rc)
+{
+    assert(false);
+    return true;
+}
+
+bool ClientToScreen(HWND hWnd, POINT *point)
+{
+    return true;
+}
+
+bool IsIconic(HWND hWnd)
+{
+    return false;
+}
+
+void ShowCursor(bool show)
+{
+    
+}
 
 /*
  * PauseGame()
@@ -76,6 +146,28 @@ static void UnPauseGame()
     }
 }
 
+#define MCIWNDM_NOTIFYMODE 1
+#define MCI_MODE_STOP      2
+#define MCIWNDF_SHOWALL    4
+#define MCIWNDF_NOTIFYMODE 8
+
+void MCIWndDestroy(HWND hMCIEnd)
+{
+}
+
+HWND MCIWndCreate(HWND hWnd, int unused, int mode, const char * avi)
+{
+    return 0;
+}
+
+LONG MCIWndPlay(HWND hMCIWnd)
+{
+    return 0;
+}
+void MCIWndSetZoom(HWND hMCIWnd, int zoom)
+{
+    
+}
 
 /*
  * MainWndProc
@@ -85,17 +177,16 @@ static void UnPauseGame()
 static long FAR PASCAL MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
 	static BOOL bCaptured = FALSE;
-    PAINTSTRUCT ps;
-    HDC         hdc;
 	POINT p;
-	p.x = LOWORD(lParam);
-	p.y = HIWORD(lParam);
+    // TODO:
+	p.x = LOWORD((uint64_t)lParam);
+    p.y = HIWORD((uint64_t)lParam); // TODO: HIWORD does not work with 64 bit types
 	static HWND hMCIWnd;
 
     switch( message )
     {
 	case MCIWNDM_NOTIFYMODE:
-	  switch (lParam) {
+	  switch ((uint64_t)lParam) {
 	  case MCI_MODE_STOP:
 		MCIWndDestroy(hMCIWnd);
 		bPlayingVideo = FALSE;
@@ -202,7 +293,7 @@ static long FAR PASCAL MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
 			display.AttachPalette();
         }
         break;
-
+            
     case WM_DISPLAYCHANGE:
 		// All backbuffers need repainting:
 		gameman.RestoreDisplay();
@@ -265,7 +356,7 @@ static long FAR PASCAL MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
 */
 
     case WM_SYSKEYDOWN:
-        switch( wParam )
+        switch( (long long)wParam )
         {
         // handle ALT+ENTER (fullscreen)
         case VK_RETURN:
@@ -285,15 +376,15 @@ static long FAR PASCAL MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
         break;
 
 	case WM_CHAR:
-	  userKeyPressed(wParam, FALSE);
+	  userKeyPressed((WORD)(size_t)wParam, FALSE);
 	  break;
 
 	case WM_KEYUP:
-		userKeyReleased(wParam, TRUE);
+		userKeyReleased((WORD)(size_t)wParam, TRUE);
 		break;
         
     case WM_KEYDOWN:
-		if (userKeyPressed(wParam, TRUE)) switch (wParam)
+		if (userKeyPressed((uint64_t)wParam, TRUE)) switch ((uint64_t)wParam)
 		{
 		case VK_F1:
 		  if (!bPlayingVideo)
@@ -302,7 +393,7 @@ static long FAR PASCAL MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
 			  MCIWNDF_SHOWALL|MCIWNDF_NOTIFYMODE, "f:\\funstuff\\videos\\goodtime.avi");
 			if (hMCIWnd)
 			{
-				LONG result = MCIWndPlay(hMCIWnd);
+				MCIWndPlay(hMCIWnd);
 				MCIWndSetZoom(hMCIWnd, 200);
   				bPlayingVideo = TRUE;
 			}
@@ -324,7 +415,7 @@ static long FAR PASCAL MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
 
         case VK_F4:
             // treat F4 like ALT+ENTER (fullscreen)
-            PostMessage(hWnd, WM_SYSKEYUP, VK_RETURN, 0);
+            // PostMessage(hWnd, WM_SYSKEYUP, VK_RETURN, 0);
             break;
 
         case VK_F5:
@@ -341,22 +432,22 @@ static long FAR PASCAL MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
         break;
 
     case WM_PAINT:
-        hdc = BeginPaint( hWnd, &ps );
+        //hdc = BeginPaint( hWnd, &ps );
         if (bPaused && !display.IsFullscreen())
         {
 			Msg("WM: Painting during paused game");
         }
-        EndPaint( hWnd, &ps );
+        //EndPaint( hWnd, &ps );
         return 1;
 
     case WM_DESTROY:
 		bIsActive = FALSE;
         hWndMain = NULL;
-        PostQuitMessage( 0 );
+        // PostQuitMessage( 0 );
         break;
     }
 
-    return DefWindowProc(hWnd, message, wParam, lParam);
+    return 0; //DefWindowProc(hWnd, message, wParam, lParam);
 } /* MainWndProc */
 
 /*
@@ -364,8 +455,9 @@ static long FAR PASCAL MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
  *
  * Do that Windows initialization stuff...
  */
-static BOOL initApplication( HANDLE hInstance, int nCmdShow )
+static BOOL initApplication( void )
 {
+    /*
     WNDCLASS    wc;
     BOOL        rc;
 
@@ -408,14 +500,14 @@ static BOOL initApplication( HANDLE hInstance, int nCmdShow )
 
     UpdateWindow( hWndMain );
     SetFocus( hWndMain );
+     */
 
     return TRUE;
-
 } /* initApplication */
 
 static int MissingFileMessage(int buttons)
 {
-  int rc;
+  int rc=0;
   char buff[MAX_PATH+128];
 
   sprintf(buff, 
@@ -426,7 +518,7 @@ static int MissingFileMessage(int buttons)
 	);
 
   Msg(buff);
-
+/*
   display.FlipToGdi(FALSE);
   rc = MessageBox(hWndMain, buff,"Missing File ...",buttons);
   display.FlipToGdi(TRUE);
@@ -434,18 +526,17 @@ static int MissingFileMessage(int buttons)
   missing_file_path1[0]=0;
   missing_file_path2[0]=0;
   missing_file_name[0]=0;
-
+*/
   return rc;
 }
 
 /*
  * WinMain
  */
-int PASCAL WinMain( HANDLE hInstance, HANDLE hPrevInstance, LPSTR lpCmdLine,
-                        int nCmdShow )
+int WinMain(const char * datapath)
 {
-    MSG                 msg;
-	int rc;
+    //MSG                 msg;
+	// int rc;
 
     GameMode.cx = GAME_SX;
     GameMode.cy = GAME_SY;
@@ -455,8 +546,9 @@ int PASCAL WinMain( HANDLE hInstance, HANDLE hPrevInstance, LPSTR lpCmdLine,
 	missing_file_path2[0]=0;
 	missing_file_name[0]=0;
 
+    gameman.InitPaths(datapath);
     // create window and other windows things
-    if( !initApplication(hInstance, nCmdShow) )
+    if( !initApplication() )
         return FALSE;
 
 	try
@@ -466,92 +558,89 @@ int PASCAL WinMain( HANDLE hInstance, HANDLE hPrevInstance, LPSTR lpCmdLine,
 		  return FALSE;
 
 	  Wave::DirectSoundCreate(NULL);
-	  Wave::SetCooperativeLevel( hWndMain,DSSCL_NORMAL );
-	  Wave::Load(TBL_WAVE_COUNT, WavePath, AltWavePath, waveRamFileNames);
+	  Wave::SetCooperativeLevel( hWndMain, 0 /*DSSCL_NORMAL*/ );
+        // TODO: Wave::Load(TBL_WAVE_COUNT, WavePath, AltWavePath, waveRamFileNames);
 
 	  // start up the Game Manager.
 	  if ( !gameman.Init() )
 		goto FileError;
 	}
-	catch (long e)
+	catch (int e)
 	{
 	  switch (e)
 	  {
 	  case ERROR_FILE_NOT_FOUND:
-		MissingFileMessage(MB_ICONSTOP|MB_OK);
+		MissingFileMessage(0);
 		break;
 	  }
 	  goto FileError;
 	}
+    
+    //NormalExit:
+    Msg("Normal Exit:");
 
-    while( 1 )
-    {
-        if (PeekMessage( &msg, NULL, 0, 0, PM_NOREMOVE))
-        {
-            if (!GetMessage( &msg, NULL, 0, 0))
-            {
-                break;
-            }
-            TranslateMessage(&msg); 
-            DispatchMessage(&msg);
-        }
-        else //if (bGameActive)
-        {
-		  POINT pos;
-		  RECT wr;
-		  GetCursorPos(&pos);
-		  GetWindowRect(hWndMain, &wr);
+    return 0; //msg.wParam;
+    
+FileError:
+    Msg("FileError Exit:");
+    display.Disable(TRUE);        // destroy DirectDraw object
+    netman.Close(FALSE);
+    ShowCursor(TRUE);
+    Wave::Release();
+    return 0; //msg.wParam;    return 0;
+}
 
-		  if (!PtInRect(&wr, pos))
-		  {
-			pos.x = -1;
-			pos.y = -1;
-			userMouseMove(pos);
-		  }
-
-			if (bPostQuitMessage)
-			{
-			  PostMessage(hWndMain, WM_CLOSE, 0, 0);
-			  bPostQuitMessage = FALSE;
-			}
-
-			try
-			{
-				if (((bIsActive && !bPaused) 
-				  || (!display.IsExclusive() && !IsIconic(hWndMain)))
-				  && !bPlayingVideo)
-				{
-					gameman.Tick(TRUE); // GDI is available
-				}
-				else
-				{
-					gameman.Tick(FALSE); // GDI is not available
-				}
-			}
-			catch (long e)
-			{
-			  switch (e)
-			  {
-			  case ERROR_FILE_NOT_FOUND:
-				rc = MissingFileMessage(MB_ICONEXCLAMATION|MB_RETRYCANCEL);
-				if (rc == IDCANCEL)
-					goto FileError;
-				break;
-			  default:
-				goto FileError;
-				break;
-			  }
-			}
-        }
-    }
+int WinLoop(void)
+ {
+     POINT pos;
+     RECT wr;
+     //GetCursorPos(&pos);
+     //GetWindowRect(hWndMain, &wr);
+     /*
+     if (!sPtInRect(&wr, pos))
+     {
+         pos.x = -1;
+         pos.y = -1;
+         userMouseMove(pos);
+     }
+     */
+     if (bPostQuitMessage)
+     {
+         //PostMessage(hWndMain, WM_CLOSE, 0, 0);
+         bPostQuitMessage = FALSE;
+     }
+     
+     try
+     {
+         if (((bIsActive && !bPaused)
+              || (!display.IsExclusive() && !IsIconic(hWndMain)))
+             && !bPlayingVideo)
+         {
+             gameman.Tick(TRUE); // GDI is available
+         }
+         else
+         {
+             gameman.Tick(FALSE); // GDI is not available
+         }
+     }
+     catch (int32_t e)
+     {
+         switch (e)
+         {
+             case ERROR_FILE_NOT_FOUND:
+                 //rc = MissingFileMessage(MB_ICONEXCLAMATION|MB_RETRYCANCEL);
+                 //if (rc == IDCANCEL)
+                 goto FileError;
+                 break;
+             default:
+                 goto FileError;
+                 break;
+         }
+     }
 
 //NormalExit:
-	Msg("Normal Exit:");
-	display.Disable(TRUE);        // destroy DirectDraw object
-	netman.Close(FALSE);
-	ShowCursor(TRUE);
-	Wave::Release();
-    return msg.wParam;
+    // printf(".");
+    return 0; //msg.wParam;
 
 FileError:
 	Msg("FileError Exit:");
@@ -559,9 +648,157 @@ FileError:
 	netman.Close(FALSE);
 	ShowCursor(TRUE);
 	Wave::Release();
-    return msg.wParam;
+    return 0; //msg.wParam;
 
 } /* WinMain */
 
-#endif
+void idle() {
+    WinLoop();
+    glutPostRedisplay();
 
+}
+
+GLfloat spin=0.0;
+ 
+void init(void)
+{
+    glClearColor(0.0,0.0,0.0,0.0);
+    //glShadeModel(GL_FLAT);
+}
+ 
+
+
+ // Return a random float in the range 0.0 to 1.0.
+
+
+void fn_display(void)
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+	display.SetAllDirty();
+
+    WinLoop();
+
+    glFlush();
+
+    glutSwapBuffers();
+}
+ 
+
+void reshape(int w, int h)
+{
+    Msg("reshape..");
+    glViewport(0,0,(GLsizei) w, (GLsizei) h);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluOrtho2D(0, 2*640, 0, 2*480);
+}
+ 
+void mouse(int button,int state,int x,int y)
+{
+    POINT p;
+
+    p.x = x/2;
+    p.y = y/2;
+
+    Msg("mouse(x:%d, y:%d)", x, y);
+	userMouseMove(p);
+    switch(button)
+    {
+    case GLUT_LEFT_BUTTON:
+        if (state==GLUT_DOWN) {
+		  userLButtonDown(p);
+        }
+        if (state==GLUT_UP) {
+		  userLButtonUp(p);
+        }
+        break;
+ 
+    case GLUT_RIGHT_BUTTON:
+        if (state==GLUT_DOWN) {
+		    userRButtonDown(p);
+        }
+        if (state==GLUT_UP) {
+		    userRButtonUp(p);
+        }
+    }
+
+}
+
+/*
+; The motion callback for a window is called when the mouse moves within
+; the window while one or more mouse buttons are pressed.
+*/
+void mouseMove(int x, int y) {
+    POINT p;
+
+    p.x = x/2;
+    p.y = y/2;
+	userMouseMove(p);
+    // printf("mouseMove(x:%d, y:%d)", x, y);
+    /*
+    	case WM_MOUSEMOVE:
+		if (!bCaptured)
+		{
+			bCaptured = TRUE;
+			ShowCursor(FALSE);
+		}
+		break;
+        */
+}
+
+/*
+; The passive motion callback for a window is called when the mouse moves
+; within the window while no mouse buttons are pressed
+*/
+void mousePassiveMove(int x, int y) {
+    POINT p;
+
+    p.x = x/2;
+    p.y = y/2;
+	userMouseMove(p);
+    // printf("mouseMove(x:%d, y:%d)", x, y);
+    /*
+    	case WM_MOUSEMOVE:
+		if (!bCaptured)
+		{
+			bCaptured = TRUE;
+			ShowCursor(FALSE);
+		}
+		break;
+        */
+}
+
+void mouseEntry(int state) {
+    printf("mouseEntry(state:%d)\n", state);
+}
+
+void keyboard(unsigned char key, int x, int y) {
+    Msg("keyboard..");
+
+    userKeyPressed(key, FALSE);
+	userKeyReleased(key, TRUE);
+}
+
+/*
+; https://www.opengl.org/resources/libraries/glut/spec3/spec3.html
+*/
+int main(int argc, char** argv) {
+    glutInit(&argc,argv);
+    glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA);
+    glutInitWindowSize(2*640,2*480);
+    glutInitWindowPosition(500,500);
+    glutCreateWindow("Azaria");
+    init();
+    glutDisplayFunc(fn_display);
+    glutReshapeFunc(reshape);
+    glutMouseFunc(mouse);
+    glutPassiveMotionFunc(mousePassiveMove);
+    glutMotionFunc(mouseMove);
+    glutEntryFunc(mouseEntry);
+
+    glutKeyboardFunc(keyboard);
+    glutIdleFunc(idle);
+
+    WinMain("/6tb/Home/Singularity/AzariaCD961112/data");
+	glutMainLoop();
+}

@@ -18,13 +18,14 @@
 
 /* PROTOTYPES */
 #include <assert.h>
-#include <windows.h>
-#include <windowsx.h>
-#include <mmsystem.h>
+//#include <windows.h>
+//#include <windowsx.h>
+//#include <mmsystem.h>
 
-#include <dsound.h>
-#include <dsWave.h>
+#include "../../include/dsWave.h"
 #include "dsConst.h"
+//#include "../../include/dsound.h"
+//#include "../../include/mmreg.h"
 
 /* ROUTINES */
 /* -------------------------------------------------------*/
@@ -41,6 +42,8 @@
 */
 int Wave::OpenFile(char *pszFileName)
 {
+    return 0;
+#ifdef _WIN32
         MMCKINFO        ckIn;           // chunk info. for general use.
         PCMWAVEFORMAT   pcmWaveFormat;  // Temp PCM structure to load in.       
         WORD            cbExtraAlloc;   // Extra bytes for waveformatex 
@@ -159,6 +162,7 @@ ERROR_READING_WAVE:
         
 TEMPCLEANUP:
         return(nError);
+#endif
 }
 
 /*      
@@ -171,6 +175,8 @@ chunk, such as 'fact', etc...
 
 int Wave::StartDataRead()
 {
+    return 0;
+#ifdef _WIN32
   int nError = 0;
   
   // Do a nice little seek...
@@ -184,6 +190,7 @@ int Wave::StartDataRead()
   nError = mmioDescend(hmmio, &mmck, &mmckInRIFF, MMIO_FINDCHUNK);
 
   return(nError);
+#endif
 }
 
 
@@ -203,6 +210,8 @@ int Wave::ReadFile(
                 
                 )
 {
+    return 0;
+#ifdef _WIN32
 
         MMIOINFO    mmioinfoIn;         // current status of <hmmioIn>
         int                     nError;
@@ -259,7 +268,7 @@ ERROR_CANNOT_READ:
 
 FINISHED_READING:
         return(nError);
-
+#endif
 }
 
 /*      This will close the wave file openned with WaveOpenFile.  
@@ -271,7 +280,8 @@ FINISHED_READING:
 */
 int Wave::CloseReadFile()
 {
-
+    return 0;
+#ifdef _WIN32
         if (pwfx != NULL)
                 {
                 GlobalFree(pwfx);
@@ -285,7 +295,7 @@ int Wave::CloseReadFile()
                 }
 
         return(0);
-
+#endif
 }
 
 /*      This routine will create a wave file for writing.  This will automatically overwrite any
@@ -297,6 +307,7 @@ int Wave::CloseReadFile()
         pckOutRIFF              - Pointer to be set with the RIFF info.
 
 */
+#ifdef _WIN32
 int Wave::CreateFile(
                         char *pszFileName,                              // (IN)
                         HMMIO *phmmioOut,                               // (OUT)
@@ -306,7 +317,6 @@ int Wave::CreateFile(
 
                         )
 {
-            
         int             nError;                         // Return value.
         DWORD           dwFactChunk;            // Contains the actual fact chunk. Garbage until WaveCloseWriteFile.
         MMCKINFO        ckOut1;
@@ -408,7 +418,6 @@ DONE_CREATE:
         return(nError);
 
 }
-
 //----------------------------------------------------------------------------
 /*      This routine has to be called before any data is written to the wave output file, via wavewritefile.  This
         sets up the data to write, and creates the data chunk.
@@ -738,7 +747,7 @@ rscc_Error:
     return (FALSE);
 } /* RIFFSupCopyChunk() */
 
-
+#endif
 
 //----------------------------------------------------------------------------
 /*      This routine loads a full wave file into memory.  Be careful, wave files can get
@@ -755,6 +764,8 @@ rscc_Error:
 */
 int Wave::LoadFile(char *pszFileName)
 {
+    return 0;
+#ifdef _WIN32
         int                             nError;
         UINT                            cbActualRead;
 
@@ -807,7 +818,7 @@ DONE_LOADING:
                 }
 
         return(nError);
-
+#endif
 }
 
 //----------------------------------------------------------------------------
@@ -817,7 +828,8 @@ DONE_LOADING:
         cSamples        -       # of samples to write, used to make the fact chunk. (if !PCM)
         pwfxDest        -       Pointer to waveformatex structure.
         pbData          -       Pointer to the data.
-*/      
+*/
+#ifdef _WIN32
 int Wave::SaveFile(
                                 char *pszFileName,                      // (IN)
                                 UINT cbSize,                            // (IN)
@@ -858,6 +870,7 @@ ERROR_SAVING:
         return(nError);         
 
 }
+#endif
 
 //----------------------------------------------------------------------------
 BOOL Wave::TransferDataToDirectSoundBuffer()
@@ -971,7 +984,7 @@ BOOL Wave::Load(int count, char *Path, char *AltPath, char *filenames[])
 
   for (i=0;i<count;i++)
   {
-	_makepath(m_path, NULL, Path, filenames[i], ".wav");
+	makepath(m_path, NULL, Path, filenames[i], ".wav");
 
 	pWave = new Wave;
 	if (!pWave->LoadFile(m_path)

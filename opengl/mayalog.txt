@@ -1,0 +1,12 @@
+Load gui
+Load namefill
+Load namefill
+Load inventor
+Load id
+Load you
+Load teletype
+Load spacemen
+Load compass
+Load spacebak
+Normal Exit:
+reshape..

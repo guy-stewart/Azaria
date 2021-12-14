@@ -1,5 +1,6 @@
 /*==========================================================================
  ***************************************************************************/
+#ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
@@ -8,9 +9,24 @@
 #include <dsound.h>
 #include <memory.h>
 #include <cderr.h>
+#endif
 
 #include "dsWave.h"
 #include "dsConst.h"
+
+HRESULT WINAPI DirectSoundCreate(LPGUID lpGuid,
+                                 LPDIRECTSOUND* ppDS,
+                                 LPUNKNOWN  pUnkOuter
+                                 );
+
+HRESULT WINAPI DirectSoundCreate(LPGUID lpGuid,
+                                 LPDIRECTSOUND* ppDS,
+                                 LPUNKNOWN  pUnkOuter
+                                 )
+{
+    printf("TODO: implement DirectSoundCreate()\n");
+    return 0;
+}
 
 LPDIRECTSOUND Wave::lpDS = NULL;
 int Wave::ThreadCount = 0;
@@ -34,7 +50,7 @@ Wave::~Wave()
 	Stop();
 	while (thid)
 	{
-	  Sleep(100);
+	  usleep(100);
 	}
   }
 }
@@ -57,6 +73,8 @@ void Wave::SetMusicVolume(int volume)
 //----------------------------------------------------------------------------
 void Wave::Play(WAVE_RAMID ram_id)
 {
+  if (ramWave == NULL) return;
+  
   if (ramWave[ram_id] && ramWave[ram_id]->lpDSBStreamBuffer)
   {
 	ramWave[ram_id]->lpDSBStreamBuffer->SetCurrentPosition(0 );
@@ -102,10 +120,7 @@ BOOL Wave::Play(char *filename, BOOL bPaused)
 	else
 		return FALSE;
 
-	_beginthreadex(NULL, 0, 
-	  (Entry)StartThread,
-	  this, 0, 
-	  &thid);
+    pthread_create(&thid, NULL, (Entry)StartThread, this);
 
 	if (!bPaused)
 	  Play(0);
@@ -143,7 +158,7 @@ void Wave::PlayThread()
 		lpDSBStreamBuffer->SetVolume(currentVolume);
 	}
 
-    Sleep(sleeptime);
+    usleep(sleeptime);
   }
 
   if (bPlaying)
@@ -346,7 +361,7 @@ int Wave::StreamBufferSetup( char * filename, BOOL bLoop )
 				{
 				bFoundEnd = TRUE;
 				dwBytesRemaining = (DWORD)uChkErr;
-				_fmemset( (lpWrite1+uChkErr),
+				memset( (lpWrite1+uChkErr),
 								pwfx->wBitsPerSample == 8 ? 128 : 0,
 								(dwLen1 - uChkErr));
 				}
@@ -424,7 +439,7 @@ void Wave::ResetWavePlayer( void )
                 // Cover ourselves by filling the rest of the buffer space
                 // with 8 or 16 bit silence, in case we can't stop the playback
                 // exactly on a block boundary and we run a bit into NULL data
-                _fmemset(( lpWrite1 + uChkErr),
+                memset(( lpWrite1 + uChkErr),
                                 pwfx->wBitsPerSample == 8 ? 128 : 0,
                                 dwLen1 - uChkErr);
                 }
@@ -454,7 +469,7 @@ HRESULT Wave::Release()
 	return DSERR_GENERIC;
 
   bThreadsMustDie = TRUE;
-  while (ThreadCount) Sleep(100);
+  while (ThreadCount) usleep(100);
 
   HRESULT hr = lpDS->Release();
   lpDS = NULL;

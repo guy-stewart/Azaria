@@ -25,20 +25,92 @@
 ;
 ----------------------------------------------------------------------------*/
 
-#include <XFile.h>
+#include "xfile.h"
 
 #include <assert.h>
 #include <memory.h>     // for memcpy, etc, for debugging.
 
-#include <one.h>
+#include "one.h"
 
-void WarnUser( LPSTR fmt, ... );
+
+void WarnUser( const LPSTR fmt, ... );
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+void dumpPaletteEntries(PALETTEENTRY *e)
+{
+	int i;
+
+	Msg("  Red Green  Blue");
+	for (i=0;i<256;i++)
+	{
+		Msg("%3d: %5d %5d %5d", i, e[i].peRed, e[i].peGreen, e[i].peBlue);
+	}		
+}
+
+void splitpath(const char *path, char * drive, char * dir, char * fname, char * ext)
+{
+    char *dirc, *basec, *bname, *dname;
+    dirc = strdup(path);
+    basec = strdup(path);
+    dname = dirname(dirc);
+    bname = basename(basec);
+    
+    if (drive)
+        drive[0] = '\0';
+    if (dir)
+        dir[0] = '\0';
+    if (fname)
+        fname[0] = '\0';
+    if (ext)
+        ext[0] = '\0';
+    if (dir)
+        strcpy(dir, dname);
+    char * dot = strrchr(bname, '.');
+
+    if (dot) {
+        *dot = '\0';
+        dot++;
+        if (ext)
+            strcpy(ext, dot);
+    }
+    if (fname)
+        strcpy(fname, bname);
+    
+    free(dirc);
+    free(basec);
+}
+
+void makepath(char* Path,const char* Drive,const char* Directory, const char* File,const char* Extension)
+{
+    if (Path) {
+        if (Drive)
+            while(*Drive != '\0')
+                *Path++ = *Drive++;
+        if (Directory) {
+            while(*Directory != '\0')
+                *Path++ = *Directory++;
+            *Path++ = '/';
+        }
+        if (File)
+            while(*File != '\0')
+                *Path++ = *File++;
+        if (Extension) {
+            *Path++ = '.';
+            while(*Extension != '\0')
+                *Path++ = *Extension++;
+        }
+        *Path = '\0';
+    }
+    return;
+}
+
+
+
 
 //----------------------------------------------------------------------------
 static void write_walk(
@@ -50,10 +122,10 @@ static void write_walk(
 )
 {
   if (!wlen) return;
-  _write(ofh, &x, sizeof(short)); 
-  _write(ofh, &y, sizeof(short));
-  _write(ofh, &wlen, sizeof(short));  // note hi-bit is clear.
-  _write(ofh, wi, (long) wlen);
+  write(ofh, &x, sizeof(short));
+  write(ofh, &y, sizeof(short));
+  write(ofh, &wlen, sizeof(short));  // note hi-bit is clear.
+  write(ofh, wi, (long) wlen);
 }
 
 //----------------------------------------------------------------------------
@@ -67,10 +139,22 @@ static void write_run(
 {
   if (!rlen) return;
   rlen |= 0x8000;                   // set the hi-bit, indicating a run.
-  _write(ofh, &x, sizeof(short));
-  _write(ofh, &y, sizeof(short));
-  _write(ofh, &rlen, sizeof(short));  // note hi-bit is set.
-  _write(ofh, &pel, sizeof(BYTE));
+  write(ofh, &x, sizeof(short));
+  write(ofh, &y, sizeof(short));
+  write(ofh, &rlen, sizeof(short));  // note hi-bit is set.
+  write(ofh, &pel, sizeof(BYTE));
+}
+
+//----------------------------------------------------------------------------
+void ONE::ConvertTo32bit() {
+
+  // allocate a 4x buffer to convert from 8 bit palette to 32bit RGBA
+
+  // copy buffer
+
+  // free the old buffer
+
+  // update the header
 }
 
 //----------------------------------------------------------------------------
@@ -306,6 +390,10 @@ static void oneUnCompress(
 BOOL ONE::UnCompress()
 {
   int i;
+
+  if (!IsCompressed()) {
+	  return TRUE;
+  }
   BYTE *old_bits = m_bits;
   int frame_size = m_hdr.pitch*(m_hdr.height/m_hdr.frames);
 
@@ -422,8 +510,9 @@ ONE::~ONE()
   if (m_bits && (m_hdr.m_flags & ONE_OWNS_BITS))
 	freeBits();
 
-  if (m_pal && (m_hdr.m_flags & ONE_OWNS_PAL))
-	free(m_pal);
+// TODO: why aren't we freeing the palette?
+ // if (m_pal && (m_hdr.m_flags & ONE_OWNS_PAL))
+//	free(m_pal);
 
   if (m_frame_offset)
 	free(m_frame_offset);
@@ -478,23 +567,23 @@ int oneWriteCustomBMP(const char *filename, unsigned char *bits, int width, int 
 
 //----------------------------------------------------------------------------
 /*
-*	There are majic numbers around the malloced block
+*	There are magic numbers around the malloced block
 *	so that I can test for blits that exceed the image bounds.
 */
 BOOL ONE::allocBits(int size)
 {
-	int *majic;
+	int *magic;
 
-	majic = (int*)malloc(size + sizeof(int)*2);
-	assert(majic);
+	magic = (int*)malloc(size + sizeof(int)*2);
+	assert(magic);
 
-	if (!majic)
+	if (!magic)
 		return FALSE;
 
-	m_bits = (unsigned char*)(majic + 1);
-	*majic = ONE_MAJIC;
-	majic = (int*)(m_bits+size);
-	*majic = ONE_MAJIC;
+	m_bits = (unsigned char*)(magic + 1);
+	*magic = ONE_MAGIC;
+	magic = (int*)(m_bits+size);
+	*magic = ONE_MAGIC;
 
 	// I will need to free the bits.
 	m_hdr.m_flags |= ONE_OWNS_BITS;
@@ -502,10 +591,11 @@ BOOL ONE::allocBits(int size)
 	return TRUE;
 }
 
+
 //----------------------------------------------------------------------------
 // pass in a previously allocated one structure w/o bits.
 // This routine will allocate memory for the bits.
-int ONE::Read(char *filename)
+int ONE::Read(const char *filename)
 {
 	XFile xfile(filename);
 	int rc = FALSE;
@@ -523,20 +613,27 @@ int ONE::Read(char *filename)
 	  if( xfile.Read( &m_hdr, sizeof(ONE_HEADER) ) == sizeof(ONE_HEADER) )
 	  {
 		// if compressed, then read the offsets array:
+		printf("width:%d, height:%d, pitch:%d\n", m_hdr.width, m_hdr.height, m_hdr.pitch);
 		if (IsCompressed())
 		{
-		  m_frame_offset = (long*)malloc(sizeof(long)*m_hdr.frames);
-		  xfile.Read(m_frame_offset, sizeof(long)*m_hdr.frames);
+		  printf("IsCompressed()\n");
+		  m_frame_offset = (int32_t*)malloc(sizeof(int32_t)*m_hdr.frames);
+		  xfile.Read(m_frame_offset, sizeof(int32_t)*m_hdr.frames);
 		}
 
 		/* alloc bits: */
 		if (allocBits(m_hdr.m_size))
 		{
-		  rc = (xfile.Read( m_bits, m_hdr.m_size ) == m_hdr.m_size);
+            size_t count = xfile.Read( m_bits, m_hdr.m_size);
+            rc = (count == m_hdr.m_size);
+            if (count != m_hdr.m_size) {
+                printf("xfile.Read(\"%s\", %d) --> %zu\n", xfile.GetPath(), m_hdr.m_size, count);
+            }
 		}
 	  }
 	  if (m_hdr.m_flags & CUSTOM_PALETTE)
 	  {
+		printf("CUSTOM_PALETTE\n");
 		m_pal = (PALETTEENTRY*)malloc(sizeof(PALETTEENTRY)*256);
 		if (m_pal)
 		{
@@ -546,8 +643,10 @@ int ONE::Read(char *filename)
 				free(m_pal);
 				m_pal = NULL;
 			}
-			else
+			else {
 				m_hdr.m_flags |= ONE_OWNS_PAL;
+				// dumpPaletteEntries(m_pal);
+			}
 		}
 	  }
 	}
@@ -556,17 +655,19 @@ int ONE::Read(char *filename)
 }
 
 //----------------------------------------------------------------------------
-int ONE::Read(char *path, char *filename)
+int ONE::Read(const char *path, const char *filename)
 {
    char filepath[_MAX_FNAME];
    char ext[_MAX_EXT];
 
+   printf("ONE::Read(\"%s\", \"%s\")\n", path, filename);
+    
    // switch on extension for various file types:
-   _splitpath( filename, NULL, NULL, NULL, ext );
+   splitpath( filename, NULL, NULL, NULL, ext );
 
 
    // build complete path the the file
-   _makepath( filepath, NULL, path, filename, NULL);
+   makepath( filepath, NULL, path, filename, NULL);
 
    return Read(filepath);
 }
@@ -591,14 +692,14 @@ void ONE::DoTheDirty()
 {
   // long for every 2^5 rows.  (32 bits per long). 
   // 1 extra long for the fiddly bits at the end.
-  m_DirtyRows = (long*)calloc(1+(m_hdr.height>>5), sizeof(long));
+  m_DirtyRows = (int32_t*)calloc(1+(m_hdr.height>>5), sizeof(int32_t));
 }
 
 //----------------------------------------------------------------------------
 void ONE::SetClean()
 {
   if (m_Dirty && m_DirtyRows)
-	memset(m_DirtyRows,0,(1+(m_hdr.height>>5)) * sizeof(long));
+	memset(m_DirtyRows,0,(1+(m_hdr.height>>5)) * sizeof(int32_t));
 
   m_Dirty = FALSE;
   m_AllDirty = FALSE;
@@ -614,7 +715,7 @@ void ONE::SetAllDirty()
 // Ensure that the image is not corrupt from blitting, etc
 BOOL ONE::Validate()
 {
-	int *majic;
+	int *magic;
 
 	// make sure there is something here:
 	if (!m_bits)
@@ -622,21 +723,21 @@ BOOL ONE::Validate()
 
 	// majic numbers around the bits for bounds checking. 
 	// check the bottom right:
-	majic = (int*)(m_bits + m_hdr.m_size);
-	if (*majic != ONE_MAJIC)
+	magic = (int*)(m_bits + m_hdr.m_size);
+	if (*magic != ONE_MAGIC)
 	{
 		WarnUser("Image file is corrupt");
-		assert(*majic == ONE_MAJIC);
+		assert(*magic == ONE_MAGIC);
 		return FALSE;
 	}
 
 	// check the top left:
-	majic = (int*)m_bits;
-	majic--;
-	if (*majic != ONE_MAJIC)
+	magic = (int*)m_bits;
+	magic--;
+	if (*magic != ONE_MAGIC)
 	{
 		WarnUser("Image file is corrupt");
-		assert(*majic == ONE_MAJIC);
+		assert(*magic == ONE_MAGIC);
 		return FALSE;
 	}
 
@@ -653,7 +754,7 @@ BOOL ONE::freeBits()
 	majic--; // Tis where'es freed at
 	*majic = ONE_EVIL; // Set to evil bits so we can recognize a freed image
 	free(majic);
-	m_bits == NULL;
+	m_bits = NULL;
 	m_hdr.m_flags = 0;
 	return TRUE;
 }
@@ -680,13 +781,13 @@ int maskRead(const char *path, const char *filename, MASK **vector)
 	char lpszPathName[_MAX_PATH];
 
 	// build complete path the the file
-	_makepath( lpszPathName, NULL, path, filename, NULL);
+	makepath( lpszPathName, NULL, path, filename, NULL);
 
 	/* Open file for input: */
-	if( (fh = _open( lpszPathName, _O_RDONLY )) != -1 )
+	if( (fh = open( lpszPathName, O_RDONLY )) != -1 )
 	{
 		/* Read in size of the mask */
-		if( _read( fh, &header, sizeof(MASK) ) == sizeof(MASK) )
+		if( read( fh, &header, sizeof(MASK) ) == sizeof(MASK) )
 		{
 			/* allocate memory for the mask */
 			*vector = (MASK*)malloc((header.length+1) * sizeof(MASK));
@@ -697,11 +798,11 @@ int maskRead(const char *path, const char *filename, MASK **vector)
 
 				/* Read the rest of the mask */
 				// ### For osme reason,  the masks are not the correct length according to header.length???
-				rc = _read( fh, *vector+1, sizeof(MASK)*header.length);
+				rc = read( fh, *vector+1, sizeof(MASK)*header.length);
 				rc = rc > 0;
 			}
 		}
-		_close( fh );
+		close( fh );
 	}
 
 	return rc;

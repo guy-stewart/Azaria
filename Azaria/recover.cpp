@@ -47,7 +47,7 @@ public:
 
 LOGGER logger;
 
-void WarnUser( LPSTR fmt, ... )
+void WarnUser( const LPSTR fmt, ... )
 {
     char buff[256];
 

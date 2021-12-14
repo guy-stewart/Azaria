@@ -21,13 +21,13 @@
 #define __PALETTE_INCLUDED__
 
 typedef struct {
-    DWORD           dwRiff;
-    DWORD           dwFileSize;
-    DWORD           dwPal;
-    DWORD           dwData;
-    DWORD           dwDataSize;
-    WORD            palVersion;
-    WORD            palNumEntries;
+    uint32_t        dwRiff;
+    uint32_t           dwFileSize;
+    uint32_t           dwPal;
+    uint32_t           dwData;
+    uint32_t           dwDataSize;
+    uint16_t            palVersion;
+    uint16_t            palNumEntries;
     PALETTEENTRY    ape[256];
 } PALETTE;
 

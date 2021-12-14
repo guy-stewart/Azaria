@@ -70,7 +70,7 @@ CFGVIEW(view_id)
 void CFGGAME::OnEvent(int control_id, int event_id)
 {
   char path[_MAX_PATH];
-  char *name;
+  const char *name;
 
   switch (view_id)
   {

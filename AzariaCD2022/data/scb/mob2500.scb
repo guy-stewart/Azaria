@@ -1,0 +1,305 @@
+/*----------------------------------------------------------------------------
+; Copyright (C) 1997 Walter Bennett Advanced Technologies.  
+;
+; All Rights Reserved.  The source  code contained  in this  file is the 
+; confidential property of Walter Bennett Advanced Technologies. No part
+; of  this document  may be reproduced  or transmitted in any form or by
+; any means,  electronic  or  mechanical,  for any purpose,  without the 
+; express  written  permission of  Walter Bennett Advanced Technologies.
+;
+; File:       meflin.txt
+;
+; Description:
+;	Describes objects and object classes.
+;
+;
+; HISTORY
+;
+;   Date    Who  Comment
+; --------  ---  -------------------------------------------------------------
+; 03/27/97  guy  Created.
+; 
+----------------------------------------------------------------------------*/
+
+// Some handy color definitions:
+// 	    Color    index
+//		-----    -----
+
+#define BLACK	  0
+#define RED		  249
+#define BLUE	  252
+#define TEAL_1	  57
+#define TEAL_2	  58
+#define TEAL_3	  59
+#define TEAL_4	  60
+#define YELLOW	  114
+#define GOLD	  64
+
+#define WHITE	  255
+#define GREEN	  85
+
+//------------------------------------
+// Available fonts:
+
+#define IDS_FONTENG				0x00a0
+#define IDS_FONTPAR				0x00a1
+#define IDS_FONTVILL			0x00a2
+#define IDS_FONTCITY			0x00a3
+
+#define IDS_FONTENG_BIG			0x00a4
+#define IDS_FONTPAR_BIG			0x00a5
+#define IDS_FONTVILL_BIG		0x00a6
+#define IDS_FONTCITY_BIG		0x00a7
+
+#define IDS_FONTTNR12			0x00a8
+#define IDS_FONTTNR14			0x00a9
+#define IDS_FONTTNR16			0x00aa
+#define IDS_FONTTNR18			0x00ab
+
+#define IDS_FONTTNB12			0x00ac
+#define IDS_FONTTNB14			0x00ad
+#define IDS_FONTTNB16			0x00ae
+#define IDS_FONTTNB18			0x00af
+
+#define OFF -1
+
+
+[COMMON] // Text displayed for every object or class
+  FONT IDS_FONTTNB16
+  SETY 200
+  SETX 480
+  COLOR BLUE
+  SHADOW OFF
+    ? Search_Item
+
+  // set default font for everyone
+  COLOR GOLD
+  SHADOW BLACK
+  FONT IDS_FONTTNB18
+  LINE 3 CENTER
+
+[NEELP]
+
+if (vm.s25_TOOR.bparm EQ 10)
+{
+  IF (VM.SOD_SPELL.WOBJECT EQ IDD_AMULET1)	//object satisfies
+  {
+    if (vm.S33_LEVER.bstate GTE 70) // THE CAVE IS OPEN
+    {
+	"Toor has this piece of wisdom to offer you:"
+	""
+	"The Ancients entombed their knowledge with the hopes"
+	"that someday you might uncover the technology to release"
+	"the pieces of enlightenment from walls of ignorance."
+    }
+
+
+    if  (vm.S33_LEVER.bstate LT 70) // The cave is shut
+    {
+	"Toor has this piece of wisdom to offer you:"
+	""
+	"Endevour to loosen the stones of ignorance about you."
+
+    }
+
+    PLAY "mSm1s"	//satisfied
+
+    vm.S25_TOOR.bParm = 11
+    
+    vm.SOD_ID.wParm = 120 
+    SIGNAL SOD_ID SIG_MEFLIN
+
+	vm.S1e_bin01.wObject = IDD_GVIAL
+	signal s1e_bin01 sig_open	
+
+	vm.S1e_bin02.wObject = IDD_GVIAL
+	signal s1e_bin02 sig_open	
+
+    exit
+  }	
+}
+
+
+if (vm.s25_TOOR.bparm EQ 12)
+{
+    IF (VM.SOD_SPELL.WOBJECT EQ IDD_CHALI)	//object satisfies CITYPLANT
+     {
+	"TOOR is pleased by your efforts."
+	"The chalice will bring new life to"
+	"The Ritual of Gopa."
+	 	
+       PLAY "MSM2S"	//satisfied
+       vm.SOD_ID.wParm = 130 
+       SIGNAL SOD_ID SIG_MEFLIN
+
+	vm.S1e_bin01.wObject = IDD_ENCHANT
+	signal s1e_bin01 sig_open	
+
+	vm.S1e_bin02.wObject = IDD_PROTECT
+	signal s1e_bin02 sig_open	
+
+	vm.S1e_bin03.wObject = IDD_HOLDING
+	signal s1e_bin03 sig_open	
+
+       vm.S25_TOOR.bParm = 20	
+       exit	
+     }	
+}
+
+if (vm.s25_TOOR.bparm EQ 21)
+{
+    IF (VM.SOD_SPELL.WOBJECT EQ IDD_GOPAB)   //object satisfies
+     {
+	
+	"Toor is most pleased with the Blue Gopa Berry!"
+ 	
+       PLAY "Msm3s"	//satisfied
+       vm.SOD_ID.wParm = 132 
+       SIGNAL SOD_ID SIG_MEFLIN
+
+	vm.S1e_bin01.wObject = IDD_GVIAL
+	signal s1e_bin01 sig_open	
+
+	vm.S1e_bin02.wObject = IDD_GVIAL
+	signal s1e_bin02 sig_open	
+
+	vm.S1e_bin03.wObject = IDD_GVIAL
+	signal s1e_bin03 sig_open	
+	
+       vm.S25_TOOR.bParm = 0	
+       exit	
+     }	
+}
+
+
+//---------GENERIC ITEMS-----------------------------------
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_FISH)	
+     {
+	"Toor is most pleased with the fish."
+	"He offers you something in return."
+
+	vm.S1e_bin02.wObject = IDD_BAIT3
+	signal s1e_bin02 sig_open	
+
+	PLAY "MSVFISH"
+	vm.SOD_ID.wParm = 137
+    	SIGNAL SOD_ID SIG_MEFLIN
+     }
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_BOMB)	
+     
+     {
+	"Toor becomes very nervous around explosives."
+
+	vm.S1e_bin02.wObject = IDD_HOLDING
+	signal s1e_bin02 sig_open	
+
+	PLAY "MsVBOMB"
+	vm.SOD_ID.wParm = 140 
+   	SIGNAL SOD_ID SIG_MEFLIN
+
+     }
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_SPELL)	
+     
+     {
+	"Toor thanks you for the spell"
+	"and offers you items in return"
+
+	vm.S1e_bin02.wObject = IDD_GVIAL
+	signal s1e_bin02 sig_open	
+	
+	PLAY "Msvspell"
+	vm.SOD_ID.wParm = 123
+    	SIGNAL SOD_ID SIG_MEFLIN
+
+     }
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_PLANT)	
+     
+     {
+	"Toor still offers you something"
+	"even though he has many plants."
+
+	vm.S1e_bin02.wObject = IDD_BAIT5
+	signal s1e_bin02 sig_open	
+	
+	
+	PLAY "msvlots"
+	vm.SOD_ID.wParm = 123
+    	SIGNAL SOD_ID SIG_MEFLIN
+
+     }
+
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_BAIT)	
+   {
+        "Toor thanks you for the bait and offers you"
+        "a small token of his appreciation"	
+
+	vm.S1e_bin02.wObject = IDD_FISH6
+	signal s1e_bin02 sig_open	
+
+
+        PLAY "msvbait"
+        vm.SOD_ID.wParm = 112 
+        SIGNAL SOD_ID SIG_MEFLIN
+
+   }
+
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_GOPA)	
+     
+     {
+	"Toor thanks you for the gopa berry and offers you"
+	"a small token of his appreciation"	
+
+	vm.S1e_bin02.wObject = IDD_alarm
+	signal s1e_bin02 sig_open	
+
+	
+	PLAY "msvgood"
+	vm.SOD_ID.wParm = 133
+    	SIGNAL SOD_ID SIG_MEFLIN
+
+     }
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_MAGIC)	
+     
+     {
+	"Toor thanks you for the magical item and offers you"
+	"a small token of his appreciation"	
+
+	vm.S1e_bin02.wObject = IDD_GVIAL
+	signal s1e_bin02 sig_open	
+
+	
+
+	PLAY "msvmagc"
+	vm.SOD_ID.wParm = 134
+    	SIGNAL SOD_ID SIG_MEFLIN
+
+     }
+
+
+[TOOR]
+	"I am TOOR"
+
+[RATHE]
+	"I am RATHE"
+
+[THAOR]
+	"I am THAOR"
+
+[EYTH]
+	"I am EYTH"
+
+[NROC]
+	"I am NROC"
+
+[PERST]
+	"I am PERST"
+
+/* End Of File */
+

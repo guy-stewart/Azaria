@@ -21,11 +21,12 @@
 ----------------------------------------------------------------------------*/
 #include "ptypes.h"
 #include "xfile.h"
+#include <cstring>
 
 class FBLT_DSCR;
 
 // majic numbers are used to test for out-of-bounds writes to images.
-#define ONE_MAJIC	0xA55A
+#define ONE_MAGIC	0xA55A
 #define ONE_EVIL	0xCEFA
 
 // The one destructor will only attempt to free the bits or pal
@@ -39,9 +40,9 @@ class FBLT_DSCR;
 // DO NOT CHANGE HEADER DATA ELEMENTS. FIXED FILE I/O USED.
 typedef struct {
 public:
-	long pitch;
-	long width;
-	long height;
+	int32_t pitch;
+	int32_t width;
+	int32_t height;
 public:
 	unsigned char version;		// Read/Written to/from file
 	unsigned char m_flags;		// Private flags for use by ONE methods
@@ -69,10 +70,10 @@ public:
 	PALETTEENTRY *m_pal;
 	unsigned char *m_bits;
 private:
-	long *m_frame_offset;	// array of offsets into an animation sequence.
+	int32_t *m_frame_offset;	// array of offsets into an animation sequence.
 	BOOL m_AllDirty;		// the entire image is dirty.
 	BOOL m_Dirty;			// Just specific rows are dirty.
-	long *m_DirtyRows;		// bitwise list of dirty rows.
+	int32_t *m_DirtyRows;		// bitwise list of dirty rows.
 
 public: // constructors, destructors.
 	void INIT() {
@@ -100,9 +101,9 @@ public:
 public:
 	inline unsigned char * getBits() { return m_bits;}
 	inline unsigned int getSize() { return m_hdr.m_size;}
-	inline long GetWidth() {return m_hdr.width;}
-	inline long GetPitch() {return m_hdr.pitch;}
-	inline long GetHeight() {return m_hdr.height;}
+	inline int32_t GetWidth() {return m_hdr.width;}
+	inline int32_t GetPitch() {return m_hdr.pitch;}
+	inline int32_t GetHeight() {return m_hdr.height;}
 	inline BYTE GetFrames() {return m_hdr.frames;}
 	inline BYTE GetFP10S() {return (m_hdr.fp10s)?m_hdr.fp10s:100;}
 
@@ -115,6 +116,7 @@ public:
 	BOOL IsCompressed() {return m_hdr.m_flags & ONE_IS_COMPRESSED;}
 	BOOL UnCompress();
     void Compress(XFile *xfile);
+	void ConvertTo32bit();
 
 	void DoTheDirty();
 	void SetClean();

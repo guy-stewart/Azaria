@@ -41,22 +41,22 @@ public:
 
 public: // interface
 	DWORD GetMessageCount(DPID pid);
-	DWORD Receive(DPID *from, DPID *to, char *msg, int max_len);
-	HRESULT Send(char *msg, DPID from, DPID to, DWORD msg_len, BOOL bGuaranteed);
+	DWORD Receive(DPID *from, DPID *to, const char *msg, int max_len);
+	HRESULT Send(const char *msg, DPID from, DPID to, DWORD msg_len, BOOL bGuaranteed);
 
 	HRESULT CreatePlayer(char *lpFriendlyName, char *lpFormalName);
 	HRESULT DestroyPlayer(DPID pid);
 	HRESULT EnableNewPlayers(BOOL enable);
 	HRESULT	EnumPlayers();
 	HRESULT GetPlayerName(DPID pid,
-						 char *friendly, 
+						 char *friendly,
 						 DWORD friendly_len, 
 						 char *formal,
 						 DWORD formal_len);
     HRESULT SetPlayerName(
 						DPID pidID,
-						char *lpPlayerFriendlyName,
-						char *lpPlayerFormalName);
+						const char *lpPlayerFriendlyName,
+						const char *lpPlayerFormalName);
 
 	static void LostInterest() {user_lost_interest = TRUE;} // lost interest in sessions enum
 	int EnumSessions();
@@ -69,9 +69,9 @@ public: // interface
 	void Release();
 	int Enumerate(); // return number of service providers in enumeration.
 	HRESULT Create(int sp_index);
-	char *GetProviderDesc(int index);
+	const char *GetProviderDesc(int index);
 
-	char *error(int code, BOOL bNice);
+	const char *error(int code, BOOL bNice);
 
 private:
 	void SystemMessage(DPMSG_GENERIC *msg);

@@ -31,10 +31,10 @@
 #include "machterp.h"
 #include "machines.h"
 
-#include "data/database/tbl_wave.h"
-#include "data/database/idents.h"
-#include "data/database/idv.h"
-#include "data/database/ids.h"
+#include "Data/Database/tbl_wave.h"
+#include "Data/Database/Idents.h"
+#include "Data/Database/idv.h"
+#include "Data/Database/Ids.h"
 
 //----------------------------------------------------------------------------
 #define SYNC_FOULWIND		0x0000

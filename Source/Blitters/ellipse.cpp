@@ -19,95 +19,15 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#include <StdApp.h>
-#include <One.h>
-#include <fblt.h>
+#include "../../include/stdapp.h"
+#include "../../include/one.h"
+#include "../../include/fblt.h"
+
 #include <math.h>
 
 //----------------------------------------------------------------------------
 #if 0
-void FBLT_DSCR::BltPortal(
-			ONE *oneDest,
-			ONE *oneSrc) // uses src_x, src_y
-{
-	int i, x, y, dest_y, src_y;
-	int src_x;
-    unsigned char * bDest;
-	unsigned char * bSrc;
-	int length, wrap;
-	MASK *mask = fbd->m_mask;
-	int dst_pitch = oneDest->GetPitch();
-	int src_pitch = oneSrc->GetPitch();
-	int dst_height = oneDest->GetHeight();
-	int src_height = oneSrc->GetHeight();
-	int dst_width = oneDest->GetWidth();
 
-	bDest = oneDest->getBits()
-		 + fbd->m_dst_x
-		 + (fbd->m_dst_y * dst_pitch);  // offset +/- vertically
-
-	// set the source x in case the blit is offset:
-	if (fbd->isSprite())
-		src_x = fbd->m_src_x;
-	else
-	{
-		src_x = fbd->m_src_x;
-		// line up the source with the bounding rectangle, don't over-wrap!
-		src_x -= fbd->m_brect.left;
-		if (src_x > src_pitch)
-				src_x -= src_pitch;
-	}
-
-	bSrc = oneSrc->getBits()
-		 + src_x        // the source can be offset +/- horizontally
-		 + (fbd->m_src_y * src_pitch);  // offset +/- vertically
-
-	for (i=1; i<=mask[0].length; i++)
-	{
-		length = mask[i].length;
-		x = mask[i].x;
-		y = mask[i].y;
-
-		dest_y = y * dst_pitch;
-
-		// clip to bottom of destination
-		if (y >= dst_height - fbd->m_dst_y)
-			break;
-
-		// clip to right side of destination
-		if ((fbd->m_dst_x + x + length) >= dst_width)
-		{
-			length = dst_width - (fbd->m_dst_x + x);
-			if (length <=0)
-				continue;
-		}
-
-		if (fbd->isSprite())
-		{
-			// use standard positioning:
-			src_y = y * src_pitch;
-		}
-		else
-		{
-			// compensate for portal offset into screen:
-			src_y = (y-mask[1].y) * src_pitch;
-		}
-
-		/* the source is wrapping ... */
-		if (x > (src_pitch - src_x))
-		{
-			aligned_memcpy(bDest+dest_y+x, bSrc+src_y+x-src_pitch, length);
-		}
-		else if ((x + length) > (src_pitch - src_x))
-		{
-			wrap = (src_pitch - src_x) - x;
-			aligned_memcpy(bDest+dest_y+x, bSrc+src_y+x, wrap);
-			aligned_memcpy(bDest+dest_y+x+wrap, bSrc+src_y+x+wrap-src_pitch, length-wrap);
-		}
-		else
-			aligned_memcpy(bDest+dest_y+x, bSrc+src_y+x, length);
-	}
-}
 #else
 //----------------------------------------------------------------------------
 static void fbltPortal(
@@ -312,12 +232,14 @@ void FBLT_DSCR::Blt(ONE *oneDst, ONE *oneSrc)
 			}
 			break;
 		case BLT_FLIPPED:
+			oneSrc->UnCompress();
 			if (oneSrc->IsCompressed())
 				BltCompressedFlip(oneDst, oneSrc);
 			else
 				BltFlip(oneDst, oneSrc);
 			break;
 		case BLT_PORTAL:
+			// oneSrc->UnCompress();
 			if (oneSrc->IsCompressed())
 				BltCompressed(oneDst, oneSrc);
 			else
@@ -326,7 +248,8 @@ void FBLT_DSCR::Blt(ONE *oneDst, ONE *oneSrc)
 		case BLT_RECTFLIP:
 		case BLT_RECT:
 		default:
-  			if (oneSrc->IsCompressed())
+			oneSrc->UnCompress();
+			if (oneSrc->IsCompressed())
 			  BltCompressed(oneDst, oneSrc);
 			else
 			  BltRectangle(oneDst, oneSrc);
@@ -350,8 +273,6 @@ HRESULT DDoneBlt(RECT *rect, IDirectDrawSurface *pdds, ONE *oneSrc, FBLT_DSCR *f
     if (oneSrc == NULL || pdds == NULL)
         return E_FAIL;
 
-    //
-    // get size of surface.
     ddsd.dwSize = sizeof(ddsd);
     ddsd.dwFlags = DDSD_HEIGHT | DDSD_WIDTH;
     ddrval = pdds->GetSurfaceDesc(&ddsd);

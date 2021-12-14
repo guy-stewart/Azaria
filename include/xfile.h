@@ -21,6 +21,7 @@
 #ifndef __XFILE_INCLUDED__
 #define __XFILE_INCLUDED__
 
+#include "../opensource/fcaseopen.h"
 #include "ptypes.h"
 #include <fcntl.h>
 #include <sys/types.h>
@@ -30,25 +31,13 @@
 //#include <io.h>
 #include <stdio.h>
 //#include <wtypes.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include "stdapp.h"
 #include <strings.h>
 #include <libgen.h>
+#include <cstring>
 
-void splitpath(const char *path, char * drive, char * dir, char * fname, char * ext)
-{
-    char *dirc, *basec, *bname, *dname;
-    dirc = strdup(path);
-    basec = strdup(path);
-    dname = dirname(dirc);
-    bname = basename(basec);
-}
-void makepath(char *path, const char * drive, const char * dir, const char * fname, const char * ext)
-{
-}
-
+void splitpath(const char *path, char * drive, char * dir, char * fname, char * ext);
+void makepath(char *path, const char * drive, const char * dir, const char * fname, const char * ext);
 
 // Kind of like CFile
 class XFile {
@@ -98,7 +87,7 @@ public:
 	~XFile() {if (m_fh >=0) {close(m_fh);}}
 	BOOL Open(const char *path, UINT nOpenFlags, int pmode = S_IREAD|S_IWRITE )
 	{
-		m_fh = open(path, nOpenFlags, pmode);
+		m_fh = caseopen(path, nOpenFlags, pmode);
 
 		if (m_fh != -1)
 		{
@@ -109,7 +98,7 @@ public:
 
 	BOOL Open(UINT nOpenFlags, int pmode = S_IREAD|S_IWRITE )
 	{
-		m_fh = open(m_path, nOpenFlags, pmode);
+		m_fh = caseopen(m_path, nOpenFlags, pmode);
 
 		if (m_fh != -1)
 		{
@@ -151,15 +140,15 @@ public:
 
 	void SetPath(const char *path)
 	{strcpy(m_path, path);}
+    
+    const char * GetPath()
+    {return m_path;}
 
 	void SetExtension(const char *ext)
 	{
 		char drive[_MAX_DRIVE];
 		char dir[_MAX_DIR];
 		char fname[_MAX_FNAME];
-	 
-        // TODO: broken code here
-        assert(false);
 		splitpath(m_path, drive, dir, fname, NULL);
 		makepath(m_path, drive, dir, fname, ext);
 	}

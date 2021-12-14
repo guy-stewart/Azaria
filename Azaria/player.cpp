@@ -442,7 +442,7 @@ void PLAYER::SetPos(POINT p)
 }
 
 //----------------------------------------------------------------------------
-void PLAYER::SetName(char *name)
+void PLAYER::SetName(const char *name)
 {
 	strncpy(friendly_name, name, MAX_FRIENDLY_NAME);
 	friendly_name[MAX_FRIENDLY_NAME-1] = 0;
@@ -518,7 +518,7 @@ void LOCAL_PLAYER::SetPos(POINT pos)
 }
 
 //----------------------------------------------------------------------------
-void LOCAL_PLAYER::SetName(char *name)
+void LOCAL_PLAYER::SetName(const char *name)
 {
   PLAYER::SetName(name);
   netman.SetPlayerName(m_pid, name, name);

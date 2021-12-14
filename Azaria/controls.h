@@ -70,7 +70,7 @@ public:
     virtual BOOL PtInRect(POINT p);
 
   char *GetStrValue() {return StrVal;}
-  void  SetStrValue(char *newStr);
+  void  SetStrValue(const char *newStr);
   int   GetIntValue() {return *IntVal;}
 
   int GetWidth() {return rect.right - rect.left;}
@@ -78,14 +78,14 @@ public:
 
 //----------------------------------------------------------------------------
 class LISTBOX : public CONTROL {
-  typedef char *(*STRVAL)(int position);
+  typedef const char *(*STRVAL)(int position);
 public:
     LISTBOX(CFGVIEW *view, 
 					WORD ids, 
 					int x, int y,				// location of control within the view
 					int xo, int yo,				// offset of text into the contol image
 					int xCount, 
-                    STRVAL const xStrVal);
+                    STRVAL xStrVal);
   ~LISTBOX();
 private:
   int left, top;
@@ -166,7 +166,7 @@ public:
 					WORD ids, 
 					int x, int y,				// location of control within the view
 					int xo, int yo,				// offset of text into the contol image
-					char *intial_value, 
+					const char *intial_value,
 					int max_len);
 
     ~EDITBOX();

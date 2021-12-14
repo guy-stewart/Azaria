@@ -22,18 +22,17 @@
 #define __GAMEMAN_INCLUDED__
 
 
-#define __ViewsPath		"Data\\Ones\\Views"
-#define __ObjectsPath	"Data\\Ones\\Objects"
-#define __PalettesPath	"Data\\Palettes"
-#define __MasksPath		"Data\\Masks"
-#define __WavePath		"Data\\Sounds\\Wave"
-#define __MidiPath		"Data\\Sounds\\Midi"
+#define __ViewsPath		"/ones/views"
+#define __ObjectsPath	"/ones/objects"
+#define __PalettesPath	"/palettes"
+#define __MasksPath		"/masks"
+#define __WavePath		"/sounds/wave"
+#define __MidiPath		"/sounds/midi"
 
 #define MAX_GAME_NAME 80
 
 // Game Manager.
 class Game {
-  static char m_InstallDir[_MAX_PATH];
   static DPID c_owner;
   static int musicVolume;
   static int sfxVolume;
@@ -47,6 +46,7 @@ private:
   static void  LoadLRU();
 
 public: // interface
+    void InitPaths(const char * datapath);
 	BOOL Init();		// Called once, Loads all the initial views.
 	void Cleanup();		// Called before exit.
 	void Tick(BOOL display_available);	// called by main program loop.
@@ -91,11 +91,11 @@ public: // interface
 	static int GetSfxVolume() {return sfxVolume;}
 	static int GetMusicVolume() {return musicVolume;}
 
-	static BOOL SetGameName(char *name);
+	static BOOL SetGameName(const char *name);
 	static char* GetGameName();
 
-	static BOOL Save(char *name);
-	static BOOL Load(char *name);
+	static BOOL Save(const char *name);
+	static BOOL Load(const char *name);
 	static BOOL New();
 };
 

@@ -43,7 +43,7 @@ public:
     virtual WORD QueryCursor(SRECT srect);
 
 	void SlewTo(WORD x, WORD y);
-	void SlewRel(int x, int y);
+	void SlewRel(long x, long y);
 };
 
 #endif // __SCROLLVIEW_INCLUDED__

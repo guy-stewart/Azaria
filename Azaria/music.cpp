@@ -7,7 +7,6 @@
 #include "music.h"
 
 static Wave waveBackground[BACKGROUND_MUSIC_COUNT];
-static int waveCurrent = 0;
 
 WORD c_current = 0;
 

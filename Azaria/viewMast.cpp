@@ -33,7 +33,7 @@
 
 #include "Data/Database/Ids.h"
 
-#define DEBUG_VIEW FALSE
+// #define DEBUG_VIEW TRUE
 
 #if DEBUG_VIEW
 	static ONE oneDebug(640,480);
@@ -331,6 +331,7 @@ VIEW::VIEW(int _view_id, const char *_name, int _style)
 		strncpy(missing_file_name, p_tbl_view->surface_filename, _MAX_FNAME);
 		strncpy(missing_file_path1, ViewsPath, _MAX_PATH);
 		strncpy(missing_file_path2, AltViewsPath, _MAX_PATH);
+		//  Msg("ERROR_FILE_NOT_FOUND: %s %s", ViewsPath, p_tbl_view->surface_filename);
 		throw(ERROR_FILE_NOT_FOUND);
 	}
 
@@ -340,6 +341,7 @@ VIEW::VIEW(int _view_id, const char *_name, int _style)
 
 	if (surface.GetPalette() != NULL)
 	{
+		printf("*****************    Dislpay.SetPalette()  ------------------------------\n");
 		display.SetPalette(surface.GetPalette(), FALSE);
 	}
 

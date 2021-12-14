@@ -18,8 +18,11 @@
 ; 01/23/95  gas  Created.
 ; 
 ----------------------------------------------------------------------------*/
-
+#ifndef _fblt_h
+#define _fblt_h
+#include "ddraw.h"
 #include "ptypes.h"
+#include "palette.h"
 
 typedef unsigned short *PLENS;	/* an array of scale factors */
 
@@ -33,10 +36,6 @@ typedef unsigned short *PLENS;	/* an array of scale factors */
 #define FLG_SPRITE		0x01 // blit as a sprite onto a canvas.
 #define FLG_VIEW		0x02 // blit as a view canvas.
 #define FLG_FRAMED		0x04 // blitter should pick a specific frame from the image.
-
-class IDirectDrawSurface {
-    
-};
 
 class FBLT_DSCR {
 private:
@@ -102,7 +101,7 @@ public:
 	static inline void aligned_memcpy( UCHAR *dst, const UCHAR *src, size_t count )
 	{
         // TODO: implement this blitter
-        assert(false);
+        memcpy(dst, src, count);
 #ifdef _WIN32
 	  _asm 
 	  {
@@ -126,7 +125,7 @@ public:
 	static inline void aligned_memset( void *dst, int color, size_t count )
 	{
         // TODO: implement this blitter
-        assert(false);
+        memset(dst, color, count);
 #ifdef _WIN32
 	  _asm
 	  {
@@ -164,4 +163,4 @@ extern HRESULT DDoneBlt(RECT *rect, IDirectDrawSurface *pdds, ONE *one, FBLT_DSC
 extern HRESULT HBoneBlt(RECT *rect, HBITMAP dst, ONE *one, FBLT_DSCR *fbd);
 extern HRESULT oneDDBlt(RECT *rect, ONE *oneDst, IDirectDrawSurface *pdds, FBLT_DSCR *fbd);
 extern HRESULT oneHBBlt(RECT *rect, ONE *one, HBITMAP hbm, FBLT_DSCR *fbd);
-
+#endif

@@ -161,6 +161,8 @@ VIEW *ViewMan::Load(int view_id)
   case VB_CFGAV:
 	  view = new CFGAV(view_id);
 	  break;
+  default:
+      view = NULL;
   }
 
   if (view)
@@ -183,7 +185,7 @@ VIEW *ViewMan::Load(int view_id)
 }
 
 //----------------------------------------------------------------------------
-VIEW* ViewMan::Load(char *filename, BOOL bSurround)
+VIEW* ViewMan::Load(const char *filename, BOOL bSurround)
 {
 	int i;
 	for (i=0;i<tbl_view_count;i++)

@@ -69,7 +69,7 @@ private:
 
 public: // interface:
 	VIEW *Load(int view_id);
-	VIEW *Load(char *filename, BOOL bSurround);
+	VIEW *Load(const char *filename, BOOL bSurround);
 	void Tick(int etime);
 	BOOL Release(int view_id);
 	void Release(VIEW_DESCRIPTION *view);

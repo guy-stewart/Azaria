@@ -1,0 +1,214 @@
+/*----------------------------------------------------------------------------
+; Copyright (C) 1997 Walter Bennett Advanced Technologies.  
+;
+; All Rights Reserved.  The source  code contained  in this  file is the 
+; confidential property of Walter Bennett Advanced Technologies. No part
+; of  this document  may be reproduced  or transmitted in any form or by
+; any means,  electronic  or  mechanical,  for any purpose,  without the 
+; express  written  permission of  Walter Bennett Advanced Technologies.
+;
+; File:       meflin.txt
+;
+; Description:
+;	Describes objects and object classes.
+;
+;
+; HISTORY
+;
+;   Date    Who  Comment
+; --------  ---  -------------------------------------------------------------
+; 03/27/97  guy  Created.
+; 
+----------------------------------------------------------------------------*/
+
+// Some handy color definitions:
+// 	    Color    index
+//		-----    -----
+
+#define BLACK	  0
+#define RED		  249
+#define BLUE	  252
+#define TEAL_1	  57
+#define TEAL_2	  58
+#define TEAL_3	  59
+#define TEAL_4	  60
+#define YELLOW	  114
+#define GOLD	  64
+
+#define WHITE	  255
+#define GREEN	  85
+
+//------------------------------------
+// Available fonts:
+
+#define IDS_FONTENG				0x00a0
+#define IDS_FONTPAR				0x00a1
+#define IDS_FONTVILL			0x00a2
+#define IDS_FONTCITY			0x00a3
+
+#define IDS_FONTENG_BIG			0x00a4
+#define IDS_FONTPAR_BIG			0x00a5
+#define IDS_FONTVILL_BIG		0x00a6
+#define IDS_FONTCITY_BIG		0x00a7
+
+#define IDS_FONTTNR12			0x00a8
+#define IDS_FONTTNR14			0x00a9
+#define IDS_FONTTNR16			0x00aa
+#define IDS_FONTTNR18			0x00ab
+
+#define IDS_FONTTNB12			0x00ac
+#define IDS_FONTTNB14			0x00ad
+#define IDS_FONTTNB16			0x00ae
+#define IDS_FONTTNB18			0x00af
+
+#define OFF -1
+
+
+[COMMON] // Text displayed for every object or class
+  FONT IDS_FONTTNB16
+  SETY 200
+  SETX 480
+  COLOR BLUE
+  SHADOW OFF
+    ? Search_Item
+
+  // set default font for everyone
+  COLOR GOLD
+  SHADOW BLACK
+  FONT IDS_FONTTNB18
+  LINE 3 CENTER
+
+[NEELP]
+
+
+if (vm.S10_THAOR.bparm EQ 21)
+  {
+    "Thaor has requested a red fish soul."
+
+    PLAY "Myg2i"
+    vm.SOD_ID.wParm = 70 
+    SIGNAL SOD_ID SIG_MEFLIN
+  }
+
+
+  if (vm.S10_THAOR.bparm EQ 20)
+  {
+	"Thaor makes this request:"
+	""
+	"Bring to me the soul of a great"	
+	"red fish.  I have need of one"
+	"for the Gopa which I am brewing."
+	""
+	"If you bring me the right soul,"
+	"I will graciously reward you."	
+
+
+
+    PLAY "Myg2a"
+    vm.SOD_ID.wParm = 90 
+    SIGNAL SOD_ID SIG_MEFLIN
+    vm.S10_THAOR.bParm = 21
+  }
+
+  if (vm.S10_THAOR.bparm EQ 12)
+  {
+  	"Thaor is excited to find out if"
+	"you have restored his charm?"
+
+    PLAY "Myg1i"
+
+    vm.SOD_ID.wParm = 84 
+    SIGNAL SOD_ID SIG_MEFLIN
+  }
+
+  if (vm.S10_THAOR.bparm EQ 11)
+  {
+    "Thaor The Meflin imparts these words:"
+	""
+	"This piece of Amulet was given to me"
+	"by my father, as his gave it to him."
+	""
+	"You MUST help me find the missing half"
+	"and restore the charm to its once magical"
+	"state."
+
+
+    PLAY "Myg1a"
+
+
+    vm.SOD_ID.wParm = 80 
+    SIGNAL SOD_ID SIG_MEFLIN
+
+    vm.S10_THAOR.bParm = 12
+
+	//Rathe gives the seeds
+	vm.S1e_bin01.wObject = IDD_CHRML
+	signal s1e_bin01 sig_open	
+
+
+  }
+
+  if (vm.S10_THAOR.bparm EQ 10)
+  {
+
+	"Thaor wishes to know if you"
+	"have retreived his rare plant?"
+
+    PLAY "Mym1i"
+   		   
+   vm.SOD_ID.wParm = 72
+   SIGNAL SOD_ID SIG_MEFLIN
+  }
+
+
+  if (vm.S10_THAOR.bparm LTE 0)
+  {
+  	"Thaor the meflin is needs your"
+  	"help to acquire a rare plant which"
+	"grows in the Nystram mines.  TAKE"
+	"PRECAUTION - for the mines emmit a"
+	"most deadly gas from the center of the"
+	"moon."
+  
+ 
+   PLAY "Mym1a"
+   
+   vm.S10_THAOR.bParm = 10
+
+   vm.SOD_ID.wParm = 90
+   SIGNAL SOD_ID SIG_MEFLIN
+   
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+[TOOR]
+	"I am TOOR"
+
+[RATHE]
+	"I am RATHE"
+
+[THAOR]
+	"I am THAOR"
+
+[EYTH]
+	"I am EYTH"
+
+[NROC]
+	"I am NROC"
+
+[PERST]
+	"I am PERST"
+
+/* End Of File */
+

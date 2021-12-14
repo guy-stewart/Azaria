@@ -36,6 +36,8 @@
 #include "viewman.h"
 #include "cursor.h"
 #include "spell.h"
+#include <algorithm> // for min max
+#include <cstring>
 
 // used strictly to offset video playback within a machine
 static int yOffset = 0;
@@ -1339,7 +1341,6 @@ void MACHINE::DragFocus(BOOL bHasFocus)
 void MACHINE::Signal(WORD wParm)
 {
 	TRANSITION * trans;
-	BOOL bTransition = FALSE;
 
 	trans = btbl_machine_def.FindTransition(this, m_reg.state, WAIT, 0, wParm);
 
@@ -1529,8 +1530,8 @@ void GDBT_MACHINES::SendAllStates(DWORD pid)
 		{
 			// the table is not ordered by machine id,
 			// so the range of machine id's is stored:
-			pkt.hdr.min_id = min(pkt.hdr.min_id, id);
-			pkt.hdr.max_id = max(pkt.hdr.max_id, id);
+            pkt.hdr.min_id = std::min(pkt.hdr.min_id, id);
+            pkt.hdr.max_id = std::max(pkt.hdr.max_id, id);
 		}
 
 		pkt.hdr.count++;
@@ -1906,8 +1907,11 @@ BOOL GDBT_MACHINES::Save(char *filename)
 	XFile file;
 	int i;
 
-	if (!file.Open(filename, XFile::modeWrite))
+    if (!file.Open(filename, XFile::modeWrite)) {
+        printf("TODO:\n");
+        printf("GDBT_MACHINES::Save(%s) --> FALSE\n", filename);
 		return FALSE;
+    }
 
 	for (i=0;i<m_count;i++)
 	{
@@ -1923,8 +1927,11 @@ BOOL GDBT_MACHINES::Load(char *filename)
 	XFile file;
 	int i;
 
-	if (!file.Open(filename, XFile::modeRead))
+    if (!file.Open(filename, XFile::modeRead)) {
+        printf("TODO:\n");
+        printf("GDBT_MACHINES::Load(%s) --> FALSE\n", filename);
 		return FALSE;
+    }
 
 	for (i=0;i<m_count;i++)
 	{

@@ -37,6 +37,7 @@
 static COLORREF BackColor = RGB(64,64,255);
 static COLORREF TextColor = RGB(64,64,255);
 */
+#ifdef _WIN32
 
 typedef struct {
 	int nHeight;
@@ -52,7 +53,6 @@ static TBL_FONTS tbl_fonts[] = {
 };
 static int tbl_fonts_count = sizeof(tbl_fonts) / sizeof(TBL_FONTS);
 
-#ifdef _WIN32
 HFONT fontCreate(int font_id)
 {
 	HFONT hFont;

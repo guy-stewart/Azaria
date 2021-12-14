@@ -10,14 +10,18 @@
 #include "ddraw.h"
 #include "ddraw_ios.h"
 
+
 class IosDirectDrawSurface : public IDirectDrawSurface {
-    void * surface;
-    int flip_count;
+    RGBA8Image * surface;
+    DDSURFACEDESC surfacedesc;
 public:
     IosDirectDrawSurface()
     {
-        surface = GetBuffer();
-        flip_count = 0;
+        surface = getBackBuffer();
+        surfacedesc.dwWidth = 640;
+        surfacedesc.dwWidth = 480;
+        surfacedesc.lPitch = 640*4;
+        surfacedesc.lpSurface = surface->bitmapData;
     };
     ~IosDirectDrawSurface()
     {
@@ -26,12 +30,12 @@ public:
     //  https://msdn.microsoft.com/en-us/library/ee490539.aspx
     virtual HRESULT GetSurfaceDesc(LPDDSURFACEDESC lpDDSurfaceDesc)
     {
-        // printf("IosDirectDrawSurface::GetSurfaceDesc()\n");
+        printf("IosDirectDrawSurface::GetSurfaceDesc()\n");
         assert(nullptr != lpDDSurfaceDesc);
         assert(sizeof(DDSURFACEDESC) == lpDDSurfaceDesc->dwSize);
         lpDDSurfaceDesc->dwWidth = 640;
         lpDDSurfaceDesc->dwHeight = 480;
-        lpDDSurfaceDesc->lPitch = 640; //*4; // distance in bytes to the start of the next line
+        lpDDSurfaceDesc->lPitch = 640*4; // distance in bytes to the start of the next line
         return DD_OK;
     };
     virtual HRESULT Lock(LPRECT lpDestRect,
@@ -39,20 +43,20 @@ public:
                          DWORD dwFlags,
                          HANDLE hEvent)
     {
-        // printf("IosDirectDrawSurface::Lock()\n");
-        lpDDSurfaceDesc->lpSurface = surface; // draw on this
+        printf("IosDirectDrawSurface::Lock() --> %p\n", surface);
+        lpDDSurfaceDesc->lpSurface = surface->bitmapData; // draw on this
         return DD_OK;
     };
     virtual HRESULT Flip(IDirectDrawSurface *lpDDSurfaceTargetOverride,
                          DWORD dwFlags)
     {
-        // printf("IosDirectDrawSurface::Flip(%d)\n", flip_count);
-        flip_count++;
+        printf("IosDirectDrawSurface::Flip()\n");
+        paintBuffer(surface);
         return DD_OK;
     };
     virtual HRESULT Unlock(LPRECT lpRect)
     {
-        // printf("IosDirectDrawSurface::Unlock()\n");
+        printf("IosDirectDrawSurface::Unlock()\n");
         return DD_OK;
     };
 };
@@ -63,6 +67,7 @@ public:
                           LPDIRECTDRAWSURFACE FAR* lplpDDSurface,
                           IUnknown FAR* pUnkOuter);
 };
+
 HRESULT IosDirectDraw::CreateSurface(LPDDSURFACEDESC lpDDSurfaceDesc,
                                      LPDIRECTDRAWSURFACE FAR* lplpDDSurface,
                                      IUnknown FAR* pUnkOuter)

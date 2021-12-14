@@ -21,8 +21,8 @@
 
 #include "maya.h"
 #include "btable.h"
-#include "data/database/idv.h"
-#include "data/database/ids.h"
+#include "Data/Database/idv.h"
+#include "Data/Database/Ids.h"
 #include "user.h"
 #include "player.h"
 #include "scrollview.h"
@@ -56,7 +56,7 @@ VIEW(view_id, "scrollview", BLT_PORTAL)
 }
 
 //----------------------------------------------------------------------------
-void SCROLLVIEW::SlewRel(int x, int y)
+void SCROLLVIEW::SlewRel(long x, long y)
 {
   if (x>=0)
   {

@@ -32,6 +32,20 @@ NetManager netman;  // the one and only NetManager object.
 #define DESCSTRLEN 50
 BOOL NetManager::user_lost_interest;
 
+extern HRESULT WINAPI DirectPlayCreate( LPGUID lpGUID, IDirectPlay **lplpDP, IUnknown *pUnk);
+extern HRESULT WINAPI DirectPlayEnumerate( LPDPENUMDPCALLBACKA, LPVOID );
+
+HRESULT WINAPI DirectPlayCreate( LPGUID lpGUID, IDirectPlay **lplpDP, IUnknown *pUnk)
+{
+    assert(false);
+    return 0;
+}
+HRESULT WINAPI DirectPlayEnumerate( LPDPENUMDPCALLBACKA, LPVOID )
+{
+    assert(false);
+    return 0;
+}
+
 //___________________________________________________________________________
 //
 //  Direct Play Session Management (DATA)
@@ -64,48 +78,11 @@ NetManager::~NetManager()
 {
 	Release();
 }
-#ifdef _WIN32
 
 #define CS(X,MSG) case X: return (bNice)?MSG:#X;
-char * NetManager::error(int hr, BOOL bNice)
+const char * NetManager::error(int hr, BOOL bNice)
 {
-	switch (hr)
-	{
-		CS(DP_OK, "OK");
-		CS(DPERR_ALREADYINITIALIZED,	"Already Initialized");
-		CS(DPERR_ACCESSDENIED,			"Access Denied");
-		CS(DPERR_ACTIVEPLAYERS,			"Active Players");
-		CS(DPERR_BUFFERTOOSMALL,		"Buffer Too Small");
-		CS(DPERR_CANTADDPLAYER,			"Can't Add Player");
-		CS(DPERR_CANTCREATEGROUP,		"Can't Create Group");
-		CS(DPERR_CANTCREATEPLAYER,		"Can't Create Player");
-		CS(DPERR_CANTCREATESESSION,		"Can't Create Session");
-		CS(DPERR_CAPSNOTAVAILABLEYET,	"Caps Not Available Yet");
-		CS(DPERR_EXCEPTION,				"Exception");
-		CS(DPERR_GENERIC,				"Generic");
-
-		CS(DPERR_INVALIDFLAGS,			"Invalid Flags");
-		CS(DPERR_INVALIDOBJECT,			"Invalid Object");
-		CS(DPERR_INVALIDPARAM,			"Invalid Param");
-		//CS(DPERR_INVALIDPARAMS,"");
-		CS(DPERR_INVALIDPLAYER,			"Invalid Player");
-		CS(DPERR_NOCAPS,				"No Caps");
-		CS(DPERR_NOCONNECTION,			"No Connection");
-		CS(DPERR_NOMEMORY,				"No Memory");
-		//CS(DPERR_OUTOFMEMORY,			"");
-		CS(DPERR_NOMESSAGES,			"No Messages");
-		CS(DPERR_NONAMESERVERFOUND,		"No Name Server Found");
-		CS(DPERR_NOPLAYERS,				"No Players");
-		CS(DPERR_NOSESSIONS,			"No Sessions");
-		CS(DPERR_SENDTOOBIG,			"Send Too Big");
-		CS(DPERR_TIMEOUT,				"Timeout");
-		CS(DPERR_UNAVAILABLE,			"Unavailable");
-		CS(DPERR_UNSUPPORTED,			"Unsupported");
-		CS(DPERR_BUSY,					"Busy");
-		CS(DPERR_USERCANCEL,			"User Cancel");
-		default:
 			return "Unknown";
-	}
 }
 
 //___________________________________________________________________________
@@ -166,7 +143,7 @@ void NetManager::SystemMessage(DPMSG_GENERIC *msg)
 }
 
 //----------------------------------------------------------------------------
-DWORD NetManager::Receive(DPID *from, DPID *to, char *msg, int max_len)
+DWORD NetManager::Receive(DPID *from, DPID *to, const char *msg, int max_len)
 {
 	DWORD msg_len;
 	HRESULT hr;
@@ -206,7 +183,7 @@ dpx_receive_retry:
 }
 
 //----------------------------------------------------------------------------
-HRESULT NetManager::Send(char *msg, DPID from, DPID to, DWORD msg_len, BOOL bGuaranteed)
+HRESULT NetManager::Send(const char *msg, DPID from, DPID to, DWORD msg_len, BOOL bGuaranteed)
 {
 	HRESULT hr;
 
@@ -272,7 +249,7 @@ HRESULT NetManager::CreatePlayer(char *lpFriendlyName, char *lpFormalName)
 	if (lpDP == NULL)
 		return E_FAIL;
 
-	hr = lpDP->CreatePlayer(&pid, lpFriendlyName, lpFormalName, NULL);
+	hr = lpDP->CreatePlayer(&pid, lpFriendlyName, lpFormalName, 0);
 	if (hr == DPERR_NOCONNECTION)
 	{
 		session_available = FALSE;
@@ -312,7 +289,7 @@ HRESULT NetManager::EnableNewPlayers(BOOL enable)
 }
 
 //----------------------------------------------------------------------------
-static BOOL FAR PASCAL EnumPlayersCallback(
+static BOOL EnumPlayersCallback(
 						DPID pidID,
 						LPSTR lpFriendlyName,
 						LPSTR lpFormalName,
@@ -355,8 +332,8 @@ HRESULT NetManager::GetPlayerName(DPID pid,
 //----------------------------------------------------------------------------
 HRESULT NetManager::SetPlayerName(
 	DPID pidID,
-	char *lpPlayerFriendlyName,
-	char *lpPlayerFormalName)
+	const char *lpPlayerFriendlyName,
+	const char *lpPlayerFormalName)
 {
   if (lpDP)
     return lpDP->SetPlayerName(pidID, lpPlayerFriendlyName, lpPlayerFormalName);
@@ -451,7 +428,7 @@ HRESULT NetManager::Close(BOOL bForceClose)
 	{
 		if (lpDP)
 			hr = lpDP->Close();
-		Sleep(100); // give the dll a time slice so it can shut down
+		usleep(100); // give the dll a time slice so it can shut down
 	}
 	else
 		hr  = DPERR_UNAVAILABLE; 
@@ -528,7 +505,7 @@ void NetManager::Release()
 
   // If another instance of the app is running on the desktop,
   // then let him have some time to shut down his session.
-  Sleep(100);
+  usleep(100);
 }
 
 //
@@ -579,7 +556,7 @@ int NetManager::Enumerate()
 }
 
 //----------------------------------------------------------------------------
-char *NetManager::GetProviderDesc(int index)
+const char *NetManager::GetProviderDesc(int index)
 {
 	if (index < 0
 	  || index >= tbl_sp_count)
@@ -591,5 +568,5 @@ char *NetManager::GetProviderDesc(int index)
 		return tbl_sp[index].DrvDesc;
 	}
 }
-#endif
+
 

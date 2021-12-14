@@ -65,84 +65,65 @@ char AltWavePath[MAX_PATH];
 
 Game gameman; // The one and only game manager.
 
-char  Game::m_InstallDir[MAX_PATH];
 DWORD Game::c_owner;
 int Game::sfxVolume = 80;
 int Game::musicVolume = 80;
 char Game::gameName[MAX_GAME_NAME];
 
-static DWORD m_last_view_time;	// last time we updated the views
-static DWORD m_last_agenda_time;	// last time we updated the agenda
+static DWORD m_last_view_time;    // last time we updated the views
+static DWORD m_last_agenda_time;    // last time we updated the agenda
 static DWORD m_last_poll_time;
 
-static const char * baseKey = "SOFTWARE\\Singularity\\Azaria";
-
-#ifdef _MSC_VER // Windows
 //----------------------------------------------------------------------------
 Game::Game()
 {
-  HKEY Key;
-  DWORD ValueType;
-  LONG Result;
-  DWORD DataSize = MAX_PATH;
+}
 
-  Result = RegOpenKey(HKEY_LOCAL_MACHINE, baseKey, &Key);
-  if (Result != ERROR_SUCCESS)
-  {
-	  Key = NULL;
-  }
-  else
-  { // get the installation directory for later operations
-	  Result = RegQueryValueEx(Key, "CDROMDir", NULL, &ValueType, (LPBYTE)m_InstallDir, &DataSize);
-	  if (Result != ERROR_SUCCESS)
-	  {
-		  m_InstallDir[0] = NULL;
-	  }
-  }
-
-  strcpy(ViewsPath, m_InstallDir);
-  strcpy(ObjectsPath, m_InstallDir);
-  strcpy(PalettesPath, m_InstallDir);
-  strcpy(MasksPath, m_InstallDir);
-  strcpy(WavePath, m_InstallDir);
-
-  strcat(ViewsPath, __ViewsPath);
-  strcat(ObjectsPath, __ObjectsPath);
-  strcat(PalettesPath, __PalettesPath);
-  strcat(MasksPath, __MasksPath);
-  strcat(WavePath, __WavePath);
-
-  strcpy(AltViewsPath, __ViewsPath);
-  strcpy(AltObjectsPath, __ObjectsPath);
-  strcpy(AltPalettesPath, __PalettesPath);
-  strcpy(AltMasksPath, __MasksPath);
-  strcpy(AltWavePath, __WavePath);
+//----------------------------------------------------------------------------
+void Game::InitPaths(const char * datapath)
+{
+    strcpy(ViewsPath, datapath);
+    strcpy(ObjectsPath, datapath);
+    strcpy(PalettesPath, datapath);
+    strcpy(MasksPath, datapath);
+    strcpy(WavePath, datapath);
+    
+    strcat(ViewsPath, __ViewsPath);
+    strcat(ObjectsPath, __ObjectsPath);
+    strcat(PalettesPath, __PalettesPath);
+    strcat(MasksPath, __MasksPath);
+    strcat(WavePath, __WavePath);
+    
+    strcpy(AltViewsPath, datapath);
+    strcpy(AltObjectsPath, datapath);
+    strcpy(AltPalettesPath, datapath);
+    strcpy(AltMasksPath, datapath);
+    strcpy(AltWavePath, datapath);
+    
+    strcat(AltViewsPath, __ViewsPath);
+    strcat(AltObjectsPath, __ObjectsPath);
+    strcat(AltPalettesPath, __PalettesPath);
+    strcat(AltMasksPath, __MasksPath);
+    strcat(AltWavePath, __WavePath);
 }
 
 //----------------------------------------------------------------------------
 Game::~Game()
 {
   char path[_MAX_PATH];
-  HKEY Key;
-  LONG Result;
 
-  Result = RegOpenKey(HKEY_CURRENT_USER, baseKey, &Key);
-  if (Result != ERROR_SUCCESS)
-  {
-	  Key = NULL;
-  }
-  else
+/*
   { // Set the last player for the current user
 	  Result = RegSetValueEx(Key, "PlayerName", NULL, REG_SZ, (LPBYTE)local_player->GetName(), strlen(local_player->GetName())+1);
 	  Result = RegSetValueEx(Key, "GameName", NULL, REG_SZ, (LPBYTE)gameName, strlen(gameName)+1);
 	  Result = RegSetValueEx(Key, "prefsMusicVolume", NULL, REG_DWORD, (LPBYTE)&musicVolume, sizeof(DWORD));
 	  Result = RegSetValueEx(Key, "prefsSfxVolume", NULL, REG_DWORD, (LPBYTE)&sfxVolume, sizeof(DWORD));
   }
-
-  _makepath(path, NULL, plyrPath, local_player->GetName(), plyrExt);
+*/
+  makepath(path, NULL, plyrPath, local_player->GetName(), plyrExt);
   local_player->Save(path);
 
-  _makepath(path, NULL, gamePath, gameName, gameExt);
+  makepath(path, NULL, gamePath, gameName, gameExt);
   gdbt_machines.Save(path);
 }
 
@@ -164,31 +145,18 @@ void Game::SetSfxVolume(int volume)
 //----------------------------------------------------------------------------
 void Game::LoadLRU()
 {
+#define ERROR_SUCCESS = 0
   char path[_MAX_PATH];
-  HKEY Key;
-  LONG Result = RegOpenKey(HKEY_CURRENT_USER, baseKey, &Key);
-  if (Result != ERROR_SUCCESS)
-  {
-	  Key = NULL;
-  }
-  else
   { // get the last player for the current user
 	  char name[MAX_FRIENDLY_NAME];
-	  DWORD ValueType;
 	  DWORD DataSize = MAX_FRIENDLY_NAME;
 
 	  //------------------------------------------
 	  // load the last player used:
-	  LONG Result = RegQueryValueEx(Key, "PlayerName", NULL, &ValueType, (LPBYTE)name, &DataSize);
-	  if (Result != ERROR_SUCCESS
-		||!strcmp("__noname__",name))
-	  {
-		unsigned long len = MAX_FRIENDLY_NAME;
-	  	if (!GetUserName(name, &len))
-		  strcpy(name, "Shilla");
-	  }
+      printf("TODO: get user name\n");
+      strcpy(name, "Shilla");
 	  local_player->SetName(name);
-	  _makepath(path, NULL, plyrPath, name, plyrExt);
+	  makepath(path, NULL, plyrPath, name, plyrExt);
 	  WORD recent_view = local_player->Load(path);
 	  if (recent_view)
 		viewman.Load(recent_view);
@@ -196,24 +164,48 @@ void Game::LoadLRU()
 	  //------------------------------------------
 	  // Save 'new' game, load LRU game:
 	  // for starters, save the c_init game so they can start a 'New' game:
-	  _makepath(path, NULL, gamePath, NewGameName, NewGameExt);
+	  makepath(path, NULL, gamePath, NewGameName, NewGameExt);
 	  gdbt_machines.Save(path);
 
 	  DataSize = MAX_GAME_NAME;
 	  // load the last game played:
-	  Result = RegQueryValueEx(Key, "GameName", NULL, &ValueType, (LPBYTE)gameName, &DataSize);
-	  if (Result != ERROR_SUCCESS)
-		strcpy(gameName, "Azaria");
+      // TODO: load last game played
+      strcpy(gameName, "Azaria");
 
 	  // Load the game they were playing last
-	  _makepath(path, NULL, gamePath, gameName, gameExt);
+	  makepath(path, NULL, gamePath, gameName, gameExt);
 	  gdbt_machines.Load(path);
 
-	  Result = RegQueryValueEx(Key, "prefsMusicVolume", NULL, &ValueType, (LPBYTE)&musicVolume, &DataSize);
+      // TODO: get saved volume:
+      musicVolume = 50; //?????
 	  SetMusicVolume(musicVolume);
-	  Result = RegQueryValueEx(Key, "prefsSfxVolume", NULL, &ValueType, (LPBYTE)&sfxVolume, &DataSize);
+      sfxVolume = 50; //???
 	  SetSfxVolume(sfxVolume);
   }
+}
+
+// Returns the system time, in milliseconds
+long long print_current_time_with_ms (void)
+{
+    struct timespec start, end;
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+    //do stuff
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+    
+    uint64_t delta_us = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_nsec - start.tv_nsec) / 1000;
+    
+    return delta_us;
+}
+
+// TODO: this should be 64 bit.
+DWORD timeGetTime()
+{
+    struct timespec t;
+    clock_gettime(CLOCK_MONOTONIC_RAW, &t);
+    
+    uint64_t us = (t.tv_sec) * 1000000 + (t.tv_nsec) / 1000;
+    
+    return us / 1000;
 }
 
 //----------------------------------------------------------------------------
@@ -222,7 +214,7 @@ BOOL Game::Init()
 	// init elapsed time vars for viewman and agenda
 	m_last_view_time = 
 	m_last_agenda_time = 
-	m_last_poll_time = timeGetTime();
+    m_last_poll_time = timeGetTime();
 
 	// present the initial views to the player:
 	viewman.Load(IDV_MAIN_PANEL);
@@ -370,7 +362,7 @@ void Game::SendState(DPID to)
 void Game::SessionLost()
 {
 	DWORD pid = local_player->GetPid();
-	char *msg = "The game owner has left the game";
+	const char *msg = "The game owner has left the game";
 
 	Msg(msg);
     TELETYPE::Msg(0, msg);
@@ -552,7 +544,7 @@ char* Game::GetGameName()
 }
 
 //----------------------------------------------------------------------------
-BOOL Game::SetGameName(char *name)
+BOOL Game::SetGameName(const char *name)
 {
   if (name && name[0])
   {
@@ -564,12 +556,12 @@ BOOL Game::SetGameName(char *name)
 }
 
 //----------------------------------------------------------------------------
-BOOL Game::Save(char *name)
+BOOL Game::Save(const char *name)
 {
   char path[_MAX_PATH];
   if (SetGameName(name))
   {
-	_makepath(path, NULL, gamePath, name, gameExt);
+	makepath(path, NULL, gamePath, name, gameExt);
 	gdbt_machines.Save(path);
 	return TRUE;
   }
@@ -577,10 +569,10 @@ BOOL Game::Save(char *name)
 }
 
 //----------------------------------------------------------------------------
-BOOL Game::Load(char *name)
+BOOL Game::Load(const char *name)
 {
   char path[_MAX_PATH];
-  _makepath(path, NULL, gamePath, name, gameExt);
+  makepath(path, NULL, gamePath, name, gameExt);
   return gdbt_machines.Load(path);
 }
 
@@ -588,7 +580,9 @@ BOOL Game::Load(char *name)
 BOOL Game::New()
 {
   char path[_MAX_PATH];
-  _makepath(path, NULL, gamePath, NewGameName, NewGameExt);
+  makepath(path, NULL, gamePath, NewGameName, NewGameExt);
   return gdbt_machines.Load(path);
 }
+#ifdef _MSC_VER // Windows
+
 #endif

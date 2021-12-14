@@ -19,9 +19,9 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#include <ddraw.h>
-#include <one.h>
-#include <fblt.h>
+//#include <ddraw.h>
+#include "one.h"
+#include "fblt.h"
 
 //----------------------------------------------------------------------------
 FBLT_DSCR::FBLT_DSCR()
@@ -187,7 +187,6 @@ void FBLT_DSCR::BltFont(ONE *dest, ONE *src)
   unsigned short x;
   unsigned short y;
   unsigned int offset = 0;
-  unsigned int sz = dest->m_hdr.pitch * dest->m_hdr.height;
 
   unsigned char *source = src->m_bits+src->m_frame_offset[m_frame];
   unsigned char *target = dest->m_bits;
@@ -253,7 +252,7 @@ void FBLT_DSCR::BltFont(ONE *dest, ONE *src)
 
 //----------------------------------------------------------------------------
 // print a message at x,y on the given canvas:
-int FBLT_DSCR::Print(ONE *canvas, ONE *font, char *msg, int color)
+int FBLT_DSCR::Print(ONE *canvas, ONE *font, const char *msg, int color)
 {
   int i;
   int x = m_dst_x; // save
@@ -392,7 +391,7 @@ void FBLT_DSCR::GetCharBound(int *left, int *right, ONE *font)
   unsigned int i;
   unsigned short x;
   unsigned short y;
-  unsigned int offset = 0;
+    // UNUSED: unsigned int offset = 0;
 
   unsigned char *source = font->m_bits+font->m_frame_offset[m_frame];
 

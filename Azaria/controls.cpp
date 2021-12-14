@@ -84,7 +84,7 @@ void CONTROL::Refresh()
 }
 
 //----------------------------------------------------------------------------
-void CONTROL::SetStrValue(char *newStr)
+void CONTROL::SetStrValue(const char *newStr)
 {
   strcpy(StrVal, newStr);
   Refresh();
@@ -263,7 +263,7 @@ WORD LISTBOX::Grab(POINT p)
 //----------------------------------------------------------------------------
 void LISTBOX::Write(int position, COLORREF color)
 {
-	char *szDesc;
+	const char *szDesc;
 	int y;
 
 	szDesc = StrFunc(position);
@@ -345,7 +345,7 @@ EDITBOX::EDITBOX(CFGVIEW *view,
 				 WORD ids, 
 				 int x, int y, 
 				 int xo, int yo, 
-				 char *inital_value, 
+				 const char *inital_value, 
 				 int max):
 CONTROL(view, 0, ids, x, y),
 font(IDS_FONTTNB18)

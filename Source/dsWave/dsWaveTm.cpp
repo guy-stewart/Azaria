@@ -8,13 +8,17 @@
  *             application to update the playback buffer at regular intervals
  *
  ***************************************************************************/
+#ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
 #include <mmsystem.h>
 #include <dsound.h>
-#include <memory.h>
 #include <cderr.h>
+#endif
+
+#include "../../include/ptypes.h"
+#include <memory.h>
 
 #include "dsWave.h"
 #include "dsConst.h"
@@ -188,7 +192,7 @@ void Wave::TimeFunc()
     else if( dwLen1 && bDonePlaying )
         {
         // Set the appropriate silence value
-        _fmemset( lpWrite1,
+        memset( lpWrite1,
                     pwfx->wBitsPerSample == 8 ? 128 : 0,
                     dwLen1);
         }
@@ -238,7 +242,7 @@ void Wave::TimeFunc()
     else if( lpWrite2 && dwLen2 && bDonePlaying )
         {
         // Set the appropriate silence value
-        _fmemset( lpWrite2,
+        memset( lpWrite2,
                     pwfx->wBitsPerSample == 8 ? 128 : 0,
                     dwLen2 );
         }

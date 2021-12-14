@@ -22,7 +22,7 @@
 #define MAX_PLAYERS	256
 
 #ifndef DWORD
-typedef unsigned long       DWORD;
+typedef uint32_t DWORD;
 #endif
 
 #define MAX_FRIENDLY_NAME	16
@@ -81,7 +81,7 @@ public:
 
 	void SetView(WORD view_id);
 	void SetPos(POINT pos);
-	void SetName(char *name);
+	void SetName(const char *name);
 	char *GetName() {return friendly_name;}
 
 	int GetSex() {return m_Sex;}
@@ -272,7 +272,7 @@ public:
 	void SetOffset(POINT offset);
 	void SetPos(POINT p);
 	void SetObject(WORD obj_def_id);
-	void SetName(char *name);
+	void SetName(const char *name);
 
 	// Send stuff across the 'net
 	void SendView(DWORD to, WORD group);

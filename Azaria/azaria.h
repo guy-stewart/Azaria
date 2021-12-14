@@ -9,5 +9,15 @@
 #ifndef azaria_h
 #define azaria_h
 
+#if defined __cplusplus
+extern "C" {
+#endif
+    
+    int WinMain(const char *  datapath);
+    int WinLoop(void);
+#if defined __cplusplus
+};
+#endif
+
 
 #endif /* azaria_h */

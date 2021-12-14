@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Darkroom", "Darkroom.vcxproj", "{1FFF5AE3-005B-61B0-C03C-405F2844BE60}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1FFF5AE3-005B-61B0-C03C-405F2844BE60}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1FFF5AE3-005B-61B0-C03C-405F2844BE60}.Debug|Win32.Build.0 = Debug|Win32
+		{1FFF5AE3-005B-61B0-C03C-405F2844BE60}.Release|Win32.ActiveCfg = Release|Win32
+		{1FFF5AE3-005B-61B0-C03C-405F2844BE60}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

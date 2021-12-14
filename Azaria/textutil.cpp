@@ -46,7 +46,7 @@ CFONT::~CFONT()
 
 //----------------------------------------------------------------------------
 // return width of text written
-int CFONT::TextOut(ONE *surface, int color, int sx, int sy, char *buff)
+int CFONT::TextOut(ONE *surface, int color, int sx, int sy, const char *buff)
 {
   fbd.m_dst_x = sx;
   fbd.m_dst_y = sy;

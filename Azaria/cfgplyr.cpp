@@ -83,7 +83,7 @@ CFGVIEW(view_id)
 void CFGPLYR::OnEvent(int control_id, int iParm)
 {
   char path[_MAX_PATH];
-  char *name;
+  const char *name;
 
   switch (view_id)
   {

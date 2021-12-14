@@ -11,12 +11,14 @@
 		*/
 
 
-#include <windows.h>
+//#include <windows.h>
 #include <math.h>
-#include <ddraw.h>
+//#include <ddraw.h>
 
-#include <one.h>
-#include <fblt.h>
+#include "one.h"
+#include "fblt.h"
+//#include "display.h"
+#include "palette.h"
 
 #define SCALEFACT 0x0000FFFF
 
@@ -63,8 +65,37 @@ void FBLT_DSCR::lensInit(int height, int width, int effect)
 
 //----------------------------------------------------------------------------
 // ### unroll the inner loops to make faster
-static void sliver_up(unsigned char *tgt, unsigned char *src, int th, int tp, unsigned short frac  )
+static void sliver_up(unsigned char *tgt,
+                      unsigned char *src,
+                      int th, // height
+                      int tp, // pitch
+                      unsigned short frac  )
 {
+
+    // TODO: fix this blitter
+    // printf("TODO: fix this blitter: lens.cpp::sliver_up() ******************\n");
+    
+    //ebx--; // // src--: center pixel of this sliver will be blitted by 'sliver'
+    int32_t accum = 0;
+    int32_t cf;
+    int esi = th;
+    src--;
+
+    for (esi=th;esi;esi--) {
+        *tgt = *src;
+        
+        // accumulate fractional part
+        accum += frac;
+        cf = (accum&0xFFFF0000)>>16;
+        accum = (accum&0x0000FFFF);
+
+        //src -= 0 + overflow from fractional part
+        src -= cf;
+        tgt -= tp;
+    }
+    // assert(false);
+
+#if _WIN32
     _asm {
       push ebp
 	
@@ -94,20 +125,43 @@ INNER_LOOP:
 		//src -= 0 + overflow from fractional part
         sbb ebx, 0
 
-        //tgt += bpsl;
+        //tgt -= bpsl;
         sub edi, ebp
         
         dec esi
         jne INNER_LOOP
 
       pop ebp
-    }
+	}
+
+#endif
+
 }
 
 //----------------------------------------------------------------------------
 // ### unroll the inner loops to make faster
 static void sliver(unsigned char *tgt, unsigned char *src, int th, int tp, int accum_init, int frac_part  )
 {
+    // printf("TODO: fix this blitter: lens.cpp::sliver ******************\n");
+    // assert(false);
+    int si;
+    int accum = 0; //accum_init;
+	int frac = frac_part;
+    int32_t cf;
+
+    for (si=th;si;si--) {
+        *tgt = *src;
+        
+        // accumulate fractional part
+        accum += frac;
+        cf = (accum&0xFFFF0000)>>16;
+        accum = (accum&0x0000FFFF);
+
+        src += cf;
+        tgt += tp;
+    }
+
+#ifdef _WIN32
     _asm {
       push ebp
 	
@@ -142,6 +196,7 @@ INNER_LOOP:
 
       pop ebp
     }
+#endif
 }
 
 //----------------------------------------------------------------------------
@@ -231,12 +286,9 @@ void FBLT_DSCR::LensPortal(ONE *oneDest,ONE *oneSrc)
 
 	int src_y; // used to compensate for seam in source
 
-	int dst_pitch = oneDest->GetPitch();
-	int src_pitch = oneSrc->GetPitch();
-	int dst_width = oneDest->GetWidth();
-	int src_width = oneSrc->GetWidth();
-	int dst_height = oneDest->GetHeight();
-	int src_height = oneSrc->GetHeight();
+	int32_t dst_pitch = oneDest->GetPitch();
+	int32_t src_pitch = oneSrc->GetPitch();
+	int32_t src_height = oneSrc->GetHeight();
 
 	// The lens is cut in half and blitted outwards from the center
 	// to prevent vertical artifacts from appearing.  biFocal is a
@@ -319,12 +371,9 @@ void FBLT_DSCR::LensPortalDirty(ONE *oneDest,ONE *oneSrc)
 
 	int src_y; // used to compensate for seam in source
 
-	int dst_pitch = oneDest->GetPitch();
-	int src_pitch = oneSrc->GetPitch();
-	int dst_width = oneDest->GetWidth();
-	int src_width = oneSrc->GetWidth();
-	int dst_height = oneDest->GetHeight();
-	int src_height = oneSrc->GetHeight();
+	int32_t dst_pitch = oneDest->GetPitch();
+	int32_t src_pitch = oneSrc->GetPitch();
+	int32_t src_height = oneSrc->GetHeight();
 
 	// The lens is cut in half and blitted outwards from the center
 	// to prevent vertical artifacts from appearing.  biFocal is a
@@ -395,6 +444,15 @@ void FBLT_DSCR::LensPortalDirty(ONE *oneDest,ONE *oneSrc)
 //----------------------------------------------------------------------------
 static void sliver_R90Fh(unsigned char *tgt, unsigned char *src, int len, int bpsl)
 {
+	// Msg("sliver_R90Fh");
+    // TODO: fix this blitter
+    //assert(false);
+
+	for (int si=len; si; si--) {
+		*tgt++ = *src++;
+	}
+
+#ifdef _WIN32
   _asm {
 	push ds
 	
@@ -421,11 +479,23 @@ INNER_LOOP:
 
 	pop ds
   }
+#endif
 }
 
 //----------------------------------------------------------------------------
 static void sliver_memset(unsigned char *tgt, unsigned char color, int len, int bpsl)
 {
+    // TODO: fix this blitter
+    //assert(false);
+
+	for (int si=len;si;si--) {
+		*tgt = color;
+		tgt+= bpsl;
+	}
+
+
+#ifdef _WIN32
+
   _asm {
 	push ds
 	
@@ -448,6 +518,7 @@ INNER_LOOP:
 
 	pop ds
   }
+#endif
 }
 
 //----------------------------------------------------------------------------

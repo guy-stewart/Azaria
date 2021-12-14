@@ -20,7 +20,6 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#include "dplay.h"
 #include "maya.h"
 #include "gdb.h"
 
@@ -46,7 +45,7 @@ typedef struct {
 	char data[MAX_PKT_LEN];
 } GDB_GENERIC_PKT;
 
-static GDB_GENERIC_PKT gpkt;
+// UNUSED: static GDB_GENERIC_PKT gpkt;
 static GDB_GENERIC_PKT rx_pkt;
 
 static void gdbRX_UpdateObject(DPID from, DPID to, GDB_GENERIC_PKT *pkt);

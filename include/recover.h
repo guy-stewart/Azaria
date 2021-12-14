@@ -18,21 +18,15 @@
 ; 02/03/96  gas  Created.
 ; 
 ----------------------------------------------------------------------------*/
-
-//#define IMAGE_MISSING 1
-//#define OUT_OF_MEMORY 2
+#pragma once
 
 extern char missing_file_path1[_MAX_PATH];
 extern char missing_file_path2[_MAX_PATH];
 extern char missing_file_name[_MAX_FNAME];
 
-void errorCriticalStop(char * msg);
-void WarnUser( LPSTR fmt, ... );
+#define __cdecl
 
-void __cdecl Msg( LPSTR fmt, ... );
+void errorCriticalStop(const char * msg);
+void WarnUser( const LPSTR fmt, ... );
 
-#ifdef DEBUG
-extern void __cdecl Msg( LPSTR fmt, ... );
-#else
-#define Msg ; / ## /
-#endif
+extern void __cdecl Msg( const LPSTR fmt, ... );

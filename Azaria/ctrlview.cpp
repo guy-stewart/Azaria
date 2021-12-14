@@ -47,7 +47,7 @@ CTRL_VIEW* CTRL_VIEW::myname;
 CTRL_VIEW* CTRL_VIEW::yourname;
 
 //----------------------------------------------------------------------------
-static char *PlayerName(int index)
+static const char *PlayerName(int index)
 {
   PLAYER *player = gdbt_players.GetPlayer(index);
 
@@ -109,7 +109,7 @@ CTRL_VIEW::~CTRL_VIEW()
 }
 
 //----------------------------------------------------------------------------
-void CTRL_VIEW::SetName(char *name)
+void CTRL_VIEW::SetName(const char *name)
 {
   CONTROL *ctrl = control[0];
 

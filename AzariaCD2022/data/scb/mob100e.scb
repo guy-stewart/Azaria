@@ -1,0 +1,319 @@
+/*----------------------------------------------------------------------------
+; Copyright (C) 1997 Walter Bennett Advanced Technologies.  
+;
+; All Rights Reserved.  The source  code contained  in this  file is the 
+; confidential property of Walter Bennett Advanced Technologies. No part
+; of  this document  may be reproduced  or transmitted in any form or by
+; any means,  electronic  or  mechanical,  for any purpose,  without the 
+; express  written  permission of  Walter Bennett Advanced Technologies.
+;
+; File:       meflin.txt
+;
+; Description:
+;	Describes objects and object classes.
+;
+;
+; HISTORY
+;
+;   Date    Who  Comment
+; --------  ---  -------------------------------------------------------------
+; 03/27/97  guy  Created.
+; 
+----------------------------------------------------------------------------*/
+
+// Some handy color definitions:
+// 	    Color    index
+//		-----    -----
+
+#define BLACK	  0
+#define RED		  249
+#define BLUE	  252
+#define TEAL_1	  57
+#define TEAL_2	  58
+#define TEAL_3	  59
+#define TEAL_4	  60
+#define YELLOW	  114
+#define GOLD	  64
+
+#define WHITE	  255
+#define GREEN	  85
+
+//------------------------------------
+// Available fonts:
+
+#define IDS_FONTENG				0x00a0
+#define IDS_FONTPAR				0x00a1
+#define IDS_FONTVILL			0x00a2
+#define IDS_FONTCITY			0x00a3
+
+#define IDS_FONTENG_BIG			0x00a4
+#define IDS_FONTPAR_BIG			0x00a5
+#define IDS_FONTVILL_BIG		0x00a6
+#define IDS_FONTCITY_BIG		0x00a7
+
+#define IDS_FONTTNR12			0x00a8
+#define IDS_FONTTNR14			0x00a9
+#define IDS_FONTTNR16			0x00aa
+#define IDS_FONTTNR18			0x00ab
+
+#define IDS_FONTTNB12			0x00ac
+#define IDS_FONTTNB14			0x00ad
+#define IDS_FONTTNB16			0x00ae
+#define IDS_FONTTNB18			0x00af
+
+#define OFF -1
+
+
+[COMMON] // Text displayed for every object or class
+  FONT IDS_FONTTNB16
+  SETY 200
+  SETX 480
+  COLOR BLUE
+  SHADOW OFF
+    ? Search_Item
+
+  // set default font for everyone
+  COLOR GOLD
+  SHADOW BLACK
+  FONT IDS_FONTTNB18
+  LINE 3 CENTER
+
+[NEELP]
+
+if (vm.s10_THAOR.bparm EQ 10)
+{
+  IF (VM.SOD_SPELL.WOBJECT EQ IDD_VINESI)	//object satisfies
+  {
+    if (vm.S33_LEVER.bstate GTE 70) // THE DRYPIT IS SOLVED
+    {
+	"Thaor is pleased by your efforts and"
+	" has this piece of wisdom to offer you:"
+	""
+	"The Seed of your sacrifice must be planted"
+	"on the altar of 7 Moons.  You must set the"
+	"locks of the altar according to time."  
+
+    }
+
+
+    if  (vm.S33_LEVER.bstate LT 70) // THE dRYPIT NEEDS SOLVING
+    {
+	"Thaor is pleased by your efforts and"
+	" has this piece of wisdom to offer you:"
+	""
+	"The Seed of your sacrifice must be planted"
+	"on the altar of 7 Moons.  You must set the"
+	"locks of the altar according to time."  
+
+    }
+
+    PLAY "mYm1s"	//satisfied
+
+    vm.S10_THAOR.bParm = 11
+    
+    vm.SOD_ID.wParm = 80 
+    SIGNAL SOD_ID SIG_MEFLIN
+
+	vm.S1e_bin01.wObject = IDD_GVIAL
+	signal s1e_bin01 sig_open	
+
+	vm.S1e_bin02.wObject = IDD_GVIAL
+	signal s1e_bin02 sig_open	
+
+    exit
+  }	
+}
+
+
+if (vm.s10_THAOR.bparm EQ 12)
+{
+    IF (VM.SOD_SPELL.WOBJECT EQ IDD_CHRMALL)	//object satisfies 
+     {
+
+	"Thaor is most pleased to have received"
+	"the charm!  In return for the favor he"
+	"offers you a few gifts."
+
+	 	
+       PLAY "MYG1S"	//satisfied
+       vm.SOD_ID.wParm = 95 
+       SIGNAL SOD_ID SIG_MEFLIN
+
+	vm.S1e_bin01.wObject = IDD_DEATH
+	signal s1e_bin01 sig_open	
+
+	vm.S1e_bin02.wObject = IDD_DEATH
+	signal s1e_bin02 sig_open	
+
+	vm.S1e_bin03.wObject = IDD_DEATH
+	signal s1e_bin03 sig_open	
+
+       vm.S10_THAOR.bParm = 20	
+       exit	
+     }	
+}
+
+if (vm.s10_THAOR.bparm EQ 21)
+{
+    IF (VM.SOD_SPELL.WOBJECT EQ IDD_SPELL04)   //object satisfies
+     {
+	
+	"The soul of a red fish is a wonderful thing."
+        "Thaor is so pleased he offers you 3 vials of Gopa"
+ 	
+       PLAY "MYG2S"	//satisfied
+       vm.SOD_ID.wParm = 94 
+       SIGNAL SOD_ID SIG_MEFLIN
+
+	vm.S1e_bin01.wObject = IDD_GVIAL
+	signal s1e_bin01 sig_open	
+
+	vm.S1e_bin02.wObject = IDD_GVIAL
+	signal s1e_bin02 sig_open	
+
+	vm.S1e_bin03.wObject = IDD_GVIAL
+	signal s1e_bin03 sig_open	
+	
+       vm.S10_THAOR.bParm = 0	
+       exit	
+     }	
+}
+
+
+//---------GENERIC ITEMS-----------------------------------
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_FISH)	
+     {
+	"Thaor is pleased that you have brought"
+	"him a fish."	
+
+	vm.S1e_bin02.wObject = IDD_BAIT1
+	signal s1e_bin02 sig_open	
+
+	PLAY "MyVFISH"
+	vm.SOD_ID.wParm = 88
+    	SIGNAL SOD_ID SIG_MEFLIN
+     }
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_BOMB)	
+     
+     {
+	"Thaor quickly stashes the bomb"
+	"away and offers you something"
+	"in return."
+
+
+	vm.S1e_bin02.wObject = IDD_ENCHANT
+	signal s1e_bin02 sig_open	
+
+	PLAY "MyVBOMB"
+	vm.SOD_ID.wParm = 78 
+   	SIGNAL SOD_ID SIG_MEFLIN
+
+     }
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_SPELL)	
+     
+     {
+	"Thaor thanks you for the spell"
+	"and offers you items in return"
+
+	vm.S1e_bin02.wObject = IDD_GVIAL
+	signal s1e_bin02 sig_open	
+	
+	PLAY "Myvspell"
+	vm.SOD_ID.wParm = 75
+    	SIGNAL SOD_ID SIG_MEFLIN
+
+     }
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_PLANT)	
+     
+     {
+	"Although, Thaor has that ingredient,"
+	"he feels co-dependent enough to offer"
+	"you something for it anyway."
+
+	vm.S1e_bin02.wObject = IDD_BAIT6
+	signal s1e_bin02 sig_open	
+	
+	
+	PLAY "myvnn"
+	vm.SOD_ID.wParm = 71 
+    	SIGNAL SOD_ID SIG_MEFLIN
+
+     }
+
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_BAIT)	
+   {
+        "Thaor thanks you for the bait and offers you"
+        "a small token of his appreciation"	
+
+	vm.S1e_bin02.wObject = IDD_FISH3
+	signal s1e_bin02 sig_open	
+
+
+        PLAY "myvbait"
+        vm.SOD_ID.wParm = 80 
+        SIGNAL SOD_ID SIG_MEFLIN
+
+   }
+
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_GOPA)	
+     
+     {
+	"Thaor thanks you for the gopa berry and offers you"
+	"a small token of his appreciation"	
+
+	vm.S1e_bin02.wObject = IDD_alarm
+	signal s1e_bin02 sig_open	
+
+	vm.S1e_bin05.wObject = IDD_alarm
+	signal s1e_bin05 sig_open	
+
+
+	
+	PLAY "myvnot"
+	vm.SOD_ID.wParm = 90
+    	SIGNAL SOD_ID SIG_MEFLIN
+
+     }
+
+   IF (VM.SOD_SPELL.WCLASS EQ IDC_MAGIC)	
+     
+     {
+	"Thaor thanks you for the magical item and offers you"
+	"a small token of his appreciation"	
+
+	vm.S1e_bin02.wObject = IDD_GVIAL
+	signal s1e_bin02 sig_open	
+
+	PLAY "myvmagc"
+	vm.SOD_ID.wParm = 75
+    	SIGNAL SOD_ID SIG_MEFLIN
+
+     }
+
+
+[TOOR]
+	"I am TOOR"
+
+[RATHE]
+	"I am RATHE"
+
+[THAOR]
+	"I am THAOR"
+
+[EYTH]
+	"I am EYTH"
+
+[NROC]
+	"I am NROC"
+
+[PERST]
+	"I am PERST"
+
+/* End Of File */
+

@@ -1,0 +1,764 @@
+/*----------------------------------------------------------------------------
+; Copyright (C) 1997 Walter Bennett Advanced Technologies.  
+;
+; All Rights Reserved.  The source  code contained  in this  file is the 
+; confidential property of Walter Bennett Advanced Technologies. No part
+; of  this document  may be reproduced  or transmitted in any form or by
+; any means,  electronic  or  mechanical,  for any purpose,  without the 
+; express  written  permission of  Walter Bennett Advanced Technologies.
+;
+; File:       inspect.txt
+;
+; Description:
+;	Describes objects and object classes.
+;
+;
+; HISTORY
+;
+;   Date    Who  Comment
+; --------  ---  -------------------------------------------------------------
+; 02/13/97  gas  Created.
+; 
+----------------------------------------------------------------------------*/
+
+// Some handy color definitions:
+// 	    Color    index
+//		-----    -----
+
+#define BLACK	  0
+#define RED		  249
+#define BLUE	  252
+#define TEAL_1	  57
+#define TEAL_2	  58
+#define TEAL_3	  59
+#define TEAL_4	  60
+#define YELLOW	  114
+#define GOLD	  64
+
+#define WHITE	  255
+#define GREEN	  85
+
+//------------------------------------
+// Available fonts:
+
+#define IDS_FONTENG				0x00a0
+#define IDS_FONTPAR				0x00a1
+#define IDS_FONTVILL			0x00a2
+#define IDS_FONTCITY			0x00a3
+
+#define IDS_FONTENG_BIG			0x00a4
+#define IDS_FONTPAR_BIG			0x00a5
+#define IDS_FONTVILL_BIG		0x00a6
+#define IDS_FONTCITY_BIG		0x00a7
+
+#define IDS_FONTTNR12			0x00a8
+#define IDS_FONTTNR14			0x00a9
+#define IDS_FONTTNR16			0x00aa
+#define IDS_FONTTNR18			0x00ab
+
+#define IDS_FONTTNB12			0x00ac
+#define IDS_FONTTNB14			0x00ad
+#define IDS_FONTTNB16			0x00ae
+#define IDS_FONTTNB18			0x00af
+
+#define OFF -1
+
+[COMMON] // Text displayed for every object or class
+  FONT IDS_FONTTNB16
+  SETY 260
+  SETX 480
+  COLOR BLUE
+  SHADOW OFF
+    ? Search_Item
+
+  // set default font for everyone
+  COLOR GOLD
+  SHADOW BLACK
+  FONT IDS_FONTTNB18
+  LINE 3 CENTER
+
+[IDD_SCOOPE IDD_SCOOPF]
+    PLAY "vor04b"
+
+	"The Kusadi is an ancient tool used for"
+	"the containment of Nystram - the currency of Azaria."
+
+  // split up for the remainder ...
+  FONT IDS_FONTTNR12
+  LINE 10 SHADOW RED COLOR 250
+
+  [IDD_SCOOPE]
+	"(Your scoop is EMPTY)"
+
+  [IDD_SCOOPF]
+    "(Your scoop is FULL)"
+
+ 
+[IDD_YMUSHSPT]
+    "A Yellow Mushroom"
+
+[IDD_MATCH]
+	"A burning match"
+
+[IDD_FISHASH1
+ IDD_FISHASH2
+ IDD_FISHASH3
+ IDD_FISHASH4
+ IDD_FISHASH5
+ IDD_FISHASH6
+ IDD_FISHASH7
+ IDD_FISHASH8
+ IDD_FISHASH9
+ IDD_FISHASH10
+]
+
+	"This is a pouch of fish ashes."
+
+
+
+//RICK BEGINS EDITING
+
+[IDD_VIAL1]
+
+	"This small vial may contain 40 scoops of Nystram"
+
+[IDD_VIAL2]
+
+	"This medium vial may contain 60 scoops of Nystram"
+
+[IDD_VIAL3]
+
+	"This large vial may contain 80 scoops of Nystram"
+
+[IDD_CHEMV01			
+IDD_CHEMV02			
+IDD_CHEMV03			
+IDD_CHEMV04			
+IDD_CHEMV05			
+IDD_CHEMV06			
+IDD_CHEMV07			
+IDD_CHEMV08			
+IDD_CHEMV09			
+IDD_CHEMV10		
+IDD_CHEMV11			
+IDD_CHEMV12			
+IDD_CHEMV13			
+IDD_CHEMV14			
+IDD_CHEMV15			
+IDD_CHEMV16			
+IDD_CHEMV17			
+IDD_CHEMV18			
+IDD_CHEMV19			
+IDD_CHEMV20]			
+
+	"This vial contains a chemical in its raw state"
+	"such chemicals are used to manufacture objects."
+
+[IDD_CORCARD1
+IDD_CORCARD2	
+IDD_CORCARD3	
+IDD_CORCARD4	
+IDD_CORCARD5	
+IDD_CORCARD6]	
+
+	"This card contains information that can be read"
+	"from the green monitors in the Etnoc library."
+
+
+[IDD_LAMP]			
+
+	"This lamp would be useful if there were"
+	"any dark places on Azaria."
+
+[IDD_VASE1]			
+
+	"This vase makes a nice decorative statement." 
+
+[IDD_STATUE]			
+
+	"Art from the post dark age renaissance period"	 
+
+[IDD_PORT]			
+
+	"This is a portrait" 
+
+[IDD_FAN]				
+
+	"This is a fan"
+
+
+[IDD_POLE1			
+IDD_POLE2			
+IDD_POLE1B0			
+IDD_POLE1B1			
+IDD_POLE1B2			
+IDD_POLE1B3			
+IDD_POLE1B4			
+IDD_POLE1B5			
+IDD_POLE1B6			
+IDD_POLE1B7			
+IDD_POLE1B8			
+IDD_POLE1B9			
+IDD_POLE2B0			
+IDD_POLE2B1			
+IDD_POLE2B2			
+IDD_POLE2B3			
+IDD_POLE2B4			
+IDD_POLE2B5			
+IDD_POLE2B6			
+IDD_POLE2B7			
+IDD_POLE2B8			
+IDD_POLE2B9]			
+
+	"This fishing pole may be used for catching"
+	"any of Azaria’s numerous fish."
+
+
+
+[IDD_BAIT0]
+
+	"This grub will soon blossom into a flying insect"
+	"that pollinates the trees of Azaria.  In its larvae"
+	"state the grub is known for its excellent capacity"
+	"to catch fish."
+
+[IDD_BAIT1]
+
+	"This flying insect pollinates the trees of Azaria."
+	"It is also useful at catching fish."
+
+[IDD_BAIT2]
+
+	"This small fast moving fish is great at catching"
+	"larger more useful fish."
+
+
+
+[IDD_BAIT3]
+
+	"This worm makes is known for catching fish."
+
+
+[IDD_BAIT4]
+
+	"This grub will soon blossom into a flying insect"
+	"that pollinates the trees of Azaria.  In its larvae"
+	"state the grub is known for its excellent capacity"
+	"to catch fish."
+
+[IDD_BAIT5]
+
+	"This grub will soon blossom into a flying insect"
+	"that pollinates the trees of Azaria.  In its larvae"
+	"state the grub is known for its excellent capacity"
+	"to catch fish."
+
+
+[IDD_BAIT6]
+	
+	"This lure has been designed to scientifically stimulate"
+	"the feeding habits of Azarian fish" 
+
+
+[IDD_BAIT7]
+	
+	"This lure has been designed to scientifically stimulate"
+	"the feeding habits of Azarian fish" 
+
+
+[IDD_BAIT8]
+	
+	"This lure has been designed to scientifically stimulate"
+	"the feeding habits of Azarian fish" 
+
+
+
+[IDD_BAIT9]
+	
+	"This lure has been designed to scientifically stimulate"
+	"the feeding habits of Azarian fish" 
+
+
+
+[IDD_FISH1
+IDD_FISH2
+IDD_FISH3
+IDD_FISH4
+IDD_FISH5
+IDD_FISH6
+IDD_FISH7
+IDD_FISH8
+IDD_FISH9
+IDD_FISH10]
+
+	"This fish, when burned to an ashen state,"
+	"is used for making spells."
+
+
+[IDD_LOG]
+	
+	"This is a piece of wood useful for making fires."
+
+[IDD_MATCH]
+
+	"This is a piece of wood on fire"
+
+[IDD_WATER]
+
+	"How did you get that???"
+
+
+[IDD_BUCKE IDD_BUCKF]
+
+	"This is a bucket for holding water"
+
+
+
+  // split up for the remainder ...
+  FONT IDS_FONTTNR12
+  LINE 10 SHADOW RED COLOR 250
+
+  [IDD_BUCKE]
+	"(Your bucket is EMPTY)"
+
+  [IDD_BUCKF]
+    "(Your bucket is FULL)"
+
+
+[IDD_SHOVEL]
+
+	"Shovels are used for digging"
+	"but not in this game. Maybe in the sequel"
+
+[IDD_BOMB1]	
+	
+	"This explosive device is potentially deadly"
+	"use with caution."
+
+[IDD_BOMB2]	
+
+	"This explosive device is potentially deadly"
+	"use with caution."
+
+
+[IDD_H2OMASK]	
+
+	"This mask supplies fresh oxygen for a limited time."	
+
+
+[IDD_NYSMASK]	
+
+	"This mask supplies fresh oxygen for a limited time."	
+
+
+
+[IDD_PICKAXE]
+	
+	"This pickax is great for breaking rocks."
+	
+[IDD_CLOCK]	
+
+	"This clock can not keep time but one of our artists"
+	"thought it would make a good mantle piece."
+
+
+[IDD_LAVA]	
+
+	"Even on Azaria, lava lamps are popular."
+
+
+[IDD_HAMMER]	
+
+	"This is a hammer."
+
+
+[IDD_CROWBAR]	
+
+	"This crowbar is used anywhere you might"
+	"need a little leverage."
+
+
+[IDD_MEMFUSE]
+
+	"This is an ancient fuse.  Its purpose is not recorded."
+
+[IDD_CITLOCK]
+
+	"The Etnoc lock is used to lock the Nystram mines"
+	"for the people of Etnoc."
+
+[IDD_CITKEY]	
+
+	"The Etnoc key will open locks that"
+	"belong to the Etnoc people."
+
+
+[IDD_VILLOCK]	
+
+	"The Niret lock is used to lock the Nystram mines"
+	"for the people of Niret."
+
+[IDD_VILKEY]	
+
+	"The Niret key will open locks that"
+	"belong to the Niret people."
+
+[IDD_ROCK]
+
+	"This is a obviously a rock. You would not want"
+	"to be between this and a hard place."
+
+
+[IDD_FERNLEAF]	
+	
+	"This fern is indigenous to Azaria. It is used"
+	"to make spells." 
+
+
+[IDD_GLEAFSPT]	
+
+	"This common green plant is found in all areas"
+	"of Azaria.  It is used in certain spells."
+
+[IDD_OMUSHSPT]	
+
+	"This orange mushroom is found in all areas of Azaria."
+	"It is used in the production of certain spells."
+
+
+[IDD_PFLWRSPT]	
+		
+	"This pink flower is found in all regions of Azaria."
+	"It is used to make spells." 
+
+
+[IDD_PLEAFSPT]	
+	
+	"This common pink plant is found in all areas of Azaria."
+	"It is used in certain spells."
+
+
+
+[IDD_BLUEBERRY]	
+	
+	"This blue berry is found in all areas of Azaria."
+	"It is used to make spells."
+
+
+[IDD_REDBERRY]	
+	
+	"This red berry is found in all areas of Azaria."
+	"It is used to make spells."
+
+
+[IDD_WFLWRSPT]	
+	
+	"This rare white flower is found in all regions of Azaria."
+	"It is used to make spells."
+
+
+[IDD_YFLWRSPT]	
+
+	"This yellow flower is found in all regions of Azaria."
+	"It is used to make spells."
+
+
+[IDD_YMUSHSPT]	
+
+	"This yellow mushroom is found in all areas of Azaria."
+	"It is used in the production of certain spells"
+
+[IDD_WKING]	
+
+	"A king can move one square in any direction"
+
+[IDD_WQUEEN]
+
+	"A queen can move any number of squares in any direction"
+	"within a free line of sight."
+
+
+[IDD_WPAWN]
+	
+	"A pawn can move forward only one square at a time"
+	"except on the first move when a pawn may move forward"
+	"2 squares. A pawn may be attacked if it chooses to move"
+	"these two squares as if it took two turns to move to the"
+	"new square. Pawns attack only diagonally forward."
+
+
+[IDD_WROOK]	
+
+	"A Rook may may move any number of squares horizontally or"
+	"vertically but not diagonally."
+
+
+[IDD_WKNIGHT]	
+
+	"A Knight moves two squares in one direction (not diagonally)"
+	"followed by one square in another (also not diagonally)."
+		
+[IDD_WBISHOP]	
+
+	"A Bishop may move any number of squares in any non blocked"
+	"diagonal direction."
+
+
+
+[IDD_WKINGME]	
+
+	"Ahhh a KING"
+
+
+
+[IDD_BKING]
+
+	"A king can move one square in any direction"
+
+[IDD_BQUEEN]
+
+	"A queen can move any number of squares in any direction"
+	"within a free line of sight."
+
+
+[IDD_BPAWN]	
+
+	"A pawn can move forward only one square at a time"
+	"except on the first move when a pawn may move forward"
+	"2 squares. A pawn may be attacked if it chooses to move"
+	"these two squares as if it took two turns to move to the"
+	"new square. Pawns attack only diagonally forward."
+
+[IDD_BROOK]	
+
+	"A Rook may may move any number of squares horizontally or"
+	"vertically but not diagonally."
+
+[IDD_BKNIGHT]	
+
+	"A Knight moves two squares in one direction (not diagonally)"
+	"followed by one square in another (also not diagonally)."
+
+
+[IDD_BBISHOP]	
+
+	"A Bishop may move any number of squares in any non blocked"
+	"diagonal direction."
+
+
+
+[IDD_BKINGME]	
+
+	"Ahhh a KING"
+
+
+[IDD_REVERSIA]
+
+	"This is a Reversi piece"
+
+[IDD_REVERSIB]	
+
+	"This is a Reversi piece"
+
+
+[IDD_GOBTRFLY]	
+
+	"This is a go piece"
+
+[IDD_GODRAGON]	
+	
+	"This is a go piece"
+
+
+
+
+[IDD_SPINSPELL]	  
+
+	"This is a spin spell - it does nothing."
+
+[IDD_SPINNER]		
+
+	"How did you get this??"
+
+[IDD_FREQUENCY]
+
+	"This is an old useless sprite."
+
+
+[IDD_SPRINGS]	
+
+	"You have captured the soul of a fish."
+
+[IDD_SPELL01]
+
+	"This spell is undocumented."
+
+[IDD_SPELL02]
+
+	"This spell is undocumented."
+
+[IDD_SPELL03]
+
+	"This spell is undocumented."
+
+[IDD_SPELL04]
+
+	"This spell is undocumented."
+
+[IDD_SPELL05]
+
+	"This spell is undocumented."
+
+[IDD_SPELL06]
+
+	"This spell is undocumented."
+
+[IDD_SPELL07]
+
+	"This spell is undocumented."
+
+[IDD_SPELL08]
+
+	"This spell is undocumented."
+
+[IDD_SPELL09]
+
+	"This spell is undocumented."
+
+[IDD_SPELL10]
+
+	"This spell is undocumented."
+
+[IDD_SPELx01]
+
+	"This spell is undocumented."
+
+[IDD_SPELx02]
+
+	"This spell is undocumented."
+
+[IDD_SPELx03]
+
+	"This spell is undocumented."
+
+[IDD_SPELx04]
+
+	"This spell is undocumented."
+
+[IDD_SPELx05]
+
+	"This spell is undocumented."
+
+[IDD_SPELx06]
+
+	"This spell is undocumented."
+
+[IDD_SPELx07]
+
+	"This spell is undocumented."
+
+[IDD_SPELx08]
+
+	"This spell is undocumented."
+
+[IDD_SPELx09]
+
+	"This spell is undocumented."
+
+[IDD_SPELx10]
+
+	"This spell is undocumented."
+
+
+[IDD_ENCHANT]
+
+	"This object, when dropped on someone will force"
+	"them to follow you."
+
+[IDD_STALKER]
+
+	"This spell, when dropped on an individual, causes"
+	"you to follow that person."
+
+
+[IDD_BLINDNESS]
+
+	"This spell, when dropped on someone, causes" 
+	"that person’s vision to be impaired" 
+
+[IDD_HOLDING]	
+
+	"This spell will freeze another player in a location."
+
+
+[IDD_TRANSFER]	
+
+	"This spell will exchange a recipients energy level"
+	"with the person casting it."
+
+[IDD_ALARM]	
+
+	"This object is an alarm.  When activated it will"
+	"notify you when an area has been accessed."
+
+[IDD_RECORDER]	
+
+	"This object is an alarm.  When activated it will"
+	"notify you when an area has been accessed."
+
+[IDD_TELEKINESIS]	
+
+	"This spell aids in the movement of large objects."
+
+
+[IDD_PROTECT]	
+
+	"This spell protects the recipient from"
+	"all of the harmful spells."
+
+[IDD_DEATH]	
+
+	"This evil spell immediately kills another player."
+
+
+
+[IDD_STRENGTH]	
+
+	"This spell increases a players ability to move large objects."
+
+
+[IDD_BANISHMENT]	
+
+	"This spell will send its recipient to an awful place."
+
+[IDD_NYBREATH]	
+
+	"This spell provides the recipient with fresh oxygen for a time."
+
+
+[IDD_WETBREATH]	
+
+	"This spell provides the recipient with fresh oxygen for a time."
+
+[IDD_MEMSPELL]	
+
+	"There is no information on this ancient spell."
+
+[IDD_EYESPELL]	
+
+	"There is no information on this ancient spell."
+
+
+[IDD_EYEWAND]	
+
+	"This ancient device aids in translation."
+
+
+
+[IDD_MAPBTN]	
+
+	"You have uncovered ancient technology."
+	"This map was once used for transportation."
+
+/* End Of File */
+

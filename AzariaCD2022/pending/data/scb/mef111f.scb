@@ -1,0 +1,190 @@
+/*----------------------------------------------------------------------------
+; Copyright (C) 1997 Walter Bennett Advanced Technologies.  
+;
+; All Rights Reserved.  The source  code contained  in this  file is the 
+; confidential property of Walter Bennett Advanced Technologies. No part
+; of  this document  may be reproduced  or transmitted in any form or by
+; any means,  electronic  or  mechanical,  for any purpose,  without the 
+; express  written  permission of  Walter Bennett Advanced Technologies.
+;
+; File:       meflin.txt
+;
+; Description:
+;	Describes objects and object classes.
+;
+;
+; HISTORY
+;
+;   Date    Who  Comment
+; --------  ---  -------------------------------------------------------------
+; 03/27/97  guy  Created.
+; 
+----------------------------------------------------------------------------*/
+
+// Some handy color definitions:
+// 	    Color    index
+//		-----    -----
+
+#define BLACK	  0
+#define RED		  249
+#define BLUE	  252
+#define TEAL_1	  57
+#define TEAL_2	  58
+#define TEAL_3	  59
+#define TEAL_4	  60
+#define YELLOW	  114
+#define GOLD	  64
+
+#define WHITE	  255
+#define GREEN	  85
+
+//------------------------------------
+// Available fonts:
+
+#define IDS_FONTENG				0x00a0
+#define IDS_FONTPAR				0x00a1
+#define IDS_FONTVILL			0x00a2
+#define IDS_FONTCITY			0x00a3
+
+#define IDS_FONTENG_BIG			0x00a4
+#define IDS_FONTPAR_BIG			0x00a5
+#define IDS_FONTVILL_BIG		0x00a6
+#define IDS_FONTCITY_BIG		0x00a7
+
+#define IDS_FONTTNR12			0x00a8
+#define IDS_FONTTNR14			0x00a9
+#define IDS_FONTTNR16			0x00aa
+#define IDS_FONTTNR18			0x00ab
+
+#define IDS_FONTTNB12			0x00ac
+#define IDS_FONTTNB14			0x00ad
+#define IDS_FONTTNB16			0x00ae
+#define IDS_FONTTNB18			0x00af
+
+#define OFF -1
+
+
+[COMMON] // Text displayed for every object or class
+  FONT IDS_FONTTNB16
+  SETY 200
+  SETX 480
+  COLOR BLUE
+  SHADOW OFF
+    ? Search_Item
+
+  // set default font for everyone
+  COLOR GOLD
+  SHADOW BLACK
+  FONT IDS_FONTTNB18
+  LINE 3 CENTER
+
+[NEELP]
+
+
+if (vm.S11_MEFLIN.bparm EQ 21)
+  {
+    "Neelp is asking for a specific item"
+
+    PLAY "neelpGI2"
+    vm.SOD_ID.wParm = 0 
+    SIGNAL SOD_ID SIG_MEFLIN
+  }
+
+
+  if (vm.S11_MEFLIN.bparm EQ 20)
+  {
+    "Neelp the Meflin imparts these words:"
+	""
+    "Bring to me a red Gopa berry for my brew. If you"
+    "bring it to me, I will reward you."
+
+    PLAY "neelpGq2"
+    vm.SOD_ID.wParm = 4 
+    SIGNAL SOD_ID SIG_MEFLIN
+    vm.S11_MEFLIN.bParm = 21
+  }
+
+  if (vm.S11_MEFLIN.bparm EQ 12)
+  {
+    "Neelp wishes to know if you have brought"
+    "the item he requested."
+
+    PLAY "neelpGI1"
+    vm.SOD_ID.wParm = 0 
+    SIGNAL SOD_ID SIG_MEFLIN
+  }
+
+  if (vm.S11_MEFLIN.bparm EQ 11)
+  {
+    "Neelp the Meflin imparts these words:"
+	""
+    "One of our most sacred rituals requires"
+    "the soul of a fish.  If you bring me the"
+    "soul, I will gladly reward you."
+
+
+
+    PLAY "neelpGq1"
+    vm.SOD_ID.wParm = 3 
+    SIGNAL SOD_ID SIG_MEFLIN
+    vm.S11_MEFLIN.bParm = 12
+  }
+
+  if (vm.S11_MEFLIN.bparm EQ 10)
+  {
+    "Have you found the Sacred Amulet? "
+    PLAY "neelpI1"
+   		   
+   vm.SOD_ID.wParm = 0
+   SIGNAL SOD_ID SIG_MEFLIN
+  }
+
+
+  if (vm.S11_MEFLIN.bparm LTE 0)
+  {
+    "Neelp graciously beckons you to find the"
+    "Sacred Amulet which he thinks he has lost"
+    "somewhere in the Western area of Azaria."
+    "If you return the Amulet he will certainly"
+    "reward you with Gopa."
+    PLAY "neelpq1"
+   
+   vm.S11_MEFLIN.bParm = 10
+
+   vm.SOD_ID.wParm = 26
+   SIGNAL SOD_ID SIG_MEFLIN
+   
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+[TOOR]
+	"I am TOOR"
+
+[RATHE]
+	"I am RATHE"
+
+[THAOR]
+	"I am THAOR"
+
+[EYTH]
+	"I am EYTH"
+
+[NROC]
+	"I am NROC"
+
+[PERST]
+	"I am PERST"
+
+/* End Of File */
+
