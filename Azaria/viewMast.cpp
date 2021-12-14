@@ -48,25 +48,14 @@ void VIEW::Paint(int etime, int bForceRefresh)
 	// Here we need to test for dirty rectangles before blitting ...
 	// how about keeping a list of dirty rectangles?
 	// Or better yet,  we immediatly blt sprite rectangles to the display?
-  if (bForceRefresh)
-	surface.SetAllDirty();
-
-  // look for sprites that have moved or changed...
-  if (spr_changed)
-  {
-	  if (m_machines_changed)
-	  {
 		  gdbt_machines.Paint(&surface, view_id);
-		  m_machines_changed = FALSE;
-	  }
-	  spr_changed = FALSE;
-  }
 }
 
 //----------------------------------------------------------------------------
 void VIEW::BlitToDisplay()
 {
   viewBlt(&surface, &fbd);
+  memcpy(surface.m_bits, restore_buffer, restore_size);
 }
 
 //----------------------------------------------------------------------------
@@ -284,6 +273,8 @@ VIEW::~VIEW()
 	gdbt_machines.Release(view_id);
 
 	surface.freeBits();
+
+	free(restore_buffer);
 }
 
 //----------------------------------------------------------------------------
@@ -338,6 +329,10 @@ VIEW::VIEW(int _view_id, const char *_name, int _style)
 	// if its compressed then uncompress it:
 	if (surface.IsCompressed())
 	  surface.UnCompress();
+	
+	restore_size = surface.m_hdr.height*surface.m_hdr.pitch;
+	restore_buffer = (unsigned char*)malloc(restore_size);
+	memcpy(restore_buffer, surface.m_bits,restore_size);
 
 	if (surface.GetPalette() != NULL)
 	{
@@ -436,6 +431,9 @@ void viewBlt(ONE *one, FBLT_DSCR *fbd)
 		ddrval = DDoneBlt(&rect, display.GetBackBuffer(), one, fbd);
 		if (ddrval != DD_OK)
 		  Msg("viewBlt - %s", display.GetDdError(ddrval));
+	}
+	else {
+		printf("%s(%d): Validate failed\n", __FILE__, __LINE__);
 	}
 
   }

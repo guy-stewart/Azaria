@@ -131,20 +131,6 @@ void SPIRIT::ON()
 }
 
 //----------------------------------------------------------------------------
-void SPIRIT::OFF()
-{
-	assert(this);
-	if (m_on)  // don't replace the background if we are not on the canvas:
-	{
-		// replace the background:
-  		m_fbdBones.BonesOn(m_fbd.m_dst_x, m_fbd.m_dst_y);
-		m_fbdBones.Blt(m_canvas,&m_bone);
-
-		m_on = FALSE;
-	}
-}
-
-//----------------------------------------------------------------------------
 void SPIRIT::GetRect(RECT *rect)
 {
 	SetRect(rect, 
@@ -370,7 +356,6 @@ void SPIRIT::Paint(WORD view_id)
   {
 	if ((c_view[i]==view_id) && c_pool[i]->m_i_own_it)
 	{
-	  c_pool[i]->OFF();
 	  if (c_pool[i]->bMoreFrames)
 	  {
 		  c_pool[i]->ON();
@@ -409,6 +394,7 @@ void SPIRIT::VideoON(WORD view_id)
 //----------------------------------------------------------------------------
 void SPIRIT::VideoOFF(WORD view_id) 
 {
+	/*
   int i;
 
   for (i=0;i<c_count;i++)
@@ -418,5 +404,6 @@ void SPIRIT::VideoOFF(WORD view_id)
 	  c_pool[i]->OFF();
 	}
   }
+  */
 }
 

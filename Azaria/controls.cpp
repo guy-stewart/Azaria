@@ -80,7 +80,6 @@ BOOL CONTROL::PtInRect(POINT p)
 void CONTROL::Refresh()
 {
   m_fbd.Blt(&view->surface, &m_spr->sprite);
-  view->Invalidate();
 }
 
 //----------------------------------------------------------------------------
@@ -160,16 +159,16 @@ void BUTTON::SetFocus(POINT p, BOOL bHasFocus)
   if (bHasFocus)
   {
     Wave::Play(SOUND_BTNDRAG);
-	sprBtn->OFF();
+	//sprBtn->OFF();
 	sprHilight->ON();
   }
   else
   {
-	sprHilight->OFF();
+	//sprHilight->OFF();
 	sprBtn->ON();
   }
 
-  view->Invalidate();
+  //view->Invalidate();
 }
 
 //----------------------------------------------------------------------------
@@ -200,16 +199,16 @@ void CHECKBOX::SetChecked(BOOL bChecked)
 
   if (bIsChecked)
   {
-	sprBtn->OFF();
-	sprHilight->ON();
+	//sprBtn->OFF();
+	//sprHilight->ON();
   }
   else
   {
-	sprHilight->OFF();
+	//sprHilight->OFF();
 	sprBtn->ON();
   }
 
-  view->Invalidate();
+  //view->Invalidate();
 }
 
 //----------------------------------------------------------------------------
@@ -274,7 +273,7 @@ void LISTBOX::Write(int position, COLORREF color)
 	font.TextOut(&view->surface, BLACK, left+1, y+1, szDesc);
 	font.TextOut(&view->surface, color, left, y, szDesc);
 
-	view->Invalidate();
+	//view->Invalidate();
 }
 
 //----------------------------------------------------------------------------
@@ -366,7 +365,7 @@ void EDITBOX::Write(char *buff, int color)
 {
 	font.TextOut(&view->surface, BLACK, left+1, top+1, buff);
 	font.TextOut(&view->surface, color, left, top, buff);
-	view->Invalidate();
+	//view->Invalidate();
 }
 
 //----------------------------------------------------------------------------
@@ -464,7 +463,7 @@ bLeftFocus(FALSE)
   thumb.Move(x+(value*width/(max-min)), y, 0);
   thumb.Animate(view->view_id, TRUE /* LOOP */);
   thumb.ON();
-  view->Invalidate();
+  //view->Invalidate();
 }
 
 //----------------------------------------------------------------------------
@@ -487,12 +486,12 @@ WORD SLIDER::Grab(POINT p)
 
   Wave::Play(SOUND_CLICK);
 
-  thumb.OFF();
+  //thumb.OFF();
   thumb.Move(x+(value*width/(max-min)), y, 0);
   thumb.ON();
 
   view->OnEvent(control_id, value);
-  view->Invalidate();
+  //view->Invalidate();
 
   return FALSE;
 }

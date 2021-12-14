@@ -234,11 +234,6 @@ void SURROUND::Paint(int etime, int flags)
   static CARDINALS hands;
   int i;
 
-  // remove card hands:
-  for (i=0;i<8;i++)
-  {
-	hand[i]->OFF();
-  }
 
   VIEW::Paint(etime, flags);
 

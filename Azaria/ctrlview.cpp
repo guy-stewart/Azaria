@@ -121,3 +121,8 @@ void CTRL_VIEW::SetName(const char *name)
 void CTRL_VIEW::OnEvent(int control_id, int iParm)
 {
 }
+
+void CTRL_VIEW::Paint(int etime, int flags) {
+  CONTROL *ctrl = control[0];
+  ctrl->Refresh();
+}

@@ -33,13 +33,8 @@ void INVENTORY::Paint(int etime, int flags)
 {
   int i;
 
-  for (i=2;i>=0;i--)
-	if (m_Spirit[i])
-		m_Spirit[i]->OFF();
-
-	if (m_NewSpirit)
+ 	if (m_NewSpirit)
 	{
-
 	  for (i=0;i<3;i++)
 		if (m_Spirit[i])
 		{
@@ -135,7 +130,6 @@ WORD INVENTORY::Grab(POINT p, BOOL bClickOnly, POINT *obj_pos)
 
 	// repaint inventory next time around:
 	m_NewSpirit = TRUE;
-	Invalidate();
 
 	obj_pos->x = 70;
 	obj_pos->y = Y_POS;

@@ -60,7 +60,6 @@ public:
 
 public: // interface:
 	void ON();
-	void OFF();
 	void Move(int x, int y, int flags);
 	void SetFrame(int frame);
     BOOL PtInSpirit(POINT p);

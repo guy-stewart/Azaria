@@ -148,10 +148,7 @@ void TELETYPE::Paint(int etime, int flags)
   y=0;
   BOOL city_folk = local_player->GetCult() == CULT_CITY;
 
-  if (m_text_dirty)
   {
-	m_text_dirty = FALSE;
-
 	surface.Clear(BLACK);
 
 	// print all the buffered messages:

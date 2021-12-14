@@ -170,9 +170,6 @@ void FBLT_DSCR::BltRectangle(ONE *oneDest,ONE *oneSrc)
 				bDest = oneDest->getBits() + m_dst_x;
 			}
 
-			if (oneDest->m_DirtyRows)
-			  oneDest->m_DirtyRows[(y+dst_y)>>5] |= 1<<((y+dst_y)&0x1f); // set the dirty bit on the image.
-
 			aligned_memcpy(bDest, bSrc, dx);
 			bSrc += src_pitch;
 			bDest += dst_pitch;
@@ -200,9 +197,6 @@ void FBLT_DSCR::BltRectangle(ONE *oneDest,ONE *oneSrc)
 //----------------------------------------------------------------------------
 void FBLT_DSCR::Blt(ONE *oneDst, ONE *oneSrc)
 {
-  // set the target image dirty flag
-  oneDst->m_Dirty = TRUE;
-
 	// protect ourselves from misframed items:
 	if (m_frame >= oneSrc->GetFrames())
 		m_frame = oneSrc->GetFrames()-1;
@@ -219,20 +213,12 @@ void FBLT_DSCR::Blt(ONE *oneDst, ONE *oneSrc)
 		switch (m_style)
 		{
 		case BLT_LENSED:
-			if (m_mask)
-			{
-			  if (!oneSrc->m_AllDirty && oneSrc->m_DirtyRows)
-			  {
-				LensPortalDirty(oneDst, oneSrc);
-			  }
-			  else
-			  {
+			if (m_mask) {
 				LensPortal(oneDst, oneSrc);
-			  }
 			}
 			break;
 		case BLT_FLIPPED:
-			oneSrc->UnCompress();
+			// oneSrc->UnCompress();
 			if (oneSrc->IsCompressed())
 				BltCompressedFlip(oneDst, oneSrc);
 			else
@@ -248,7 +234,7 @@ void FBLT_DSCR::Blt(ONE *oneDst, ONE *oneSrc)
 		case BLT_RECTFLIP:
 		case BLT_RECT:
 		default:
-			oneSrc->UnCompress();
+			// oneSrc->UnCompress();
 			if (oneSrc->IsCompressed())
 			  BltCompressed(oneDst, oneSrc);
 			else

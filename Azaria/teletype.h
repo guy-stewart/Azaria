@@ -80,7 +80,6 @@ public:		// makers/breakers
 
 private:
     void _AppendMessage(DWORD pid, char *message, BYTE freq, BYTE lang); 
-    //void Msg( DWORD pid, const LPSTR fmt, ... );
 
 public:
     static void Dump();

@@ -111,6 +111,7 @@ public:
     CTRL_VIEW(int view_id);
     ~CTRL_VIEW();
     virtual void OnEvent(int control_id, int event_id);
+   	virtual void Paint(int etime, int flags);
 
   void SetName(const char *name);
 };

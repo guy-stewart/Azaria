@@ -62,6 +62,8 @@ private:
 public:
 	WORD view_id;
 	ONE surface;			// surface that gets painted if view paint is used.
+	unsigned char *restore_buffer;	// the original untouched image used to refresh the surface
+	long restore_size;
 	RECT srect;				// rectangle around the surface/canvas
 	FBLT_DSCR fbd;			// descriptor used to paint the view.
 	int view_type;		// how are the sprites drawn (icon, cursor, actor)

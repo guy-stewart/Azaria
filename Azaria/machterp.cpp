@@ -642,8 +642,7 @@ BOOL MACHINE::AutoTransition(int etime)
 					m_reg.wSprite = objdefGetLookActorId(GetRegVal(trans->m_bParm));
 				}
 
-				viewman.Invalidate(m_view_id, FALSE, TRUE);
-				m_Dirty = TRUE;
+
 				m_NewSprite = TRUE;
 
 				m_reg.Animate = m_reg.Loop = (trans->m_input == ASHOW);
@@ -1354,9 +1353,10 @@ void MACHINE::Signal(WORD wParm)
 //----------------------------------------------------------------------------
 void MACHINE::Paint(ONE *canvas)
 {
+/*	
 	if (m_Spirit)
 		m_Spirit->OFF();
-
+*/
 	if (m_NewSprite)
 	{
 		m_NewSprite = FALSE;
@@ -1411,9 +1411,6 @@ void MACHINE::Paint(ONE *canvas)
 //----------------------------------------------------------------------------
 void MACHINE::Erase()
 {
-	if (m_Spirit)
-		m_Spirit->OFF();
-
 }
 //----------------------------------------------------------------------------
 void MACHINE::Release()
@@ -1798,14 +1795,14 @@ void GDBT_MACHINES::Paint(ONE *canvas, WORD view_id)
 	MACHINE *machine;
 
 	SPIRIT::VideoOFF(view_id);
-
+/*
 	machine = GetFirst(view_id, &position);
 	while (machine)
 	{
 		machine->Erase();
 		machine = GetNext(view_id, &position);
 	}
-
+*/
 	tbl_altviews.Paint(canvas, view_id);
 
 	machine = GetLast(view_id, &position);
@@ -1990,8 +1987,6 @@ void ALTVIEW::Paint(ONE *canvas)
 //----------------------------------------------------------------------------
 void ALTVIEW::Erase()
 {
-  if (m_Spirit)
-	m_Spirit->OFF();
 }
 
 //----------------------------------------------------------------------------

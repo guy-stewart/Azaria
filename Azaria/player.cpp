@@ -674,7 +674,7 @@ void LOCAL_PLAYER::SendIntimateDetails(DWORD to)
 	if (!to)
 		flags = INTIMATE_PLAYERS;
 	else
-		flags = NULL;
+		flags = 0;
 
 	gdbt_players.SendUpdate(
 		to,

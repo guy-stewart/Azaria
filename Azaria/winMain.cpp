@@ -131,7 +131,7 @@ static void PauseGame()
 {
     Msg("**** PAUSE");
     bPaused = TRUE;
-    InvalidateRect(hWndMain, NULL, TRUE);
+    InvalidateRect(hWndMain, 0, TRUE);
 }
 
 /*

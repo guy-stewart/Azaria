@@ -71,16 +71,10 @@ public:
 	unsigned char *m_bits;
 private:
 	int32_t *m_frame_offset;	// array of offsets into an animation sequence.
-	BOOL m_AllDirty;		// the entire image is dirty.
-	BOOL m_Dirty;			// Just specific rows are dirty.
-	int32_t *m_DirtyRows;		// bitwise list of dirty rows.
 
 public: // constructors, destructors.
 	void INIT() {
 		memset(&m_hdr, 0, sizeof(ONE_HEADER));
-
-		m_Dirty = FALSE;
-		m_DirtyRows = NULL;
 
   		m_frame_offset = NULL;
 		m_pal=NULL;

@@ -516,9 +516,6 @@ ONE::~ONE()
 
   if (m_frame_offset)
 	free(m_frame_offset);
-
-  if (m_DirtyRows)
-	free(m_DirtyRows);
 }
 
 //----------------------------------------------------------------------------
@@ -690,25 +687,16 @@ int ONE::Init(int width, int height)
 //----------------------------------------------------------------------------
 void ONE::DoTheDirty()
 {
-  // long for every 2^5 rows.  (32 bits per long). 
-  // 1 extra long for the fiddly bits at the end.
-  m_DirtyRows = (int32_t*)calloc(1+(m_hdr.height>>5), sizeof(int32_t));
 }
 
 //----------------------------------------------------------------------------
 void ONE::SetClean()
 {
-  if (m_Dirty && m_DirtyRows)
-	memset(m_DirtyRows,0,(1+(m_hdr.height>>5)) * sizeof(int32_t));
-
-  m_Dirty = FALSE;
-  m_AllDirty = FALSE;
 }
 
 //----------------------------------------------------------------------------
 void ONE::SetAllDirty()
 {
-  m_AllDirty = TRUE;
 }
 
 //----------------------------------------------------------------------------
