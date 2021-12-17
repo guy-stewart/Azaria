@@ -28,27 +28,4 @@
 #include "spirit.h"
 
 #include "textutil.h"
-//----------------------------------------------------------------------------
-CFONT::CFONT(int font_id)
-{
-  	// get a pointer to the font:
-	hFont = sprSelect(font_id);
-	spr = sprGet(hFont);
-	fbd.SpriteInit(&spr->sprite);
-};
 
-//----------------------------------------------------------------------------
-CFONT::~CFONT()
-{
-    sprRelease(hFont);
-}
-
-//----------------------------------------------------------------------------
-// return width of text written
-int CFONT::TextOut(ONE *surface, int color, int sx, int sy, const char *buff)
-{
-  fbd.m_dst_x = sx;
-  fbd.m_dst_y = sy;
-
-  return fbd.Print(surface, &spr->sprite, buff, color);
-}

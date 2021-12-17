@@ -282,7 +282,6 @@ VIEW(view_id, "surround", BLT_LENSED)
 
   // initialize the lens:
   fbd.lensInit(surface.GetHeight(), fbd.m_dy);
-  surface.DoTheDirty();
 
 #if USE_PARTICLE_PHYSICS
 	m_px.Init(X_ACCEL_FACTOR, TERMINAL_VELOCITY, surface.GetHeight(), PHY_COMP_ETIME|PHY_UNIVERSE_WRAPS, X_FRICTION, m_posx);

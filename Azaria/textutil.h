@@ -23,56 +23,51 @@
 #define __TEXTUTIL_INCLUDED__
 
 
+// Cursor with a font:
 class CFONT {
 private:
-  int hFont;
-  SPR_OBJECT *spr; // pointer to the font sprite.
-  FBLT_DSCR fbd;	// handy fast blit descriptor
+  SPIRIT *sprite;
+  int x, y;
 public:
-    CFONT(int font_id);
-    ~CFONT();
+    CFONT(ONE *canvas, int font_id) {
+      	sprite = new SPIRIT(canvas, font_id);
+    };
+    ~CFONT() {
+      delete sprite;
+    };
 
-    int TextOut(ONE *surface, int color, int sx, int sy, const char *buff);
-    void Print(ONE *surface, const char *buffer, char color)
+    int TextOut(ONE *surface, int color, int sx, int sy, const char *buff) {
+      //----------------------------------------------------------------------------
+      x = sx;
+      y = sy;
+      x += sprite->TextOut(sx, sy, buff);
+    }
+
+  void Print(ONE *surface, const char *buff, char color)
   {
-	fbd.m_dst_x += fbd.Print(surface, &spr->sprite, buffer, color);
+      sprite->GetImage()->FillForeground(color);
+      x += sprite->TextOut(x, y, buff);
   }
 
   int GetHeight() 
   {
-	return spr->sprite.GetHeight()/spr->sprite.GetFrameCount();
+	  return sprite->GetHeight()/sprite->FrameCount();
   }
 
-  void SetPos(int x, int y)
+  void SetPos(int sx, int sy)
   {
-    fbd.m_dst_x = x;
-	fbd.m_dst_y = y;
+    x = sx;
+    y = sy;
   }
 
-    void CR()
+  void CR()
   {
-	fbd.m_dst_x = 0;
-	fbd.m_dst_y += GetHeight();
+     x = 0;
+	   y += GetHeight();
   }
 
-    int GetX() {return fbd.m_dst_x;}
-    int GetY() {return fbd.m_dst_y;}
-
-  FBLT_DSCR *GetFBD() {return &fbd;}
-};
-
-
-class XFONT {
-private:
-  SPIRIT *m_Spirit;
-public:
-    XFONT(ONE *canvas, int ids) {
-			    m_Spirit = new SPIRIT(canvas, ids);
-      };
-
-    int TextOut(ONE *canvas, int color, int sx, int sy, const char *buff) {
-      return m_Spirit->TextOut(sx, sy, buff);
-    }
+  int GetX() {return x;}
+  int GetY() {return y;}
 };
 
 #endif // __TEXTUTIL_INCLUDED__

@@ -62,8 +62,6 @@ void VIEW::BlitToDisplay()
 void VIEW::SetPainted(int frame) 
 {
   updatedFrames |= MSK_FRAME(frame);
-  if (updatedFrames == display.GetFrameMask())
-	surface.SetClean();
 }
 
 //----------------------------------------------------------------------------

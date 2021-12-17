@@ -122,6 +122,9 @@ void FBLT_DSCR::BltCompressed(ONE *dest, ONE *src)
   unsigned char *source = src->m_bits+src->m_frame_offset[m_frame];
   unsigned char *target = dest->m_bits;
 
+// TODO: delete this function
+// assert(false);
+
   int this_pitch;
   m_font_pitch = 0;
 
@@ -193,6 +196,9 @@ void FBLT_DSCR::BltFont(ONE *dest, ONE *src)
 
   unsigned char *source = src->m_bits+src->m_frame_offset[m_frame];
   unsigned char *target = dest->m_bits;
+
+// TODO: delete this function
+assert(false);
 
   int this_pitch;
   m_font_pitch = 0;
@@ -445,6 +451,9 @@ void FBLT_DSCR::GetCharBound(int *left, int *right, ONE *font)
   unsigned short x;
   unsigned short y;
     // UNUSED: unsigned int offset = 0;
+
+// TODO: delete this function
+	assert(false);
 
   unsigned char *source = font->m_bits+font->m_frame_offset[m_frame];
 

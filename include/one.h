@@ -108,16 +108,19 @@ public:
 	inline PALETTEENTRY *GetPalette() {return (m_hdr.m_flags&CUSTOM_PALETTE)?m_pal:NULL;}
 
 	inline void Clear(int color) {memset(m_bits, color, m_hdr.m_size);}
+	inline void FillForeground(int color) {
+		for (int i=0; i<m_hdr.m_size; i++) {
+			if (m_bits[i] != m_bits[0]) {
+				m_bits[i] = color;
+			}
+		}
+	}
 	// tools for compressed images:
 
 	BOOL IsCompressed() {return m_hdr.m_flags & ONE_IS_COMPRESSED;}
 	BOOL UnCompress();
     void Compress(XFile *xfile);
 	void ConvertTo32bit();
-
-	void DoTheDirty();
-	void SetClean();
-	void SetAllDirty();
 
 private:
     int CompressFrame(

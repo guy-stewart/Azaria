@@ -104,7 +104,7 @@ public:
 
 	void SetPainted(int frame);
 
-	inline void Invalidate() {updatedFrames = 0;surface.SetAllDirty();}; // paint canvas to display
+	inline void Invalidate() {updatedFrames = 0;}; // paint canvas to display
 	inline void InvSpirits() {spr_changed=TRUE, Invalidate();}; // repaint canvas also
 	inline void InvMachines() {m_machines_changed = TRUE, InvSpirits();}
 	inline void InvRegion() {updatedFrames = 0;}

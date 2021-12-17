@@ -184,6 +184,8 @@ void CURSOR::Init(int hSprite, POINT p)
 	// make sure we are cleaning up after ourself
 	assert(!spr);
 
+// TODO: convert from spr/fbd to sprite ...
+
 	m_hSprite = hSprite;
 
 	// Select the sprite:

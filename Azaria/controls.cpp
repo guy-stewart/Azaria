@@ -229,7 +229,7 @@ LISTBOX::LISTBOX(CFGVIEW *xView,
 				 int xCount, 
 				 const STRVAL xStrVal):
 CONTROL(xView, 0, ids, x, y),
-font(IDS_FONTTNB14)
+font(&view->surface, IDS_FONTTNB14)
 {
   IntVal = &Selected; // control returns value of selected item
   left = x+xo;
@@ -348,6 +348,7 @@ CONTROL(view, 0, ids, x, y)
   StrVal = BUFF;
 
 	m_font = new SPIRIT(&view->surface, IDS_FONTTNB18);
+  m_font->GetImage()->FillForeground(YELLOW);
 
   left = x+xo;
   top = y+yo;

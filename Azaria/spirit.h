@@ -60,7 +60,14 @@ public:
 
 public: // interface:
 	void ON();
-	void Move(int x, int y, int flags);
+	void Move(int x, int y, int flags) {
+		if (!this)
+			return;
+		m_pos.x = x;
+		m_pos.y = y;
+	};
+	int GetX() {return m_pos.x;};
+	int GetY() {return m_pos.y;};
 	void SetFrame(int frame);
     BOOL PtInSpirit(POINT p);
 	void Animate(WORD view_id, BOOL bLoop, BOOL bStartFromEnd=FALSE, BOOL bRewind=FALSE, BOOL bDestroy=FALSE);
@@ -74,17 +81,19 @@ public: // interface:
     static void VideoOFF(WORD view_id);
 
 	WORD LastFrame() {return m_spr->sprite.GetFrameCount()-1;}
+	WORD FrameCount() {return m_spr->sprite.GetFrameCount();}
 	WORD CurrFrame() {return m_fbd.GetFrame();}
 	void SetFramesPerSecond(int FramesPerSecond) {m_fbd.SetFramesPerSecond(FramesPerSecond);}
 
 	void GetRect(RECT *rect);
 	int GetWidth() {return m_spr->sprite.GetWidth();}
-	// void GetBoundingRect(RECT *rect) {m_fbd.GetBoundingRect(rect);};
+	int GetHeight() {return m_spr->sprite.GetHeight();}
+	ONE *GetImage() {return &m_spr->sprite;};
 	int TextOut(int sx, int sy, const char *buff) {
 		m_fbd.m_dst_x = sx;
 		m_fbd.m_dst_y = sy;
 		return m_fbd.XPrint(m_canvas, this, buff, 0);
-		};
+	};
 private:
     BOOL SetNextFrame(int etime);
 };

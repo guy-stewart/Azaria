@@ -93,15 +93,7 @@ SPIRIT::~SPIRIT()
   sprRelease(m_hSprite);
 }
 
-//----------------------------------------------------------------------------
-void SPIRIT::Move(int x, int y, int flags)
-{
-	if (!this)
-		return;
 
-	m_pos.x = x;
-	m_pos.y = y;
-}
 
 //----------------------------------------------------------------------------
 void SPIRIT::SetFrame(int frame)

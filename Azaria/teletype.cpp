@@ -35,7 +35,7 @@
 #define RED		  249
 #define BLUE	  252
 #define YELLOW	  114
-#define WHITE	  255
+#define WHITE	  15
 #define GREEN	  85
 
 BYTE color_freq[] = {RED, YELLOW, GREEN, WHITE, BLUE};
@@ -63,14 +63,14 @@ SCROLLVIEW(view_id)
   }
 
 	// get a pointer to the font:
-  font[0] = new CFONT(IDS_FONTTNR12);
-  font[1] = new CFONT(IDS_FONTPAR);
-  font[2] = new CFONT(IDS_FONTVILL);
-  font[3] = new CFONT(IDS_FONTCITY);
-  font[4] = new CFONT(IDS_FONTTNB18);
-  font[5] = new CFONT(IDS_FONTPAR_BIG);
-  font[6] = new CFONT(IDS_FONTVILL_BIG);
-  font[7] = new CFONT(IDS_FONTCITY_BIG);
+  font[0] = new CFONT(&surface, IDS_FONTTNR12);
+  font[1] = new CFONT(&surface, IDS_FONTPAR);
+  font[2] = new CFONT(&surface, IDS_FONTVILL);
+  font[3] = new CFONT(&surface, IDS_FONTCITY);
+  font[4] = new CFONT(&surface, IDS_FONTTNB18);
+  font[5] = new CFONT(&surface, IDS_FONTPAR_BIG);
+  font[6] = new CFONT(&surface, IDS_FONTVILL_BIG);
+  font[7] = new CFONT(&surface, IDS_FONTCITY_BIG);
 
 	m_text_dirty = TRUE;
 
