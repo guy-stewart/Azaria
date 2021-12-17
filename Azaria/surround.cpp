@@ -269,7 +269,7 @@ VIEW(view_id, "surround", BLT_LENSED)
 
   for (int i = 0; i<8; i++)
   {
-	hand[i] = new SPIRIT(&surface, IDS_LINKHAND, BLT_LENSED);
+	hand[i] = new SPIRIT(&surface, IDS_LINKHAND);
 	hand[i]->Move((i*surface.GetHeight())/8,150,0);
   }
 

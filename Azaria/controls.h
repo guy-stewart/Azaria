@@ -158,7 +158,7 @@ class EDITBOX : public CONTROL {
   int LEN;
   int MAXLEN;
   char BUFF[MAX_PANEL_BUFF_LEN];
-  CFONT font;
+  SPIRIT *m_font;
   int left, top;
 
 public:

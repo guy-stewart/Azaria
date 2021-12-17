@@ -409,7 +409,7 @@ void CURSOR::kill()
 	sprRelease(hSpr);
 	spr = NULL;
 
-	maskFree(&fbd.m_mask);
+	MASK::Free(&fbd.m_mask);
 	for (i=0;i<MAX_BUFFERS;i++)
 	{
 		setClean(i); // don't bother writing again!
@@ -467,10 +467,12 @@ void CURSOR::Show(int etime, int flags)
 	if ((mp[nBuff].x <= 640) && (mp[nBuff].y <= 480)
 	 && (mp[nBuff].x >= 0) && (mp[nBuff].y >= 0))
 	{
+		/*
 		fbdS.BonesOff(mp[nBuff].x, mp[nBuff].y);
 		viewGet(&poneBack[nBuff], &fbdS);
 		if (m_message) Msg("CursorOn(buff=%d)", nBuff);
 		setDirty(nBuff);
+		*/
 
 		// animate the cursor thing:
 		if (isDamned())
@@ -636,7 +638,7 @@ BOOL HELD_OBJECT::LoadObject(WORD obj_def_id, POINT pos)
 	held_offset.y = mouse_cursor.m_pos.y - pos.y;
 
   	int w = spr->sprite.GetWidth();
-	int h = (spr->sprite.GetHeight()/spr->sprite.GetFrames());
+	int h = (spr->sprite.GetHeight()/spr->sprite.GetFrameCount());
 	if (held_offset.x < 0 || held_offset.x > w)
 	{
 		pos.x = mouse_cursor.m_pos.x - w/2;
@@ -663,7 +665,7 @@ WORD HELD_OBJECT::DropObject(POINT *obj_center, POINT *pos) // return the coord 
 	{
 		setDying();
   		obj_center->x = spr->sprite.GetWidth()/2;
-		obj_center->y = (spr->sprite.GetHeight()/spr->sprite.GetFrames())/2;
+		obj_center->y = (spr->sprite.GetHeight()/spr->sprite.GetFrameCount())/2;
 	}
 
 	pos->x = mouse_cursor.m_pos.x - held_offset.x ;
@@ -688,7 +690,7 @@ void CursorMan::LoadObject(WORD obj_def_id, POINT pos)
 WORD CursorMan::DropObject(POINT *pCenter, POINT *pos)
 {
 	if (!holding_object)
-		return NULL;
+		return 0;
 	else
 	{
 		local_player->SetObject(0);

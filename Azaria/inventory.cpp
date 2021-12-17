@@ -47,7 +47,7 @@ void INVENTORY::Paint(int etime, int flags)
 		int position = m_position+i-1;
 		if (position>=0 && position<m_count && m_objects[position])
 		{
-			m_Spirit[i] = new SPIRIT(&surface, objdefGetLookIconId(m_objects[position]), BLT_PORTAL);
+			m_Spirit[i] = new SPIRIT(&surface, objdefGetLookIconId(m_objects[position]));
 			if (m_Spirit[i])
 			{
 				m_Spirit[i]->Move(70*i, Y_POS, 0);

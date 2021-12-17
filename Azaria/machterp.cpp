@@ -1369,10 +1369,7 @@ void MACHINE::Paint(ONE *canvas)
 
 		if (m_reg.wSprite)
 		{
-			if (canvas->m_hdr.user_flags & 1)
-				m_Spirit = new SPIRIT(canvas, m_reg.wSprite, BLT_LENSED);
-			else
-				m_Spirit = new SPIRIT(canvas, m_reg.wSprite, BLT_PORTAL);
+			m_Spirit = new SPIRIT(canvas, m_reg.wSprite);
 
 			if (m_Spirit)
 			{
@@ -1964,10 +1961,7 @@ void ALTVIEW::Paint(ONE *canvas)
 	  }
 	  if (machine->m_reg.wSprite)
 	  {
-	  	if (canvas->m_hdr.user_flags & 1)
-			m_Spirit = new SPIRIT(canvas, m_sprite, BLT_LENSED);
-		else
-			m_Spirit = new SPIRIT(canvas, m_sprite, BLT_PORTAL);
+		m_Spirit = new SPIRIT(canvas, m_sprite);
 
 		if (m_Spirit)
 		{

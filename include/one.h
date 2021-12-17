@@ -19,6 +19,9 @@
 ; 05/26/96  gas  Added one file compression.
 ; 
 ----------------------------------------------------------------------------*/
+
+#pragma once
+
 #include "ptypes.h"
 #include "xfile.h"
 #include <cstring>
@@ -98,7 +101,7 @@ public:
 	inline int32_t GetWidth() {return m_hdr.width;}
 	inline int32_t GetPitch() {return m_hdr.pitch;}
 	inline int32_t GetHeight() {return m_hdr.height;}
-	inline BYTE GetFrames() {return m_hdr.frames;}
+	inline BYTE GetFrameCount() {return m_hdr.frames;}
 	inline BYTE GetFP10S() {return (m_hdr.fp10s)?m_hdr.fp10s:100;}
 
 	void SetCustomPalette(PALETTEENTRY *pal) {m_hdr.m_flags|=CUSTOM_PALETTE; m_pal = pal;}
@@ -146,21 +149,4 @@ public:
 //----------------------------------------------------------------------------
 int oneWriteBMP(const char *filename, unsigned char *bits, BOOL bCompressed, int width, int height, int pitch, int frames, int FP10S);
 int oneWriteCustomBMP(const char *filename, unsigned char *bits, int width, int height, int pitch, PALETTEENTRY *pal);
-
-//----------------------------------------------------------------------------
-typedef struct {
-public:
-	int x;
-	int y;
-	int length;
-} MASK;
-
-MASK * maskCreate(unsigned char *bits, int h, int w, int pitch, unsigned char ck);
-
-int maskWrite(const char *lpszPathName, MASK *vector);
-extern int maskRead(const char *path, const char * lpszPathName, MASK **vector);
-int maskFree(MASK **vector);
-void maskGetBoundingRect(MASK *pvect, RECT *rect);
-BOOL maskPtInRect(MASK *pvect, POINT p);
-void maskMove(MASK *mask, int x_delta, int y_delta);
 

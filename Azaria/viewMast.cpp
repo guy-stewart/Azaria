@@ -48,7 +48,7 @@ void VIEW::Paint(int etime, int bForceRefresh)
 	// Here we need to test for dirty rectangles before blitting ...
 	// how about keeping a list of dirty rectangles?
 	// Or better yet,  we immediatly blt sprite rectangles to the display?
-		  gdbt_machines.Paint(&surface, view_id);
+	gdbt_machines.Paint(&surface, view_id);
 }
 
 //----------------------------------------------------------------------------
@@ -93,7 +93,7 @@ BOOL VIEW::PtInView(POINT p)
 	  p.y = x;
 	}
 
-	if (maskPtInRect(fbd.m_mask, p))
+	if (fbd.m_mask->PtInRect(p))
 	  return TRUE;
   }
   return FALSE;
@@ -266,7 +266,7 @@ VIEW::~VIEW()
 	switch (fbd.m_style) {
 	case BLT_LENSED:
 	case BLT_PORTAL:
-		maskFree(&fbd.m_mask);
+		MASK::Free(&fbd.m_mask);
 		break;
 	}
 
@@ -287,8 +287,8 @@ BOOL VIEW::ChangeSurface(char *newSurfaceName)
 //----------------------------------------------------------------------------
 void VIEW::Move(int x_delta, int y_delta)
 {
-  maskMove(fbd.m_mask, x_delta, y_delta);
-  maskGetBoundingRect(fbd.m_mask, &fbd.m_brect);
+  fbd.m_mask->Move(x_delta, y_delta);
+  fbd.m_mask->GetBoundingRect(&fbd.m_brect);
 
 	switch (fbd.m_style)
 	{
@@ -344,10 +344,11 @@ VIEW::VIEW(int _view_id, const char *_name, int _style)
 	fbd.m_style = _style;
 	fbd.setView(); // let blitters recognize this as a view.
 
+
 	//---------------------------------------------------------------------
 	// load the mask for this view:
-	if (!maskRead(AltMasksPath, p_tbl_view->portal_filename, &fbd.m_mask)
-	  &&!maskRead(MasksPath, p_tbl_view->portal_filename, &fbd.m_mask))
+	if (!MASK::Read(AltMasksPath, p_tbl_view->portal_filename, &fbd.m_mask)
+	  &&!MASK::Read(MasksPath, p_tbl_view->portal_filename, &fbd.m_mask))
 	{
 		strncpy(missing_file_name, p_tbl_view->portal_filename, _MAX_FNAME);
 		strncpy(missing_file_path1, MasksPath, _MAX_PATH);
@@ -355,7 +356,7 @@ VIEW::VIEW(int _view_id, const char *_name, int _style)
 		throw(ERROR_FILE_NOT_FOUND);
 	}
 
-	maskGetBoundingRect(fbd.m_mask, &fbd.m_brect);
+	fbd.m_mask->GetBoundingRect(&fbd.m_brect);
 
 	switch (fbd.m_style)
 	{

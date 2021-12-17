@@ -312,6 +312,7 @@ static TRIGGER triggers[] = {
 	{IDV_CONTINENT, {972, 302,  1077,  401},    	   IDV_GRNDCNT1},
 	{IDV_CONTINENT, {236, 82,  302,  123},    	   IDV_EYEA},			
 	{IDV_CONTINENT, {843, 105, 1014, 186},    	   IDV_WR1},			
+	{IDV_CONTINENT, {0, 0, 100, 100},    	   IDV_BOARD},			
 
 	// Scene 2:
 	{IDV_ctysmith, {264, 168, 856, 300}, IDV_ckeyvend},

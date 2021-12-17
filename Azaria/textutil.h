@@ -22,6 +22,7 @@
 #ifndef __TEXTUTIL_INCLUDED__
 #define __TEXTUTIL_INCLUDED__
 
+
 class CFONT {
 private:
   int hFont;
@@ -39,7 +40,7 @@ public:
 
   int GetHeight() 
   {
-	return spr->sprite.GetHeight()/spr->sprite.GetFrames();
+	return spr->sprite.GetHeight()/spr->sprite.GetFrameCount();
   }
 
   void SetPos(int x, int y)
@@ -54,13 +55,24 @@ public:
 	fbd.m_dst_y += GetHeight();
   }
 
-
     int GetX() {return fbd.m_dst_x;}
     int GetY() {return fbd.m_dst_y;}
 
   FBLT_DSCR *GetFBD() {return &fbd;}
-
 };
 
+
+class XFONT {
+private:
+  SPIRIT *m_Spirit;
+public:
+    XFONT(ONE *canvas, int ids) {
+			    m_Spirit = new SPIRIT(canvas, ids);
+      };
+
+    int TextOut(ONE *canvas, int color, int sx, int sy, const char *buff) {
+      return m_Spirit->TextOut(sx, sy, buff);
+    }
+};
 
 #endif // __TEXTUTIL_INCLUDED__

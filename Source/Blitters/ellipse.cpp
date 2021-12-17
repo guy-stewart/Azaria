@@ -30,11 +30,12 @@
 
 #else
 //----------------------------------------------------------------------------
-static void fbltPortal(
+void FBLT_DSCR::fbltPortal(
 				ONE *oneDest,
-				ONE *oneSrc,
-				FBLT_DSCR * fbd) // uses src_x, src_y
+				ONE *oneSrc) // uses src_x, src_y
 {
+	FBLT_DSCR * fbd = this;
+
 	int i, x, y, dest_y, src_y;
 	int src_x;
     unsigned char * bDest;
@@ -62,11 +63,22 @@ static void fbltPortal(
 		if (src_x > src_pitch)
 				src_x -= src_pitch;
 	}
+    //unsigned char *source = src->m_bits + src->m_frame_offset[m_frame];
 
 	bSrc = oneSrc->getBits()
 		 + src_x        // the source can be offset +/- horizontally
 		 + (fbd->m_src_y * src_pitch);  // offset +/- vertically
+/*
+	if (isFramed()) {
+		printf("\n%s:%d:working here:\n", __FILE__, __LINE__);
+		printf("m_frame:%d, m_dy = %d, src_height:%d\n", m_frame, m_dy, src_height);
+		printf("frames:%d\n", oneSrc->GetFrameCount());
+		printf("src_height/frames:%d\n", src_height/oneSrc->GetFrameCount());
+		printf("mask[0].length = %d\n", mask[0].length);
+	}
+*/
 
+	// for (i=1; i<=mask[0].length; i++)
 	for (i=1; i<=mask[0].length; i++)
 	{
 		length = mask[i].length;
@@ -133,6 +145,7 @@ void FBLT_DSCR::BltRectangle(ONE *oneDest,ONE *oneSrc)
 
 	dst_y = m_dst_y;
 	src_y = m_src_y;
+    //unsigned char *source = src->m_bits+src->m_frame_offset[m_frame];
 
 	dx = m_dx;
 
@@ -198,13 +211,18 @@ void FBLT_DSCR::BltRectangle(ONE *oneDest,ONE *oneSrc)
 void FBLT_DSCR::Blt(ONE *oneDst, ONE *oneSrc)
 {
 	// protect ourselves from misframed items:
-	if (m_frame >= oneSrc->GetFrames())
-		m_frame = oneSrc->GetFrames()-1;
+	if (m_frame >= oneSrc->GetFrameCount()) {
+		m_frame = 0;
+		// printf("%s:%d:TODO: misframed item detected.\n", __FILE__, __LINE__);
+	}
 
 	// automatically pick out the frame and set *fbd correctly
 	if (isFramed())
 	{
 		m_src_y = m_dy * m_frame;
+		if (m_masks) {
+			m_mask = m_masks->mask(m_frame);
+		}
 	}
 
     if (oneSrc == NULL || oneDst == NULL)
@@ -229,7 +247,7 @@ void FBLT_DSCR::Blt(ONE *oneDst, ONE *oneSrc)
 			if (oneSrc->IsCompressed())
 				BltCompressed(oneDst, oneSrc);
 			else
-				fbltPortal(oneDst, oneSrc, this);
+				fbltPortal(oneDst, oneSrc);
 			break;
 		case BLT_RECTFLIP:
 		case BLT_RECT:

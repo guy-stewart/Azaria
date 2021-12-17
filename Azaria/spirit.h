@@ -22,8 +22,9 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#ifndef __SPIRIT_INCLUDED__
-#define __SPIRIT_INCLUDED__
+#pragma once
+
+#include "spr_pool.h"
 
 #define MAX_ANIMATIONS	40
 
@@ -44,7 +45,6 @@ private:
 	POINT m_pos;		// current x,y position of upper left corner of sprite
 	int m_anindex;		// index into the animation pool, or -1
 	ONE *m_canvas;		// canvas this sprite lives on.
-	ONE m_bone;		// storage for the background underneath the sprite.
 	FBLT_DSCR m_fbdBones;	// blit descriptor for the bones
 	BYTE m_on:1;			// flag set to TRUE when sprite is on the scene.
 	BYTE m_Loop:1;
@@ -55,7 +55,7 @@ private:
 	BYTE m_i_own_it:1;
 	BYTE bMoreFrames:1;
 public:
-    SPIRIT(ONE *canvas, int sprite_id, int style);
+    SPIRIT(ONE *canvas, int sprite_id);
     ~SPIRIT();
 
 public: // interface:
@@ -73,12 +73,18 @@ public: // interface:
     static void VideoON(WORD view_id);
     static void VideoOFF(WORD view_id);
 
-	WORD LastFrame() {return m_spr->sprite.GetFrames()-1;}
+	WORD LastFrame() {return m_spr->sprite.GetFrameCount()-1;}
 	WORD CurrFrame() {return m_fbd.GetFrame();}
 	void SetFramesPerSecond(int FramesPerSecond) {m_fbd.SetFramesPerSecond(FramesPerSecond);}
 
 	void GetRect(RECT *rect);
 	int GetWidth() {return m_spr->sprite.GetWidth();}
+	// void GetBoundingRect(RECT *rect) {m_fbd.GetBoundingRect(rect);};
+	int TextOut(int sx, int sy, const char *buff) {
+		m_fbd.m_dst_x = sx;
+		m_fbd.m_dst_y = sy;
+		return m_fbd.XPrint(m_canvas, this, buff, 0);
+		};
 private:
     BOOL SetNextFrame(int etime);
 };
@@ -87,5 +93,3 @@ int objdefGetClass(WORD object_id);
 int objdefGetLookIconId(WORD object_id);
 int objdefGetLookActorId(WORD object_id);
 int objdefGetLookCursorId(WORD object_id);
-
-#endif

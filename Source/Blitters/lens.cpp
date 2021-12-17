@@ -70,11 +70,15 @@ static void sliver_up(unsigned char *tgt,
         src -= cf;
         tgt -= tp;
     }
+    // assert(false);
 }
 
 //----------------------------------------------------------------------------
+// ### unroll the inner loops to make faster
 static void sliver(unsigned char *tgt, unsigned char *src, int th, int tp, int accum_init, int frac_part  )
 {
+    // printf("TODO: fix this blitter: lens.cpp::sliver ******************\n");
+    // assert(false);
     int si;
     int accum = 0; //accum_init;
 	int frac = frac_part;
@@ -82,10 +86,12 @@ static void sliver(unsigned char *tgt, unsigned char *src, int th, int tp, int a
 
     for (si=th;si;si--) {
         *tgt = *src;
+        
         // accumulate fractional part
         accum += frac;
         cf = (accum&0xFFFF0000)>>16;
         accum = (accum&0x0000FFFF);
+
         src += cf;
         tgt += tp;
     }
@@ -190,7 +196,8 @@ static void sliver_R90Fh(unsigned char *tgt, unsigned char *src, int len, int bp
     //assert(false);
 
 	for (int si=len; si; si--) {
-		*tgt++ = *src++;
+		*tgt = *src++;
+		tgt+= bpsl;
 	}
 }
 

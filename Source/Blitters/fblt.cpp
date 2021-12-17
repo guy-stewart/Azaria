@@ -22,6 +22,7 @@
 //#include <ddraw.h>
 #include "one.h"
 #include "fblt.h"
+#include "spirit.h"
 
 //----------------------------------------------------------------------------
 FBLT_DSCR::FBLT_DSCR()
@@ -33,7 +34,7 @@ FBLT_DSCR::FBLT_DSCR()
 FBLT_DSCR::~FBLT_DSCR()
 {
 	if (m_mask)
-		maskFree(&m_mask);
+		MASK::Free(&m_mask);
 	if (m_lens)
 	  free(m_lens);
 }
@@ -65,9 +66,9 @@ void FBLT_DSCR::SpriteInit(ONE *sprite)
   m_dy = sprite->GetHeight();
 
   // If it a multi-framed image,  then assume they want to use it as such.
-  if (sprite->GetFrames() > 1)
+  if (sprite->GetFrameCount() > 1)
   {
-	m_dy = sprite->GetHeight()/sprite->GetFrames();
+	m_dy = sprite->GetHeight()/sprite->GetFrameCount();
 	setFramed();
 
 	// if they set a frame rate in the one file:
@@ -80,22 +81,24 @@ void FBLT_DSCR::MaskInit(ONE *sprite)
 {
   // free any prior created mask:
   if (m_mask)
-		maskFree(&m_mask);
+		MASK::Free(&m_mask);
   m_mask = NULL;
 
   // can't create a mask for a compressed sprite.
   if (sprite->IsCompressed())
 	return;
 
-  m_mask = maskCreate(
+  m_masks = MASK::Create(
 		sprite->getBits(),
+		sprite->GetFrameCount(),
 		sprite->GetHeight(),
 		sprite->GetWidth(),
 		sprite->GetPitch(),
 		sprite->getBits()[0]
 		);
 
-  maskGetBoundingRect(m_mask, &m_brect);
+  m_mask = m_masks->mask(0);
+  m_mask->GetBoundingRect(&m_brect);
 }
 
 //----------------------------------------------------------------------------
@@ -268,11 +271,14 @@ int FBLT_DSCR::Print(ONE *canvas, ONE *font, const char *msg, int color)
 	if (m_frame<0 || m_frame>font->m_hdr.frames)
 	  m_frame = ' ';
 	
+	//  printf("%s:%d:CFONT TODO ...\n", __FILE__, __LINE__);
+
 	GetCharBound(&left,&right,font);
 	if (m_dst_x > left-1)
 	  m_dst_x -= left-1;
 
 	BltFont(canvas, font);
+	// Blt(canvas, font);
 
 	switch (m_frame) {
 	case 0: // space
@@ -280,6 +286,51 @@ int FBLT_DSCR::Print(ONE *canvas, ONE *font, const char *msg, int color)
 	  break;
 	default:
 	  m_dst_x += right;
+	  break;
+	}
+  }
+
+  // restore
+  total_pitch = m_dst_x - x;
+  m_dst_x = x;
+
+  return total_pitch;
+}
+
+
+//----------------------------------------------------------------------------
+// print a message at x,y on the given canvas:
+int FBLT_DSCR::XPrint(ONE *canvas, SPIRIT *xfont, const char *msg, int color)
+{
+  int i;
+  int x = m_dst_x; // save
+  int total_pitch;
+  int left, right;
+  RECT rect;
+
+  m_font_color = color;
+
+  for (i=0;msg[i];i++)
+  {
+	m_frame = msg[i] - ' ';
+
+	if (m_frame<0 || m_frame> 96) // TODO: restore this test font->m_hdr.frames)
+	  m_frame = ' ';
+	
+	GetBoundingRect(&rect, m_frame);
+	if (m_dst_x > rect.left-1)
+	  m_dst_x -= rect.left-1;
+
+	xfont->Move(m_dst_x, m_dst_y, 0);
+	xfont->SetFrame(m_frame);
+	xfont->ON();
+
+	switch (m_frame) {
+	case 0: // space
+	  m_dst_x += xfont->GetWidth()/4;
+	  break;
+	default:
+	  m_dst_x += rect.right;
 	  break;
 	}
   }
@@ -307,7 +358,7 @@ BOOL FBLT_DSCR::NextFrame(ONE *sprite, int etime, BOOL bLoop)
 
     m_frame++;
 
-	if (m_frame >= sprite->GetFrames())
+	if (m_frame >= sprite->GetFrameCount())
 	{
 	  if (bLoop)
 		m_frame = 0;
@@ -333,7 +384,7 @@ BOOL FBLT_DSCR::PrevFrame(ONE *sprite, int etime, BOOL bLoop)
 	if (m_frame == 0)
 	{
 	  if (bLoop)
-		m_frame = sprite->GetFrames();
+		m_frame = sprite->GetFrameCount();
 	  else
 	  {
 		return FALSE; // no more frames
@@ -349,6 +400,7 @@ BOOL FBLT_DSCR::PrevFrame(ONE *sprite, int etime, BOOL bLoop)
 //----------------------------------------------------------------------------
 void FBLT_DSCR::BonesOn(int x, int y)
 {
+	assert(false);
 	m_src_y = 0;
 	m_src_x = 0;
 	switch (m_style)
@@ -366,6 +418,7 @@ void FBLT_DSCR::BonesOn(int x, int y)
 //----------------------------------------------------------------------------
 void FBLT_DSCR::BonesOff(int x, int y)
 {
+	assert(false);
 	m_dst_x = 0;
 	m_dst_y = 0;
 	{

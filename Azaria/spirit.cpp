@@ -33,9 +33,15 @@ BOOL SPIRIT::c_monitor = FALSE;
 //----------------------------------------------------------------------------
 SPIRIT::SPIRIT(	 ONE *canvas,
 //				 VIEW *view,
-				 int sprite_id,
-				 int style)
+				 int sprite_id)
 {
+	int style;
+
+	if (canvas->m_hdr.user_flags & 1)
+	    style = BLT_LENSED;
+    else
+		style = BLT_PORTAL;
+
   // save a pointer to the canvas so we can use it for later blitting.
   m_canvas = canvas;
 
@@ -50,6 +56,8 @@ SPIRIT::SPIRIT(	 ONE *canvas,
 	m_hSprite = sprSelect(sprite_id);
 	m_spr = sprGet(m_hSprite);
 
+	printf("%s:%d:SPIRIT::SPIRIT UnCompress()\n", __FILE__, __LINE__);
+	m_spr->sprite.UnCompress();
 	m_fbd.SpriteInit(&m_spr->sprite);
 	m_fbd.MaskInit(&m_spr->sprite);
 
@@ -58,8 +66,6 @@ SPIRIT::SPIRIT(	 ONE *canvas,
 
 	m_on = FALSE;
 
-	m_bone = m_spr->sprite; // copy the image header info
-
 	// depending on the style of the view,
 	// the sprite may need to be rotated during blitting ...
 	switch (style)
@@ -67,14 +73,12 @@ SPIRIT::SPIRIT(	 ONE *canvas,
 	case BLT_LENSED:
 		// The sprite is blitted sideways ...
   		m_fbd.m_style = BLT_FLIPPED;
-		m_bone.Init(m_spr->sprite.GetHeight(), m_spr->sprite.GetWidth());
 		m_fbdBones.m_style = BLT_RECTFLIP;
 		m_fbdBones.m_dy = m_fbd.m_dx;
 		m_fbdBones.m_dx = m_fbd.m_dy;
 		break;
 	default:
   		m_fbd.m_style = style;
-		m_bone.Init(m_spr->sprite.GetWidth(), m_spr->sprite.GetHeight());
 		m_fbdBones.m_style = BLT_RECT;
 		m_fbdBones.m_dx = m_fbd.m_dx;
 		m_fbdBones.m_dy = m_fbd.m_dy;
@@ -86,11 +90,7 @@ SPIRIT::SPIRIT(	 ONE *canvas,
 SPIRIT::~SPIRIT()
 {
   DeAnimate();
-
   sprRelease(m_hSprite);
-  
-  if (m_bone.getBits())
-	m_bone.freeBits();
 }
 
 //----------------------------------------------------------------------------
@@ -115,10 +115,6 @@ void SPIRIT::ON()
 	assert(this);
 	if (!this)
 		return;
-
-	// save the background ...
-	m_fbdBones.BonesOff(m_pos.x, m_pos.y);
-	m_fbdBones.Blt(&m_bone, m_canvas);
 
 	// current position is contained in fbd(x,y)
 	m_fbd.m_dst_x = m_pos.x;
@@ -172,7 +168,7 @@ void SPIRIT::Animate(WORD view_id, BOOL bLoop, BOOL bStartFromEnd, BOOL bRewind,
 	Msg("Animation pool is full");
 	return;  // the pool is full.
   }
-  if (m_spr->sprite.GetFrames() <= 1)
+  if (m_spr->sprite.GetFrameCount() <= 1)
   {
 	if (c_monitor) Msg("Not an animation sequence");
 	return; // not an animation sequence
@@ -189,7 +185,7 @@ void SPIRIT::Animate(WORD view_id, BOOL bLoop, BOOL bStartFromEnd, BOOL bRewind,
   m_StartFromEnd = bStartFromEnd;
   if (m_StartFromEnd)
   {
-	  SetFrame(m_spr->sprite.GetFrames()-1);
+	  SetFrame(m_spr->sprite.GetFrameCount()-1);
 	  m_Rewinding = TRUE;
   }
   else
@@ -216,10 +212,7 @@ void SPIRIT::Video(WORD view_id, WORD x, WORD y,
 	if (view)
 	{
 		ONE *canvas = &view->surface;
-		if (canvas->m_hdr.user_flags & 1)
-			Spirit = new SPIRIT(canvas, ids, BLT_LENSED);
-		else
-			Spirit = new SPIRIT(canvas, ids, BLT_PORTAL);
+		Spirit = new SPIRIT(canvas, ids);
 
 		if (Spirit)
 		{

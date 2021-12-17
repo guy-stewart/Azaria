@@ -559,7 +559,10 @@ static STR_ENTRY tbl_spr_names[] =
 	// Scene 60: Chess and Checker pieces
 	IDS_WKING,			"Sking",
 	IDS_WQUEEN,			"Squeen",
-	IDS_WPAWN,			"Spawn",
+	// TODO: just playing:
+	// IDS_WPAWN,			"Spawn",
+	IDS_WPAWN,			"fnttnb18",
+
 	IDS_WROOK,			"Srook",
 	IDS_WKNIGHT,		"Sknight",
 	IDS_WBISHOP,		"Sbishop",

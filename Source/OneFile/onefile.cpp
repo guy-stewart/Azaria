@@ -25,13 +25,14 @@
 ;
 ----------------------------------------------------------------------------*/
 
+#include "mask.h"
 #include "xfile.h"
 
 #include <assert.h>
 #include <memory.h>     // for memcpy, etc, for debugging.
 
 #include "one.h"
-
+#include "platform.h"
 
 void WarnUser( const LPSTR fmt, ... );
 
@@ -338,9 +339,7 @@ void ONE::Compress(XFile *xfile)
 }
 
 //----------------------------------------------------------------------------
-static void oneUnCompress( 
-  unsigned int startx,
-  unsigned int starty,
+static void oneUnCompress(
   unsigned int pitch,
   unsigned int width, 
   unsigned int height,
@@ -404,10 +403,11 @@ BOOL ONE::UnCompress()
 
 	for (i=0;i<m_hdr.frames; i++)
 	{
+	  // printf("m_frame_offset[%d] = %d\n", i, m_frame_offset[i]);
 	  oneUnCompress(
-			0,0,
 			m_hdr.pitch, m_hdr.width, m_hdr.height,
 			old_bits+m_frame_offset[i], m_bits+(frame_size*i));
+	  m_frame_offset[i] = i*frame_size;
 	}
 
 	// free the old bits:
@@ -610,7 +610,11 @@ int ONE::Read(const char *filename)
 	  if( xfile.Read( &m_hdr, sizeof(ONE_HEADER) ) == sizeof(ONE_HEADER) )
 	  {
 		// if compressed, then read the offsets array:
-		printf("width:%d, height:%d, pitch:%d\n", m_hdr.width, m_hdr.height, m_hdr.pitch);
+		printf("width:%d, height:%d, pitch:%d, frames:%d\n", m_hdr.width, m_hdr.height, m_hdr.pitch, m_hdr.frames);
+		if (m_hdr.frames == 82) {
+			printf("**** probably a bad file???  %s\n", filename);
+			m_hdr.frames = 1;
+		}
 		if (IsCompressed())
 		{
 		  printf("IsCompressed()\n");
@@ -657,16 +661,16 @@ int ONE::Read(const char *path, const char *filename)
    char filepath[_MAX_FNAME];
    char ext[_MAX_EXT];
 
-   printf("ONE::Read(\"%s\", \"%s\")\n", path, filename);
+   printf("%s:%d:ONE::Read(\"%s\", \"%s\")\n", __FILE__, __LINE__, path, filename);
     
    // switch on extension for various file types:
    splitpath( filename, NULL, NULL, NULL, ext );
 
-
    // build complete path the the file
    makepath( filepath, NULL, path, filename, NULL);
 
-   return Read(filepath);
+   int rc =  Read(filepath);
+	return rc;
 }
 
 //----------------------------------------------------------------------------
@@ -758,217 +762,4 @@ BOOL ONE::freeBits(BYTE *bits)
 	*majic = ONE_EVIL; // Set to evil bits so we can recognize a freed image
 	free(majic);
 	return TRUE;
-}
-
-//----------------------------------------------------------------------------
-int maskRead(const char *path, const char *filename, MASK **vector)
-{
-	int fh;
-	int rc = 0;
-	MASK header;
-	char lpszPathName[_MAX_PATH];
-
-	// build complete path the the file
-	makepath( lpszPathName, NULL, path, filename, NULL);
-
-	/* Open file for input: */
-	if( (fh = open( lpszPathName, O_RDONLY )) != -1 )
-	{
-		/* Read in size of the mask */
-		if( read( fh, &header, sizeof(MASK) ) == sizeof(MASK) )
-		{
-			/* allocate memory for the mask */
-			*vector = (MASK*)malloc((header.length+1) * sizeof(MASK));
-			if (vector)
-			{
-				/* copy the header */
-				*vector[0] = header;
-
-				/* Read the rest of the mask */
-				// ### For osme reason,  the masks are not the correct length according to header.length???
-				rc = read( fh, *vector+1, sizeof(MASK)*header.length);
-				rc = rc > 0;
-			}
-		}
-		close( fh );
-	}
-
-	return rc;
-}
-
-//----------------------------------------------------------------------------
-MASK * maskCreate(unsigned char *x_bits, int h, int w, int pitch, unsigned char ck)
-{
-	int runs; // how many runs in the image.
-	int index;
-	MASK *mask;
-	int x, y;
-	int top=0, left=0;
-
-	unsigned char *lm_bits;
-	
-	runs = 0;
-	lm_bits = x_bits;
-	// figure out the size of the mask:
-	for (y=0; y<h; y++)
-	{
-		x=0;
-		while (x<w)
-		{
-			/* find start of run (or end of row) */
-			while (x<w && (*lm_bits==ck))
-			{
-				lm_bits++;
-				x++; 
-			}
-			if (x<w) // found a run
-			{
-				while (x<w && (*lm_bits!=ck))
-				{ 
-					lm_bits++;
-					x++;
-				}  /* find end of run */
-				runs++;
-			}
-		}
-
-		while (x<pitch)
-		{
-			lm_bits++;
-			x++;
-		}
-	}
-
-	mask = (MASK*)malloc(sizeof(MASK)*(runs+1));
-	if (!mask)
-		return 0;
-
-	lm_bits = x_bits;
-	// Now do it for real:
-	index = 1;
-	for (y=0; y<h; y++)
-	{
-		x=0;
-		while (x<w)
-		{
-			/* find start of run (or end of row) */
-			while (x<w && (*lm_bits==ck)) 
-			{ 
-				x++;
-				lm_bits++;
-			}
-			if (x<w) // found a run
-			{
-				if (y<top)	top = y;
-				if (x<left)	left=x;
-				mask[index].y = y;
-				mask[index].x = x;
-				while (x<w && (*lm_bits!=ck))  /* find end of run */
-				{ 
-					x++;
-					lm_bits++;
-				}
-				mask[index].length = x - mask[index].x;
-				index++;
-			}
-		}
-
-		while (x<pitch)
-		{
-			lm_bits++;
-			x++;
-		}
-	}
-
-	mask[0].length = runs;
-	mask[0].x = left;
-	mask[0].y = top;
-	return mask;
-}
-
-//----------------------------------------------------------------------------
-/*  returns true if the vector could be freed */
-int maskFree(MASK **vector)
-{
-	if (vector && *vector)
-		free(*vector);
-	else
-		return FALSE;
-	*vector = NULL;
-	return TRUE;
-}
-
-//----------------------------------------------------------------------------
-int maskWrite(const char *lpszPathName, MASK *vector)
-{
-	XFile xfile(lpszPathName);
-	int rc = 0;
-
-	xfile.SetExtension("vct");
-
-	/* Open file for output: */
-	if(xfile.Open(XFile::modeWrite))
-	{
-		rc = xfile.Write(vector, sizeof(MASK)*(vector[0].length + 1));
-	}
-
-	return rc;	
-}
-
-//----------------------------------------------------------------------------
-void maskGetBoundingRect(MASK *mask, RECT *rect)
-{
-	int i, x, y, length;
-
-	/* keep track of dirty rectangle */
-	rect->left = mask[1].x;
-	rect->right = mask[1].x + mask[1].length;
-	rect->top = mask[1].y;
-	rect->bottom = mask[1].y;
-
-	for (i=1; i<=mask[0].length; i++)
-	{
-		length = mask[i].length;
-		x = mask[i].x;
-		y = mask[i].y;
-
-		/* keep track of dirty rectangle */
-		if (x < rect->left) rect->left = x;
-		else if ((x+length) > rect->right) rect->right = x+length;
-		if (y < rect->top) rect->top = y;
-		else if (y > rect->bottom) rect->bottom = y;
-	}
-
-}
-
-//----------------------------------------------------------------------------
-// ### This is certainly the least efficient method of doing a hit test.
-// This function gets called every time the mouse moves.  It would
-// be nice if I could create an 'inner bounding box' that could be tested
-// before doing all this work:
-
-BOOL maskPtInRect(MASK *mask, POINT p)
-{
-  int i, x;
-
-  for (i=1; i<=mask[0].length; i++)
-  {
-	x = mask[i].x;
-	if ((p.y == mask[i].y) && (p.x > x) && (p.x < x+mask[i].length))
-	  return TRUE;
-  }
-
-  return FALSE;
-}
-
-//----------------------------------------------------------------------------
-void maskMove(MASK *mask, int x_delta, int y_delta)
-{
-  int i;
-
-  for (i=1; i<=mask[0].length; i++)
-  {
-	mask[i].x += x_delta;
-	mask[i].y += y_delta;
-  }
 }

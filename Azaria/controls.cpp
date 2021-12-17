@@ -49,6 +49,7 @@ CONTROL::CONTROL(CFGVIEW *xView, WORD xCid, WORD ids_background, int x, int y)
   // this is the background of the control
   m_hSprite = sprSelect(ids_background);
   m_spr = sprGet(m_hSprite);
+  m_spr->sprite.UnCompress();
   m_fbd.SpriteInit(&m_spr->sprite);
 
   m_fbd.m_dst_x = x;
@@ -119,10 +120,7 @@ SPIRIT *BUTTON::LoadBtnImage(ONE *canvas,
 {
   SPIRIT *spirit;
 
-  if (canvas->m_hdr.user_flags & 1)
-	  spirit = new SPIRIT(canvas, sprite_id, BLT_LENSED);
-  else
-	  spirit = new SPIRIT(canvas, sprite_id, BLT_PORTAL);
+	spirit = new SPIRIT(canvas, sprite_id);
 
   if (spirit)
   {
@@ -335,7 +333,6 @@ void LISTBOX::SetFocus(POINT p, BOOL bHasFocus)
 {
 }
 
-
 //----------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////
 // EDIT BOX STUFF
@@ -346,10 +343,11 @@ EDITBOX::EDITBOX(CFGVIEW *view,
 				 int xo, int yo, 
 				 const char *inital_value, 
 				 int max):
-CONTROL(view, 0, ids, x, y),
-font(IDS_FONTTNB18)
+CONTROL(view, 0, ids, x, y)
 {
   StrVal = BUFF;
+
+	m_font = new SPIRIT(&view->surface, IDS_FONTTNB18);
 
   left = x+xo;
   top = y+yo;
@@ -363,9 +361,7 @@ font(IDS_FONTTNB18)
 //----------------------------------------------------------------------------
 void EDITBOX::Write(char *buff, int color)
 {
-	font.TextOut(&view->surface, BLACK, left+1, top+1, buff);
-	font.TextOut(&view->surface, color, left, top, buff);
-	//view->Invalidate();
+	m_font->TextOut(left, top, buff);
 }
 
 //----------------------------------------------------------------------------
@@ -447,7 +443,7 @@ SLIDER::SLIDER(CFGVIEW *view,			// Surface on which to paint the button
 :CONTROL(view, control_id, ids_image, x, _y),
 left(view, 0, _x, _y, IDS_BTN_LEFT,  IDS_BTN_LEFT_HI),
 right(view, 1, _x+_width, _y, IDS_BTN_RIGHT, IDS_BTN_RIGHT_HI),
-thumb(&view->surface, IDS_BTN_THUMB, BLT_PORTAL),
+thumb(&view->surface, IDS_BTN_THUMB),
 bLeftFocus(FALSE)
 {
   IntVal = &value;

@@ -42,6 +42,7 @@
                 "${workspaceFolder}/../Azaria/spirit.cpp",
                 "${workspaceFolder}/../Azaria/teletype.cpp",
                 "${workspaceFolder}/../Azaria/user.cpp",
+                "${workspaceFolder}/../Azaria/mask.cpp",
                 "${workspaceFolder}/../Azaria/winMain.cpp",
                 "${workspaceFolder}/../Source/Blitters/fblt.cpp",
                 "${workspaceFolder}/../Source/Blitters/lens.cpp",

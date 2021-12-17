@@ -28,7 +28,6 @@
 #include "spirit.h"
 
 #include "textutil.h"
-
 //----------------------------------------------------------------------------
 CFONT::CFONT(int font_id)
 {
@@ -53,4 +52,3 @@ int CFONT::TextOut(ONE *surface, int color, int sx, int sy, const char *buff)
 
   return fbd.Print(surface, &spr->sprite, buff, color);
 }
-

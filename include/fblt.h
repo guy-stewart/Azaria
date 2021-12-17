@@ -20,6 +20,7 @@
 ----------------------------------------------------------------------------*/
 #ifndef _fblt_h
 #define _fblt_h
+#include "mask.h"
 #include "ddraw.h"
 #include "ptypes.h"
 #include "palette.h"
@@ -37,6 +38,8 @@ typedef unsigned short *PLENS;	/* an array of scale factors */
 #define FLG_VIEW		0x02 // blit as a view canvas.
 #define FLG_FRAMED		0x04 // blitter should pick a specific frame from the image.
 
+class SPIRIT;
+
 class FBLT_DSCR {
 private:
 	short m_flags;
@@ -47,8 +50,9 @@ public:
 	int m_etime;		// milliseconds remaining for current frame
 	int m_mpf;			// milliseconds per frame
 	short m_style;		/* uses rect or portal for target clipping */
-	MASK *m_mask;			/* target clipping region for portal vectors. */
-	RECT m_brect;			/* rectangle clipping region,  or portal bounding box */
+	MASKS *m_masks;
+	MASK  *m_mask;       // clipping region
+	RECT  m_brect;			/* rectangle clipping region,  or portal bounding box */
 	PLENS m_lens;			/* optional lens used for rendering */
 	int m_dst_x, m_dst_y;	/* target offset */
 	int m_src_x, m_src_y;	/* source offset */
@@ -87,63 +91,30 @@ public:
     void BltFont(ONE *dest, ONE *src);
     void BltFlip(ONE *oneDest, ONE *oneSrc);
     void BltRectangle(ONE *oneDest,ONE *oneSrc);
+	void fbltPortal(ONE *oneDest,ONE *oneSrc);
 
-    void Lens(ONE *oneDest,ONE *oneSrc);
     void LensPortal(ONE *oneDest,ONE *oneSrc);
-    void LensPortalDirty(ONE *oneDest,ONE *oneSrc);
 
     int GetFontPitch() {return m_font_pitch;}
     void GetCharBound(int *left, int *right, ONE *src);
+	void GetXCharBounds(int *left, int *right);
+	void GetBoundingRect(RECT *rect, int frame) {m_masks->mask(frame)->GetBoundingRect(rect);};
+
 	//----------------------------------------------------------------------------
 	// print a message at x,y on the given canvas:
     int Print(ONE *canvas, ONE *font, const char *msg, int color);
+    int XPrint(ONE *canvas, SPIRIT *xfont, const char *msg, int color);
 
 	static inline void aligned_memcpy( UCHAR *dst, const UCHAR *src, size_t count )
 	{
         // TODO: implement this blitter
         memcpy(dst, src, count);
-#ifdef _WIN32
-	  _asm 
-	  {
-		push esi
-		push edi
-		push ecx
-	
-		mov  esi,[src]       ; esi = source
-		mov  edi,[dst]       ; edi = dest
-		mov  ecx,[count]     ; ecx = number of bytes to move
-
-		rep  movsb
-
-		pop  ecx
-		pop  edi
-		pop  esi
-	  }
-#endif
 	}
 
 	static inline void aligned_memset( void *dst, int color, size_t count )
 	{
         // TODO: implement this blitter
         memset(dst, color, count);
-#ifdef _WIN32
-	  _asm
-	  {
-		push eax
-		push edi
-		push ecx
-	
-		mov  eax,color       ; esi = source
-		mov  edi,[dst]       ; edi = dest
-		mov  ecx,[count]     ; ecx = number of bytes to move
-
-		rep  stosb
-
-		pop  ecx
-		pop  edi
-		pop  eax
-	  }
-#endif
 	}
 
 
