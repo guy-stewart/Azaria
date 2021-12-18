@@ -236,27 +236,15 @@ void FBLT_DSCR::Blt(ONE *oneDst, ONE *oneSrc)
 			}
 			break;
 		case BLT_FLIPPED:
-			// oneSrc->UnCompress();
-			if (oneSrc->IsCompressed())
-				BltCompressedFlip(oneDst, oneSrc);
-			else
-				BltFlip(oneDst, oneSrc);
+			BltFlip(oneDst, oneSrc);
 			break;
 		case BLT_PORTAL:
-			// oneSrc->UnCompress();
-			if (oneSrc->IsCompressed())
-				BltCompressed(oneDst, oneSrc);
-			else
-				fbltPortal(oneDst, oneSrc);
+			fbltPortal(oneDst, oneSrc);
 			break;
 		case BLT_RECTFLIP:
 		case BLT_RECT:
 		default:
-			// oneSrc->UnCompress();
-			if (oneSrc->IsCompressed())
-			  BltCompressed(oneDst, oneSrc);
-			else
-			  BltRectangle(oneDst, oneSrc);
+			BltRectangle(oneDst, oneSrc);
 			break;
 		}
 }

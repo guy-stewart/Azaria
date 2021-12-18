@@ -49,13 +49,11 @@ public:
 private:
 	static CFONT *font;
 	POINT m_pos;
-	POINT mp[MAX_BUFFERS]; // position of old cursors.
+	SPIRIT *m_sprite;
 	int hSpr;
 	SPR_OBJECT *spr;
-	ONE poneBack[MAX_BUFFERS];
 	FBLT_DSCR fbd;
 	int m_valid; // bitwise flags for backgrounds that need to be restored
-	FBLT_DSCR fbdS;
 	int cursorState;
 	WORD m_ReincarnateAs; // IDS of sprite to re-incarnate as.
 	WORD m_hSprite; // IDS of current sprite (mostly to ask what cursor is currently in use).
@@ -188,6 +186,8 @@ void CURSOR::Init(int hSprite, POINT p)
 
 	m_hSprite = hSprite;
 
+	// m_sprite = 	new SPIRIT(&view->surface, hSprite);
+
 	// Select the sprite:
 	hSpr = sprSelect(hSprite);
 	spr = sprGet(hSpr);
@@ -198,16 +198,6 @@ void CURSOR::Init(int hSprite, POINT p)
 	fbd.SpriteInit(&spr->sprite);
 	fbd.MaskInit(&spr->sprite);
 	fbd.m_style = BLT_PORTAL;
-
-	fbdS.ZeroInit();
-	fbdS.m_dx = (short)spr->sprite.GetWidth();
-	fbdS.m_dy = fbd.m_dy;
-	fbdS.m_style = BLT_RECT;
-
-	for (int i=0;i<MAX_BUFFERS;i++)
-	{
-		poneBack[i].Init(spr->sprite.GetWidth(), spr->sprite.GetHeight());
-	}
 
 	m_valid = 0; // there are not yet any backgrounds to restore.
 	setActive(); // the cursor is in the active state
@@ -412,11 +402,6 @@ void CURSOR::kill()
 	spr = NULL;
 
 	MASK::Free(&fbd.m_mask);
-	for (i=0;i<MAX_BUFFERS;i++)
-	{
-		setClean(i); // don't bother writing again!
-		poneBack[i].freeBits();
-	}
 
 	// if our hand is to be reincarnated:
 	if (m_ReincarnateAs)
@@ -438,15 +423,6 @@ void CURSOR::Hide(int etime, int flags)
 	if (isDead()) 
 		return;
 
-	// make sure this buffer needs to be restored:
-	if (isDirty(nBuff))
-	{
-		fbdS.BonesOn(mp[nBuff].x, mp[nBuff].y);
-		viewBlt(&poneBack[nBuff], &fbdS);
-		if (m_message) Msg("CursorOff(buff=%d)", nBuff);
-		setClean(nBuff); // don't bother writing again!
-	}
-
 	if (isDying() && isAllClean())
 	{
 		if (m_message) Msg("Kill Cursor");
@@ -464,18 +440,9 @@ void CURSOR::Show(int etime, int flags)
 
 	if (!isActive()) return;
 
-	mp[nBuff] = m_pos;
-	
-	if ((mp[nBuff].x <= 640) && (mp[nBuff].y <= 480)
-	 && (mp[nBuff].x >= 0) && (mp[nBuff].y >= 0))
+	if ((m_pos.x <= 640) && (m_pos.y <= 480)
+	 && (m_pos.x >= 0) && (m_pos.y >= 0))
 	{
-		/*
-		fbdS.BonesOff(mp[nBuff].x, mp[nBuff].y);
-		viewGet(&poneBack[nBuff], &fbdS);
-		if (m_message) Msg("CursorOn(buff=%d)", nBuff);
-		setDirty(nBuff);
-		*/
-
 		// animate the cursor thing:
 		if (isDamned())
 		{

@@ -652,6 +652,9 @@ int ONE::Read(const char *filename)
 	  }
 	}
 
+	if (IsCompressed()) {
+		UnCompress();
+	}
 	return rc;
 }
 

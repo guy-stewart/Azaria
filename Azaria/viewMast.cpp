@@ -323,10 +323,6 @@ VIEW::VIEW(int _view_id, const char *_name, int _style)
 		//  Msg("ERROR_FILE_NOT_FOUND: %s %s", ViewsPath, p_tbl_view->surface_filename);
 		throw(ERROR_FILE_NOT_FOUND);
 	}
-
-	// if its compressed then uncompress it:
-	if (surface.IsCompressed())
-	  surface.UnCompress();
 	
 	restore_size = surface.m_hdr.height*surface.m_hdr.pitch;
 	restore_buffer = (unsigned char*)malloc(restore_size);

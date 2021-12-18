@@ -52,8 +52,6 @@ MASKS * MASK::Create(unsigned char *x_bits, int f, int h, int w, int pitch, unsi
 	MASKS *masks;
 	masks = new MASKS(f);
 
-	printf("%s:%d:MASK::Create(.framed..)\n", __FILE__, __LINE__);
-
 	for (int i=0; i<f; i++) {
 		MASK *mask = MASK::Create(x_bits, h/f, w, pitch, ck);
 		x_bits += pitch * h/f;
@@ -70,8 +68,6 @@ MASK * MASK::Create(unsigned char *x_bits, int h, int w, int pitch, unsigned cha
 	MASK *mask;
 	int x, y;
 	int top=0, left=0;
-
-	printf("%s:%d:MASK::Create(...)\n", __FILE__, __LINE__);
 
 	unsigned char *lm_bits;
 

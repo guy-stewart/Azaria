@@ -94,6 +94,9 @@ int sprSelect(int sprite_id)
 		throw(ERROR_FILE_NOT_FOUND);
 	}
 
+	// TODO: uncompress spr sprites ...
+	spr_pool[i].sprite.UnCompress();
+
 	spr_pool[i].sprite_id = sprite_id;
 
 	// for debugging only -

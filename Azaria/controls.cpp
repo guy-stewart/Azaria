@@ -49,7 +49,6 @@ CONTROL::CONTROL(CFGVIEW *xView, WORD xCid, WORD ids_background, int x, int y)
   // this is the background of the control
   m_hSprite = sprSelect(ids_background);
   m_spr = sprGet(m_hSprite);
-  m_spr->sprite.UnCompress();
   m_fbd.SpriteInit(&m_spr->sprite);
 
   m_fbd.m_dst_x = x;

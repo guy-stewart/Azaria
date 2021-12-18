@@ -56,8 +56,6 @@ SPIRIT::SPIRIT(	 ONE *canvas,
 	m_hSprite = sprSelect(sprite_id);
 	m_spr = sprGet(m_hSprite);
 
-	printf("%s:%d:SPIRIT::SPIRIT UnCompress()\n", __FILE__, __LINE__);
-	m_spr->sprite.UnCompress();
 	m_fbd.SpriteInit(&m_spr->sprite);
 	m_fbd.MaskInit(&m_spr->sprite);
 
@@ -73,15 +71,9 @@ SPIRIT::SPIRIT(	 ONE *canvas,
 	case BLT_LENSED:
 		// The sprite is blitted sideways ...
   		m_fbd.m_style = BLT_FLIPPED;
-		m_fbdBones.m_style = BLT_RECTFLIP;
-		m_fbdBones.m_dy = m_fbd.m_dx;
-		m_fbdBones.m_dx = m_fbd.m_dy;
 		break;
 	default:
   		m_fbd.m_style = style;
-		m_fbdBones.m_style = BLT_RECT;
-		m_fbdBones.m_dx = m_fbd.m_dx;
-		m_fbdBones.m_dy = m_fbd.m_dy;
 		break;
 	}
 }

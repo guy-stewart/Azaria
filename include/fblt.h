@@ -82,27 +82,17 @@ public:
     void lensInit(int height, int width);
     void lensInit(int height, int width, int effect);
 
-    void BonesOn(int x, int y);
-    void BonesOff(int x, int y);
-
     void Blt(ONE *dst, ONE *hbm);
-    void BltCompressed(ONE *dest, ONE *src);
-    void BltCompressedFlip(ONE *dest, ONE *src);
-    void BltFont(ONE *dest, ONE *src);
     void BltFlip(ONE *oneDest, ONE *oneSrc);
     void BltRectangle(ONE *oneDest,ONE *oneSrc);
 	void fbltPortal(ONE *oneDest,ONE *oneSrc);
 
     void LensPortal(ONE *oneDest,ONE *oneSrc);
 
-    int GetFontPitch() {return m_font_pitch;}
-    void GetCharBound(int *left, int *right, ONE *src);
-	void GetXCharBounds(int *left, int *right);
 	void GetBoundingRect(RECT *rect, int frame) {m_masks->mask(frame)->GetBoundingRect(rect);};
 
 	//----------------------------------------------------------------------------
 	// print a message at x,y on the given canvas:
-    int Print(ONE *canvas, ONE *font, const char *msg, int color);
     int XPrint(ONE *canvas, SPIRIT *xfont, const char *msg, int color);
 
 	static inline void aligned_memcpy( UCHAR *dst, const UCHAR *src, size_t count )
@@ -131,7 +121,6 @@ public: // This stuff is not Scottish. (if it ain't Scottish, it's crap)
 
 #define restore_debug "ck.>=m!"
 extern HRESULT DDoneBlt(RECT *rect, IDirectDrawSurface *pdds, ONE *one, FBLT_DSCR *fbd);
-extern HRESULT HBoneBlt(RECT *rect, HBITMAP dst, ONE *one, FBLT_DSCR *fbd);
 extern HRESULT oneDDBlt(RECT *rect, ONE *oneDst, IDirectDrawSurface *pdds, FBLT_DSCR *fbd);
 extern HRESULT oneHBBlt(RECT *rect, ONE *one, HBITMAP hbm, FBLT_DSCR *fbd);
 #endif
