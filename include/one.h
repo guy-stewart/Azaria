@@ -27,6 +27,9 @@
 #include <cstring>
 
 class FBLT_DSCR;
+//typedef unsigned char   PIXEL;
+typedef uint32_t   PIXEL;
+
 
 // majic numbers are used to test for out-of-bounds writes to images.
 #define ONE_MAGIC	0xA55A
@@ -71,7 +74,7 @@ class ONE {
 public:
 	ONE_HEADER m_hdr;
 	PALETTEENTRY *m_pal;
-	unsigned char *m_bits;
+	PIXEL *m_bits;
 private:
 	int32_t *m_frame_offset;	// array of offsets into an animation sequence.
 
@@ -89,14 +92,9 @@ public: // constructors, destructors.
 	ONE() {INIT();}
 	~ONE();
 
-private:
-	BOOL allocBits(int size);
-	static BOOL freeBits(BYTE *bits);
-public:
-	BOOL freeBits();
 
 public:
-	inline unsigned char * getBits() { return m_bits;}
+	inline PIXEL * getBits() { return m_bits;}
 	inline unsigned int getSize() { return m_hdr.m_size;}
 	inline int32_t GetWidth() {return m_hdr.width;}
 	inline int32_t GetPitch() {return m_hdr.pitch;}
@@ -118,26 +116,6 @@ public:
 	// tools for compressed images:
 
 	BOOL IsCompressed() {return m_hdr.m_flags & ONE_IS_COMPRESSED;}
-	BOOL UnCompress();
-    void Compress(XFile *xfile);
-	void ConvertTo32bit();
-
-private:
-    int CompressFrame(
-				XFile *xfile,
-				unsigned char *bits,
-				unsigned int height
-				);
-    void CompressRow(
-				int ofh, 
-				unsigned char *bits,
-				unsigned char xcolor,
-				unsigned int height,
-				unsigned int y,
-				unsigned int width, 
-				unsigned int *nbytes,
-				unsigned int *ntrots
-				);
 
 public:
 	// Handy for testing images for corruption after blitting onto.
@@ -146,10 +124,12 @@ public:
 	int Read(const char * filename);
 	int Read(const char *path, const char *filename);
 	int ReadSprite(const char *path, const char *filename);
-	int Write(const char * lpszPathName, BOOL bCompressed, BOOL fromBMP, int frames, int FP10S);
+
+	BOOL freeBits(); // TODO: make this private
+
+private:
+	BYTE *UnCompress(BYTE *raw_bits);  // operates on raw unsigned char bitmap images
+	BOOL allocBits();
+	static BOOL freeBits(BYTE *bits);
+	void ConvertTo32bit(BYTE *raw_bits);
 };
-
-//----------------------------------------------------------------------------
-int oneWriteBMP(const char *filename, unsigned char *bits, BOOL bCompressed, int width, int height, int pitch, int frames, int FP10S);
-int oneWriteCustomBMP(const char *filename, unsigned char *bits, int width, int height, int pitch, PALETTEENTRY *pal);
-

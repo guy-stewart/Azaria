@@ -7,8 +7,6 @@
             "args": [
                 "-g",
                 "-march=native",
-                "${workspaceFolder}/../Azaria/Source/Attic/winText.cpp",
-                "${workspaceFolder}/../Azaria/Source/Attic/winPal.cpp",
                 "${workspaceFolder}/../Azaria/Source/Attic/winMain.cpp",
                 "${workspaceFolder}/../Azaria/Source/Audio/music.cpp",
                 "${workspaceFolder}/../Azaria/Source/Database/gdb.cpp",

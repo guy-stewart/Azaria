@@ -129,12 +129,6 @@ WORD TELETYPE::Grab(POINT p, BOOL bClickOnly, POINT *obj_pos)
 }
 
 //----------------------------------------------------------------------------
-void TELETYPE::Dump()
-{
-  c_teletype->surface.Write("textdump", FALSE, FALSE, 1, 100);
-}
-
-//----------------------------------------------------------------------------
 void TELETYPE::Paint(int etime, int flags)
 {
   CFONT *f;

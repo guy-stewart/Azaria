@@ -48,8 +48,8 @@ void FBLT_DSCR::lensInit(int height, int width, int effect)
 }
 
 //----------------------------------------------------------------------------
-static void sliver_up(unsigned char *tgt,
-                      unsigned char *src,
+static void sliver_up(PIXEL *tgt,
+                      PIXEL *src,
                       int th, // height
                       int tp, // pitch
                       unsigned short frac  )
@@ -75,7 +75,7 @@ static void sliver_up(unsigned char *tgt,
 
 //----------------------------------------------------------------------------
 // ### unroll the inner loops to make faster
-static void sliver(unsigned char *tgt, unsigned char *src, int th, int tp, int accum_init, int frac_part  )
+static void sliver(PIXEL *tgt, PIXEL *src, int th, int tp, int accum_init, int frac_part  )
 {
     // printf("TODO: fix this blitter: lens.cpp::sliver ******************\n");
     // assert(false);
@@ -111,8 +111,8 @@ Description:
 void FBLT_DSCR::LensPortal(ONE *oneDest,ONE *oneSrc)
 {
 	int x, dx;
-    unsigned char * bDest;
-	unsigned char * bSrc;
+    PIXEL * bDest;
+	PIXEL * bSrc;
 
 	// Speeds access to the vector.
 	MASK *mask;
@@ -189,7 +189,7 @@ void FBLT_DSCR::LensPortal(ONE *oneDest,ONE *oneSrc)
 }
 
 //----------------------------------------------------------------------------
-static void sliver_R90Fh(unsigned char *tgt, unsigned char *src, int len, int bpsl)
+static void sliver_R90Fh(PIXEL *tgt, PIXEL *src, int len, int bpsl)
 {
 	// Msg("sliver_R90Fh");
     // TODO: fix this blitter
@@ -202,7 +202,7 @@ static void sliver_R90Fh(unsigned char *tgt, unsigned char *src, int len, int bp
 }
 
 //----------------------------------------------------------------------------
-static void sliver_memset(unsigned char *tgt, unsigned char color, int len, int bpsl)
+static void sliver_memset(PIXEL *tgt, PIXEL color, int len, int bpsl)
 {
     // TODO: fix this blitter
     //assert(false);
@@ -216,15 +216,16 @@ static void sliver_memset(unsigned char *tgt, unsigned char color, int len, int 
 //----------------------------------------------------------------------------
 // used to blit a sprite onto a surround view canvas (surface).
 // The sprite is rotated and flipped as it is blitted onto the canvas.
-void FBLT_DSCR::BltFlip(ONE *oneDest, ONE *oneSrc)
+void FBLT_DSCR::
+BltFlip(ONE *oneDest, ONE *oneSrc)
 {
 	int i, y, x, dx;
 	int length;
 	int init_x, src_y;
 	int dest_x;
 
-    unsigned char * bDest;
-	unsigned char * bSrc;
+    PIXEL * bDest;
+	PIXEL * bSrc;
 
 	int dst_pitch = oneDest->GetPitch();
 	int src_pitch = oneSrc->GetPitch();

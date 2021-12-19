@@ -33,6 +33,7 @@
 
 #include "one.h"
 #include "platform.h"
+#include "display.h"
 
 void WarnUser( const LPSTR fmt, ... );
 
@@ -111,43 +112,46 @@ void makepath(char* Path,const char* Drive,const char* Directory, const char* Fi
 }
 
 
-
-
-//----------------------------------------------------------------------------
-static void write_walk(
-  int ofh, 
-  unsigned short x, 
-  unsigned short y, 
-  unsigned short wlen, 
-  unsigned char *wi
-)
-{
-  if (!wlen) return;
-  write(ofh, &x, sizeof(short));
-  write(ofh, &y, sizeof(short));
-  write(ofh, &wlen, sizeof(short));  // note hi-bit is clear.
-  write(ofh, wi, (long) wlen);
-}
+typedef struct tagRGBV {
+    BYTE peRed;
+    BYTE peGreen;
+    BYTE peBlue;
+    BYTE peAlpha;
+} RGBV;
 
 //----------------------------------------------------------------------------
-static void write_run(
-  int ofh, 
-  unsigned short x, 
-  unsigned short y, 
-  unsigned short rlen, 
-  BYTE pel
-)
-{
-  if (!rlen) return;
-  rlen |= 0x8000;                   // set the hi-bit, indicating a run.
-  write(ofh, &x, sizeof(short));
-  write(ofh, &y, sizeof(short));
-  write(ofh, &rlen, sizeof(short));  // note hi-bit is set.
-  write(ofh, &pel, sizeof(BYTE));
-}
+void ONE::ConvertTo32bit(BYTE *raw_bits) {
 
-//----------------------------------------------------------------------------
-void ONE::ConvertTo32bit() {
+  if (allocBits())
+  {
+	  BYTE *a = raw_bits;
+	  PIXEL *b = m_bits;
+
+	  if (sizeof(PIXEL) == 1) {
+		  memcpy(m_bits, raw_bits, m_hdr.height*m_hdr.pitch);
+	  } else {
+	    RGBV rgbv;
+
+	    PALETTEENTRY *m_palette = GetPalette();
+		if (!m_palette)
+			m_palette = display.GetPalette();
+
+	    for (int r=0; r<m_hdr.height; r++) {
+	        for (int c=0; c<m_hdr.pitch; c++) {
+	            PALETTEENTRY * p = &m_palette[a[(r*m_hdr.pitch)+c]];
+	            rgbv.peRed = p->peRed;
+	            rgbv.peGreen = p->peGreen;
+	            rgbv.peBlue = p->peBlue;
+	            rgbv.peAlpha = 0;
+
+	            b[(r*m_hdr.pitch)+c] = *(uint32_t*)(&rgbv);
+        	}
+	  	}
+	  }
+  }
+  // free the old bits:
+  free(raw_bits);
+
 
   // allocate a 4x buffer to convert from 8 bit palette to 32bit RGBA
 
@@ -158,185 +162,7 @@ void ONE::ConvertTo32bit() {
   // update the header
 }
 
-//----------------------------------------------------------------------------
-void ONE::CompressRow(
-  int ofh, 
-  unsigned char *bits,
-  unsigned char xcolor,
-  unsigned int height,
-  unsigned int y,
-  unsigned int width, 
-  unsigned int *nbytes,
-  unsigned int *ntrots
-)
-{
-  unsigned short wlen;     // for scanning.
-  unsigned char *wi;       // write index - start of next write.
-  unsigned char *la;       // look ahead pointer.
-  unsigned short x;        // coordinate in the row.
 
-  // run stuff:
-  BYTE run_color;			// set to color of run,  if it is a run.
-  BOOL isa_run;				// set TRUE if it is a run
-  int new_run_len;
-
-  // skip over any leading transparencies.
-  wi = bits;     // keep track of which pels to write.
-  la = bits;     // start examining the image from the beginning of the row.
-  x = 0;         // remember where we are in the row.    
-
-SKIP_XCOLOR:
-  while (width && (*la == xcolor))
-  {
-    wi++;        // not going to write this pel.
-    la++;        // look ahead one.
-    x++;         // remember where we are in the row.    
-    width--;     // one less pel to worry about.
-  }
-  
-  // hit the end of the row w/ out finding (another) trot?
-  if (!width) return;
-
-  // must learn to walk before learning to run. start out walking ...
-  wlen = 0;      // empty walk.
-  run_color = *la;	// lets see if we have a run
-  isa_run = TRUE;	// be optimystic
-
-  // walk until end of row, or xparency is detected.
-  while (width && (*la != xcolor))
-  {
-
-#define MIN_RUN_LEN 12 // seems to be a good number, in general
-
-	if (isa_run)
-	{
-	  if (run_color != *la)
-	  {
-		if (wlen >= MIN_RUN_LEN)
-		  break;	// write the run, come back later to work on the next set.
-		else
-		{
-		  run_color = *la;  // try to find an appended run
-		  new_run_len = 0;
-		  isa_run = FALSE;
-		}
-	  }
-	}
-	else	  // try to pick a run out of a waltz:
-	{
-	  if (run_color != *la)
-	  {
-		run_color = *la;  // try to find an appended run
-		new_run_len = 0;
-	  }
-	  else
-	  {
-		new_run_len++;
-
-	    if (new_run_len >= MIN_RUN_LEN)
-		{
-		  // write the walk, come back later to work on the run:
-		  wlen -= new_run_len;
-		  la -= new_run_len;
-		  width += new_run_len;
-	  	  break;
-		}
-	  }
-	}
-
-	wlen++;
-	la++;
-	width--;
-  }
-
-  // must have hit end of row, or an xparency.
-  if (wlen)
-  {
-	  if (isa_run)
-	  {
-		write_run(ofh, x, y, wlen, run_color);
-		*nbytes += (3 * sizeof(short)) + sizeof(BYTE);
-	  }
-	  else
-	  {
-		write_walk(ofh, x, y, wlen, wi);
-		*nbytes += (3 * sizeof(short)) + wlen;
-	  }
-
-	x += wlen;
-    wi += wlen;
-    (*ntrots)++;
-  }
-
-  // hit the end of row?
-  if (!width) return;   
-
-  // handled the run, or walk ended with a transparency.
-  goto SKIP_XCOLOR;
-}
-
-//----------------------------------------------------------------------------
-// Writes a compressed image frame to the file handle ofh.
-// It starts wherever the current position of the file happens to be, 
-// and leaves the current file position at the start of the frame.
-int ONE::CompressFrame(
-		XFile *xfile,
-		unsigned char *bits,
-		unsigned int height)
-{
-  unsigned int ntrots;     // the number of walks and runs found.
-  unsigned short y;          // cartesion coordinate within the dib.
-  long fpos;               // file position where number of walks/runs must be stored.
-  unsigned int size = 0;
-
-  // accounting.
-  ntrots = 0;  
-
-  // remember where in the file the walk/run count must go. (where it is now).
-  fpos = xfile->GetPosition();
-  xfile->Write(&ntrots, sizeof(long));  // store a dummy place holder.
-
-  // next cruise through the dib adding walks and runs to the output file.
-  for (y=0; y<height; y++)
-    CompressRow(xfile->GetHandle(), bits+(y*m_hdr.pitch), *bits, height, y, m_hdr.width, &size, &ntrots);
-
-  // store the walk/run count.
-  xfile->Seek(fpos, XFile::Begin);
-  xfile->Write(&ntrots, sizeof(long));
-
-  // account for storage of ntrots in the image bits:
-  size += sizeof(long);
-
-  return size;
-}
-
-//----------------------------------------------------------------------------
-void ONE::Compress(XFile *xfile)
-{
-  int i;
-  long fpos;
-  long size=0;
-  int frame_height = m_hdr.height/m_hdr.frames;
-  int frame_size = frame_height * m_hdr.pitch;
-
-  // reserve space following the header for the frame offsets:
-  fpos = xfile->GetPosition();
-  xfile->Write(m_bits, sizeof(long)*m_hdr.frames);
-
-  for (i=0;i<m_hdr.frames;i++)
-  {
-	// write the offset of the frame into the bits:
-	xfile->Seek(fpos+(sizeof(long)*i), XFile::Begin);
-	xfile->Write(&size, sizeof(long));
-
-	// add the next frame to the end of the file:
-	xfile->SeekToEnd();
-	size += CompressFrame(xfile, m_bits+(frame_size*i), frame_height);
-  }
-
-  // put the size into the header and re-write the header.
-  m_hdr.m_size = size;
-}
 
 //----------------------------------------------------------------------------
 static void oneUnCompress(
@@ -386,109 +212,39 @@ static void oneUnCompress(
 }
 
 //----------------------------------------------------------------------------
-BOOL ONE::UnCompress()
+BYTE *ONE::UnCompress(BYTE  *byte_bits)
 {
   int i;
 
-  if (!IsCompressed()) {
-	  return TRUE;
-  }
-  BYTE *old_bits = m_bits;
+  assert(IsCompressed());
+
+  BYTE *old_bits = byte_bits;
+  BYTE *new_bits = NULL;
+
   int frame_size = m_hdr.pitch*(m_hdr.height/m_hdr.frames);
 
   /* alloc bits: */
-  if (allocBits(m_hdr.height*m_hdr.pitch))
+  new_bits = (BYTE*)malloc(m_hdr.height*m_hdr.pitch);
+  if (new_bits)
   {
-	memset(m_bits, m_hdr.colorkey, m_hdr.height*m_hdr.pitch);
+	memset(new_bits, m_hdr.colorkey, m_hdr.height*m_hdr.pitch);
 
 	for (i=0;i<m_hdr.frames; i++)
 	{
 	  // printf("m_frame_offset[%d] = %d\n", i, m_frame_offset[i]);
 	  oneUnCompress(
 			m_hdr.pitch, m_hdr.width, m_hdr.height,
-			old_bits+m_frame_offset[i], m_bits+(frame_size*i));
+			old_bits+m_frame_offset[i], new_bits+(frame_size*i));
 	  m_frame_offset[i] = i*frame_size;
 	}
 
 	// free the old bits:
-	freeBits(old_bits);
+	free(old_bits);
 
 	m_hdr.m_flags &= ~ONE_IS_COMPRESSED;
 	m_hdr.m_size = m_hdr.height*m_hdr.pitch;
-	return TRUE;
   }
-  else
-	return FALSE;
-}
-
-//----------------------------------------------------------------------------
-int ONE::Write(const char *filename, BOOL bCompressed, BOOL fromBMP, int frames, int FP10S)
-{
-  XFile xfile(filename);
-
-  int rc = 0;
-  long i;
-  unsigned char *bits;
-
-  xfile.SetExtension("one");
-
-  if (!frames)	  // must be at least 1 frame.
-	frames = 1;
-  if (!FP10S)	  // must be at least 1 frame per second.
-	FP10S = 1;
-
-  m_hdr.frames = frames;
-  m_hdr.fp10s = FP10S;
-
-  if (bCompressed)
-  {
-	// user wants to write it compressed:
-	m_hdr.m_flags |= ONE_IS_COMPRESSED;
-
-	if (!xfile.Open(XFile::modeWrite))
-    {
-      WarnUser("Unable to open: %s", filename);
-      return FALSE;
-    }
-
-	if (xfile.Write(&m_hdr, sizeof(ONE_HEADER)) == sizeof(ONE_HEADER))
-	{
-		m_hdr.colorkey = *m_bits;
-
-		// compress all the frames into xfile:
-		Compress(&xfile);
-
-		xfile.SeekToBegin();
-		xfile.Write(&m_hdr, sizeof(ONE_HEADER)) == sizeof(ONE_HEADER);
-	}
-    return rc;
-  }
-  else
-  {
-    // its uncompressed.
-    if (!xfile.Open(XFile::modeWrite))
-    {
-      // add fancy-schmancy high-falootin' error handling here.
-      WarnUser("Unable to open: %s", filename);
-      return FALSE;
-    }
-
-    if (xfile.Write(&m_hdr, sizeof(ONE_HEADER)) == sizeof(ONE_HEADER))
-	{
-      if (fromBMP)
-      {
-			  bits = m_bits + m_hdr.m_size;
-			  for (i=0; i<m_hdr.height; i++)
-			  {
-				  bits -= m_hdr.pitch;
-				  rc = xfile.Write(bits, m_hdr.pitch);
-			  }
-      }
-      else
-        rc = xfile.Write(m_bits, m_hdr.m_size);
-	}
-	return rc;
-  }
+  return new_bits;
 }
 
 //----------------------------------------------------------------------------
@@ -496,7 +252,7 @@ ONE::ONE(void *_bits, int _width, int _height, int _pitch)
 {
 	INIT();
 
-	m_bits = (unsigned char *)_bits;
+	m_bits = (PIXEL *)_bits;
 
 	m_hdr.width = _width;
 	m_hdr.height = _height;
@@ -519,65 +275,23 @@ ONE::~ONE()
 }
 
 //----------------------------------------------------------------------------
-int oneWriteBMP(const char *filename, unsigned char *bits, BOOL bCompressed, int width, int height, int pitch, int frames, int FP10S)
-{
-	ONE one(bits, width, height, pitch);
-	one.Write(filename, bCompressed, TRUE, frames, FP10S);
-	return 0;
-}
-
-//----------------------------------------------------------------------------
-int oneWriteCustomBMP(const char *filename, unsigned char *bits, int width, int height, int pitch, PALETTEENTRY *pal)
-{
-	XFile xfile(filename);
-	int rc = 0;
-	int i;
-
-	xfile.SetExtension("one");
-
-	/* Open file for output: */
-	if(xfile.Open(XFile::modeWrite))
-	{
-		ONE one(bits, width, height, pitch);
-		if (pal)
-		{
-			one.SetCustomPalette(pal);
-		}
-
-		if( xfile.Write(&one.m_hdr, sizeof( ONE_HEADER )) == sizeof(ONE_HEADER) )
-		{
-			bits = one.getBits()+one.getSize();
-			for (i=0;i<one.GetHeight(); i++)
-			{
-				bits-=one.GetPitch();
-				rc = xfile.Write(bits, one.GetPitch());
-			}
-		}
-
-		if (pal)
-		{
-			rc = xfile.Write(pal, sizeof(PALETTEENTRY) * 256);
-		}
-	}
-	return rc;
-}
-
-//----------------------------------------------------------------------------
 /*
 *	There are magic numbers around the malloced block
 *	so that I can test for blits that exceed the image bounds.
 */
-BOOL ONE::allocBits(int size)
+BOOL ONE::allocBits()
 {
 	int *magic;
 
-	magic = (int*)malloc(size + sizeof(int)*2);
+	int size = m_hdr.height*m_hdr.pitch;
+
+	magic = (int*)malloc(sizeof(PIXEL)*size + sizeof(int)*2);
 	assert(magic);
 
 	if (!magic)
 		return FALSE;
 
-	m_bits = (unsigned char*)(magic + 1);
+	m_bits = (PIXEL*)(magic + 1);
 	*magic = ONE_MAGIC;
 	magic = (int*)(m_bits+size);
 	*magic = ONE_MAGIC;
@@ -597,6 +311,9 @@ int ONE::Read(const char *filename)
 	XFile xfile(filename);
 	int rc = FALSE;
 	int pc;
+	BYTE *raw_bits = NULL;
+
+	freeBits();
 
 	xfile.SetExtension("one");
 
@@ -623,9 +340,11 @@ int ONE::Read(const char *filename)
 		}
 
 		/* alloc bits: */
-		if (allocBits(m_hdr.m_size))
+		raw_bits = (BYTE*)malloc(m_hdr.m_size);
+		assert(raw_bits);
+		if (raw_bits)
 		{
-            size_t count = xfile.Read( m_bits, m_hdr.m_size);
+            size_t count = xfile.Read( raw_bits, m_hdr.m_size);
             rc = (count == m_hdr.m_size);
             if (count != m_hdr.m_size) {
                 printf("xfile.Read(\"%s\", %d) --> %zu\n", xfile.GetPath(), m_hdr.m_size, count);
@@ -653,8 +372,9 @@ int ONE::Read(const char *filename)
 	}
 
 	if (IsCompressed()) {
-		UnCompress();
+		raw_bits = UnCompress(raw_bits);
 	}
+	ConvertTo32bit(raw_bits);
 	return rc;
 }
 
@@ -688,7 +408,7 @@ int ONE::Init(int width, int height)
 
 	m_hdr.m_size = m_hdr.height * m_hdr.pitch;
 
-	return allocBits(m_hdr.m_size);
+	return allocBits(); //m_hdr.m_size
 }
 
 //----------------------------------------------------------------------------
@@ -729,14 +449,15 @@ BOOL ONE::freeBits()
 {
 	int *majic;
 
-	if (!Validate()) return FALSE;
+	if (m_bits == NULL) return false;
+	if (!Validate()) return false;
 	majic = (int*)m_bits;
 	majic--; // Tis where'es freed at
 	*majic = ONE_EVIL; // Set to evil bits so we can recognize a freed image
 	free(majic);
 	m_bits = NULL;
 	m_hdr.m_flags = 0;
-	return TRUE;
+	return true;
 }
 
 //----------------------------------------------------------------------------
@@ -749,5 +470,5 @@ BOOL ONE::freeBits(BYTE *bits)
 	majic--; // Tis where'es freed at
 	*majic = ONE_EVIL; // Set to evil bits so we can recognize a freed image
 	free(majic);
-	return TRUE;
+	return true;
 }

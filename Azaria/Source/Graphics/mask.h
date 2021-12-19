@@ -3,6 +3,7 @@
 #include "ptypes.h"
 #include "xfile.h"
 #include <cstring>
+#include "one.h"
 
 class MASKS;
 
@@ -12,8 +13,8 @@ public:
     void GetBoundingRect(RECT *rect);
     BOOL PtInRect(POINT p);
     void Move(int x_delta, int y_delta);
-    static MASKS * Create(unsigned char *bits, int f, int h, int w, int pitch, unsigned char ck);
-    static MASK * Create(unsigned char *bits, int h, int w, int pitch, unsigned char ck);
+    static MASKS * Create(PIXEL *bits, int f, int h, int w, int pitch, PIXEL ck);
+    static MASK * Create(PIXEL *bits, int h, int w, int pitch, PIXEL ck);
     static int Write(const char *lpszPathName, MASK *vector);
     static int Read(const char *path, const char * lpszPathName, MASK **vector);
 

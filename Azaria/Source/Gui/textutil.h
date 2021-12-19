@@ -36,7 +36,7 @@ public:
       delete sprite;
     };
 
-    int TextOut(ONE *surface, int color, int sx, int sy, const char *buff) {
+    void TextOut(ONE *surface, int color, int sx, int sy, const char *buff) {
       //----------------------------------------------------------------------------
       x = sx;
       y = sy;

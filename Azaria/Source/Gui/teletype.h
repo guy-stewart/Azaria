@@ -82,7 +82,6 @@ private:
     void _AppendMessage(DWORD pid, char *message, BYTE freq, BYTE lang); 
 
 public:
-    static void Dump();
     static void Msg( DWORD pid, const LPSTR fmt, ... );
     inline static void AppendMessage(DWORD pid, char *message, BYTE freq, BYTE lang) 
 		{if (c_teletype) c_teletype->_AppendMessage(pid, message, freq, lang);}

@@ -25,6 +25,7 @@
 #include "ptypes.h"
 #include "palette.h"
 
+
 typedef unsigned short *PLENS;	/* an array of scale factors */
 
 #define BLT_RECT		0x01	// blit a rectangle
@@ -95,16 +96,16 @@ public:
 	// print a message at x,y on the given canvas:
     int XPrint(ONE *canvas, SPIRIT *xfont, const char *msg, int color);
 
-	static inline void aligned_memcpy( UCHAR *dst, const UCHAR *src, size_t count )
+	static inline void aligned_memcpy( PIXEL *dst, const PIXEL *src, size_t count )
 	{
         // TODO: implement this blitter
-        memcpy(dst, src, count);
+        memcpy(dst, src, count*sizeof(PIXEL));
 	}
 
 	static inline void aligned_memset( void *dst, int color, size_t count )
 	{
         // TODO: implement this blitter
-        memset(dst, color, count);
+        memset(dst, color, count*sizeof(PIXEL));
 	}
 
 

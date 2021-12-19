@@ -457,50 +457,6 @@ static long FAR PASCAL MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
  */
 static BOOL initApplication( void )
 {
-    /*
-    WNDCLASS    wc;
-    BOOL        rc;
-
-    wc.style = CS_DBLCLKS;
-    wc.lpfnWndProc = MainWndProc;
-    wc.cbClsExtra = 0;
-    wc.cbWndExtra = 0;
-    wc.hInstance = hInstance;
-    wc.hIcon = LoadIcon( hInstance, MAKEINTATOM(MAYA_ICON));
-    wc.hCursor = NULL;
-    wc.hbrBackground = GetStockObject(BLACK_BRUSH);
-    wc.lpszMenuName = NULL;
-    wc.lpszClassName = "SingularClass";
-    rc = RegisterClass( &wc );
-    if( !rc )
-    {
-        return FALSE;
-    }
-
-    hWndMain = CreateWindow(
-        "SingularClass",
-         "Azaria",
-        WS_VISIBLE    // so we dont have to call ShowWindow
-		| WS_POPUPWINDOW
-		| WS_CAPTION
-		,
-        GetSystemMetrics(SM_CXSCREEN)/2 - GameMode.cx/2,
-        GetSystemMetrics(SM_CYSCREEN)/2 - GameMode.cy/2,
-        GameMode.cx,
-        GameMode.cy,
-        NULL,
-        NULL,
-        hInstance,
-        NULL );
-
-    if( !hWndMain )
-    {
-        return FALSE;
-    }
-
-    UpdateWindow( hWndMain );
-    SetFocus( hWndMain );
-     */
 
     return TRUE;
 } /* initApplication */

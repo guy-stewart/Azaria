@@ -38,8 +38,8 @@ void FBLT_DSCR::fbltPortal(
 
 	int i, x, y, dest_y, src_y;
 	int src_x;
-    unsigned char * bDest;
-	unsigned char * bSrc;
+    PIXEL * bDest;
+	PIXEL * bSrc;
 	int length, wrap;
 	MASK *mask = fbd->m_mask;
 	int dst_pitch = oneDest->GetPitch();
@@ -134,8 +134,8 @@ void FBLT_DSCR::BltRectangle(ONE *oneDest,ONE *oneSrc)
 	int dx; // used to clip to right side of source and target
 	int src_y;
 	int dst_y;
-    unsigned char * bDest;
-	unsigned char * bSrc;
+    PIXEL * bDest;
+	PIXEL * bSrc;
 	int dst_pitch = oneDest->GetPitch();
 	int src_pitch = oneSrc->GetPitch();
 	int dst_height = oneDest->GetHeight();

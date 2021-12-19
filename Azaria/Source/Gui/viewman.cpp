@@ -94,7 +94,6 @@ VIEW *ViewMan::Load(int view_id)
 
   if (view_id == 0)
   {
-	bPostQuitMessage = TRUE;
 	return NULL;
   }
 

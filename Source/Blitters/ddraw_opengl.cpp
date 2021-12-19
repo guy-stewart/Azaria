@@ -7,6 +7,8 @@
 #include "palette.h"
 #include <cstring>
 #include <GL/freeglut.h>
+#include "one.h"
+
 
 GLubyte back_buffer[640*480*4];
 GLuint rgb_buffer[640*480];
@@ -16,7 +18,7 @@ typedef struct _RGBA8 {
     size_t height;
     size_t bytesPerRow;
     size_t bpp;
-    unsigned char *bitmapData;
+    PIXEL *bitmapData;
 } RGBA8Image;
 
 RGBA8Image * getBackBuffer(void)
@@ -25,8 +27,8 @@ RGBA8Image * getBackBuffer(void)
     surface->width = 640;
     surface->height = 480;
     surface->bytesPerRow = 640;
-    surface->bpp = 1;
-    surface->bitmapData = (unsigned char*)back_buffer;
+    surface->bpp = sizeof(PIXEL);
+    surface->bitmapData = (PIXEL*)back_buffer;
     return surface;
 }
 
@@ -50,7 +52,7 @@ static void dumpPalette(PALETTE *a)
 	}		
 }
 
-void mapbuffer(GLubyte *a, uint32_t *b) {
+void mapbuffer(BYTE *a, uint32_t *b) {
 /*
     for (int i=0; i<640*480; i++) {
         void * p = &palPalette.ape[a[i]];
@@ -82,13 +84,34 @@ void mapbuffer(GLubyte *a, uint32_t *b) {
     // memset(a, 0, 640*480);
 }
 
+void copybuffer(uint32_t *a, uint32_t *b) {
+/*
+    for (int i=0; i<640*480; i++) {
+        void * p = &palPalette.ape[a[i]];
+        b[i] = *(uint32_t*)(p);
+    }
+*/
+    RGBV rgbv;
+
+    for (int r=0; r<480; r++) {
+        for (int c=0; c<640; c++) {
+            b[((479-r)*640)+c] = *(uint32_t*)(&a[(r*640)+c]);
+        }
+    }
+    // memset(a, 0, 640*480);
+}
+
+
 void paintBuffer(RGBA8Image * _surface)
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
 
     glRasterPos2i (0, 0);
-    mapbuffer(_surface->bitmapData, rgb_buffer);
+    if (sizeof(PIXEL) == 1)
+        mapbuffer((BYTE*)_surface->bitmapData, rgb_buffer);
+    else
+        copybuffer((uint32_t*)_surface->bitmapData, rgb_buffer);
     glPixelZoom( 2, 2 );
     glDrawPixels(640, 480,  GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, rgb_buffer);
 

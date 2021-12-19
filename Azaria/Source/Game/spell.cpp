@@ -417,10 +417,6 @@ BOOL WIZARD::Parse(char *buffer)
 		TELETYPE::Msg(0, ";<location> - Go to location.");
 	}
   }
-  else if (!stricmp(token, "dump"))
-  {
-	TELETYPE::Dump();
-  }
   else if (!stricmp(token, "new"))
   {
 	  Game::New();

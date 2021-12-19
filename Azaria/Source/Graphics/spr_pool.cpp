@@ -95,7 +95,8 @@ int sprSelect(int sprite_id)
 	}
 
 	// TODO: uncompress spr sprites ...
-	spr_pool[i].sprite.UnCompress();
+	assert(!spr_pool[i].sprite.IsCompressed());
+//	spr_pool[i].sprite.UnCompress(NULL);
 
 	spr_pool[i].sprite_id = sprite_id;
 

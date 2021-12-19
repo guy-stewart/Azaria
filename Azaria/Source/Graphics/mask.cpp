@@ -48,7 +48,7 @@ MASKS::~MASKS() {
 
 
 //----------------------------------------------------------------------------
-MASKS * MASK::Create(unsigned char *x_bits, int f, int h, int w, int pitch, unsigned char ck) {
+MASKS * MASK::Create(PIXEL *x_bits, int f, int h, int w, int pitch, PIXEL ck) {
 	MASKS *masks;
 	masks = new MASKS(f);
 
@@ -61,7 +61,7 @@ MASKS * MASK::Create(unsigned char *x_bits, int f, int h, int w, int pitch, unsi
 }
 
 //----------------------------------------------------------------------------
-MASK * MASK::Create(unsigned char *x_bits, int h, int w, int pitch, unsigned char ck)
+MASK * MASK::Create(PIXEL *x_bits, int h, int w, int pitch, PIXEL ck)
 {
 	int runs; // how many runs in the image.
 	int index;
@@ -69,7 +69,7 @@ MASK * MASK::Create(unsigned char *x_bits, int h, int w, int pitch, unsigned cha
 	int x, y;
 	int top=0, left=0;
 
-	unsigned char *lm_bits;
+	PIXEL *lm_bits;
 
 	runs = 0;
 	lm_bits = x_bits;
