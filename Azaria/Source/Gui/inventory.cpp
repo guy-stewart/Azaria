@@ -33,6 +33,11 @@ void INVENTORY::Paint(int etime, int flags)
 {
   int i;
 
+  for (i=2;i>=0;i--)
+	if (m_Spirit[i])
+		m_Spirit[i]->OFF();
+		
+
  	if (m_NewSpirit)
 	{
 	  for (i=0;i<3;i++)

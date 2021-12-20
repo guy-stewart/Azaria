@@ -83,6 +83,9 @@ public:
     void lensInit(int height, int width);
     void lensInit(int height, int width, int effect);
 
+	void BonesOn(int x, int y);
+	void BonesOff(int x, int y);
+
     void Blt(ONE *dst, ONE *hbm);
     void BltFlip(ONE *oneDest, ONE *oneSrc);
     void BltRectangle(ONE *oneDest,ONE *oneSrc);

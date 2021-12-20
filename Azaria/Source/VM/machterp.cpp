@@ -1352,11 +1352,10 @@ void MACHINE::Signal(WORD wParm)
 
 //----------------------------------------------------------------------------
 void MACHINE::Paint(ONE *canvas)
-{
-/*	
+{	
 	if (m_Spirit)
 		m_Spirit->OFF();
-*/
+
 	if (m_NewSprite)
 	{
 		m_NewSprite = FALSE;
@@ -1408,7 +1407,10 @@ void MACHINE::Paint(ONE *canvas)
 //----------------------------------------------------------------------------
 void MACHINE::Erase()
 {
+	if (m_Spirit)
+		m_Spirit->OFF();
 }
+
 //----------------------------------------------------------------------------
 void MACHINE::Release()
 {
@@ -1792,14 +1794,14 @@ void GDBT_MACHINES::Paint(ONE *canvas, WORD view_id)
 	MACHINE *machine;
 
 	SPIRIT::VideoOFF(view_id);
-/*
+
 	machine = GetFirst(view_id, &position);
 	while (machine)
 	{
 		machine->Erase();
 		machine = GetNext(view_id, &position);
 	}
-*/
+
 	tbl_altviews.Paint(canvas, view_id);
 
 	machine = GetLast(view_id, &position);
@@ -1981,6 +1983,8 @@ void ALTVIEW::Paint(ONE *canvas)
 //----------------------------------------------------------------------------
 void ALTVIEW::Erase()
 {
+  if (m_Spirit)
+	m_Spirit->OFF();
 }
 
 //----------------------------------------------------------------------------

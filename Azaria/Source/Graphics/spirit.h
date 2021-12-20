@@ -45,6 +45,8 @@ private:
 	POINT m_pos;		// current x,y position of upper left corner of sprite
 	int m_anindex;		// index into the animation pool, or -1
 	ONE *m_canvas;		// canvas this sprite lives on.
+	ONE m_bone;		// storage for the background underneath the sprite.
+	FBLT_DSCR m_fbdBones;	// blit descriptor for the bones
 	BYTE m_on:1;			// flag set to TRUE when sprite is on the scene.
 	BYTE m_Loop:1;
 	BYTE m_Rewind:1;
@@ -59,6 +61,7 @@ public:
 
 public: // interface:
 	void ON();
+	void OFF();
 	void Move(int x, int y, int flags) {
 		if (!this)
 			return;

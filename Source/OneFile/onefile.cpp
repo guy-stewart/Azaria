@@ -332,6 +332,10 @@ int ONE::Read(const char *filename)
 			printf("**** probably a bad file???  %s\n", filename);
 			m_hdr.frames = 1;
 		}
+		if (m_hdr.frames == 0) {
+			printf("**** probably a bad file???  %s\n", filename);
+			m_hdr.frames = 1;
+		}
 		if (IsCompressed())
 		{
 		  printf("IsCompressed()\n");

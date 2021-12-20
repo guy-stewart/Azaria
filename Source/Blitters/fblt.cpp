@@ -199,3 +199,39 @@ BOOL FBLT_DSCR::PrevFrame(ONE *sprite, int etime, BOOL bLoop)
 
   return TRUE;
 }
+
+//----------------------------------------------------------------------------
+void FBLT_DSCR::BonesOn(int x, int y)
+{
+	m_src_y = 0;
+	m_src_x = 0;
+	switch (m_style)
+	{
+	case BLT_RECTFLIP:
+		m_dst_x = y;
+		m_dst_y = x;
+		break;
+	default:
+		m_dst_x = x;
+		m_dst_y = y;
+	}
+}
+
+//----------------------------------------------------------------------------
+void FBLT_DSCR::BonesOff(int x, int y)
+{
+	m_dst_x = 0;
+	m_dst_y = 0;
+	{
+		switch (m_style)
+		{
+		case BLT_RECTFLIP:
+			m_src_y = x;
+			m_src_x = y;
+			break;
+		default:
+			m_src_x = x;
+			m_src_y = y;
+		}
+	}
+}

@@ -64,6 +64,8 @@ SPIRIT::SPIRIT(	 ONE *canvas,
 
 	m_on = FALSE;
 
+	m_bone = m_spr->sprite; // copy the image header info
+
 	// depending on the style of the view,
 	// the sprite may need to be rotated during blitting ...
 	switch (style)
@@ -71,9 +73,17 @@ SPIRIT::SPIRIT(	 ONE *canvas,
 	case BLT_LENSED:
 		// The sprite is blitted sideways ...
   		m_fbd.m_style = BLT_FLIPPED;
+		m_bone.Init(m_spr->sprite.GetHeight(), m_spr->sprite.GetWidth());
+		m_fbdBones.m_style = BLT_RECTFLIP;
+		m_fbdBones.m_dy = m_fbd.m_dx;
+		m_fbdBones.m_dx = m_fbd.m_dy;
 		break;
 	default:
   		m_fbd.m_style = style;
+		m_bone.Init(m_spr->sprite.GetWidth(), m_spr->sprite.GetHeight());
+		m_fbdBones.m_style = BLT_RECT;
+		m_fbdBones.m_dx = m_fbd.m_dx;
+		m_fbdBones.m_dy = m_fbd.m_dy;
 		break;
 	}
 }
@@ -100,6 +110,10 @@ void SPIRIT::ON()
 	if (!this)
 		return;
 
+	// save the background ...
+	m_fbdBones.BonesOff(m_pos.x, m_pos.y);
+	m_fbdBones.Blt(&m_bone, m_canvas);
+
 	// current position is contained in fbd(x,y)
 	m_fbd.m_dst_x = m_pos.x;
 	m_fbd.m_dst_y = m_pos.y;
@@ -108,6 +122,24 @@ void SPIRIT::ON()
 	m_fbd.Blt(m_canvas, &m_spr->sprite);
 
 	m_on = TRUE;
+}
+
+//----------------------------------------------------------------------------
+void SPIRIT::OFF()
+{
+
+	assert(this);
+	if (!this)
+		return;
+
+	if (m_on)  // don't replace the background if we are not on the canvas:
+	{
+		// replace the background:
+  		m_fbdBones.BonesOn(m_fbd.m_dst_x, m_fbd.m_dst_y);
+		m_fbdBones.Blt(m_canvas,&m_bone);
+
+		m_on = FALSE;
+	}
 }
 
 //----------------------------------------------------------------------------
@@ -371,7 +403,6 @@ void SPIRIT::VideoON(WORD view_id)
 //----------------------------------------------------------------------------
 void SPIRIT::VideoOFF(WORD view_id) 
 {
-	/*
   int i;
 
   for (i=0;i<c_count;i++)
@@ -381,6 +412,5 @@ void SPIRIT::VideoOFF(WORD view_id)
 	  c_pool[i]->OFF();
 	}
   }
-  */
 }
 

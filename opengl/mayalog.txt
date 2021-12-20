@@ -7,18 +7,6 @@ Load you
 Load teletype
 Load spacemen
 Load compass
-Load contin~1
+Load nat1p
 Normal Exit:
 reshape..
-mouse(x:1061, y:832)
-SMP_TALK2: 0 -GRAB(0x0)->1
-mouse(x:1061, y:832)
-mouse(x:1136, y:832)
-SMP_TALK3: 0 -GRAB(0x0)->1
-mouse(x:1136, y:832)
-mouse(x:1213, y:835)
-SMP_TALK4: 0 -GRAB(0x0)->1
-mouse(x:1213, y:835)
-mouse(x:989, y:838)
-SMP_TALK1: 0 -GRAB(0x0)->1
-mouse(x:989, y:838)

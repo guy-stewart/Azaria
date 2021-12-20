@@ -156,13 +156,13 @@ void BUTTON::SetFocus(POINT p, BOOL bHasFocus)
   if (bHasFocus)
   {
     Wave::Play(SOUND_BTNDRAG);
-	//sprBtn->OFF();
-	sprHilight->ON();
+	  sprBtn->OFF();
+	  sprHilight->ON();
   }
   else
   {
-	//sprHilight->OFF();
-	sprBtn->ON();
+	  sprHilight->OFF();
+	  sprBtn->ON();
   }
 
   //view->Invalidate();
@@ -196,16 +196,16 @@ void CHECKBOX::SetChecked(BOOL bChecked)
 
   if (bIsChecked)
   {
-	//sprBtn->OFF();
-	//sprHilight->ON();
+	  sprBtn->OFF();
+	  sprHilight->ON();
   }
   else
   {
-	//sprHilight->OFF();
-	sprBtn->ON();
+	  sprHilight->OFF();
+	  sprBtn->ON();
   }
 
-  //view->Invalidate();
+    view->Invalidate();
 }
 
 //----------------------------------------------------------------------------
@@ -482,12 +482,12 @@ WORD SLIDER::Grab(POINT p)
 
   Wave::Play(SOUND_CLICK);
 
-  //thumb.OFF();
+  thumb.OFF();
   thumb.Move(x+(value*width/(max-min)), y, 0);
   thumb.ON();
 
   view->OnEvent(control_id, value);
-  //view->Invalidate();
+  view->Invalidate();
 
   return FALSE;
 }
