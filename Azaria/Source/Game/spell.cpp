@@ -132,11 +132,6 @@ void WIZARD::Tick(DWORD etime)
 			case STALKER:		//player follows someone
 			  local_player->SetFollow(0);
 			  break;
-			case BLINDNESS:		//TURNS PLAYERS SCREEN DARK
-			  x = display.SetBlind(-5);
-			  if (x>0)
-				spell_time[BLINDNESS] = spell_time_to_live[BLINDNESS];
-			  break;
 			case HOLDING:		//LOCKS A PLAYER TO A LOCATION
 			  viewman.SetHolding(FALSE);
 			  break;
@@ -252,12 +247,6 @@ void WIZARD::CastMe(int object, int signal)
 			local_player->SetFollow(spell_caster);
 			spell_time[ENCHANT] = spell_time_to_live[ENCHANT];
 		}
-	  break;
-	case IDD_BLINDNESS:		//TURNS PLAYERS SCREEN DARK
-	  Signal_Id(SIG_CLEAR);
-
-	  display.SetBlind(+125);
-	  spell_time[BLINDNESS] = spell_time_to_live[BLINDNESS];
 	  break;
 	case IDD_HOLDING:		//LOCKS A PLAYER TO A LOCATION			
 	  viewman.SetHolding(TRUE);

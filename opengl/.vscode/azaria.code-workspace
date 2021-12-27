@@ -30,7 +30,8 @@
 			"utility": "cpp",
 			"random": "cpp",
 			"functional": "cpp",
-			"algorithm": "cpp"
+			"algorithm": "cpp",
+			"*.tcc": "cpp"
 		}
 	}
 }

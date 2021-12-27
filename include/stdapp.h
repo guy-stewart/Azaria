@@ -26,16 +26,6 @@
 #include <stdio.h>
 #include <time.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#include <windowsx.h> 
-#include <mmsystem.h>
-
-#include <ddraw.h>
-#include <dsound.h>
-#include <dplay.h>
-#endif
-
 #include "xfile.h"
 
 #include "recover.h"

@@ -52,13 +52,6 @@ void VIEW::Paint(int etime, int bForceRefresh)
 }
 
 //----------------------------------------------------------------------------
-void VIEW::BlitToDisplay()
-{
-  viewBlt(&surface, &fbd);
-  memcpy(surface.m_bits, restore_buffer, restore_size);
-}
-
-//----------------------------------------------------------------------------
 void VIEW::SetPainted(int frame) 
 {
   updatedFrames |= MSK_FRAME(frame);
@@ -383,57 +376,8 @@ VIEW::VIEW(int _view_id, const char *_name, int _style)
 }
 
 //----------------------------------------------------------------------------
-void viewGet(ONE *one, FBLT_DSCR *fbd)
+void VIEW::BlitToDisplay()
 {
-	RECT rect;
-
-/*
-#if DEBUG_VIEW
-  if (oneDebug.Validate())
-		  fbd->Blt(&rect, one, &oneDebug);
-  oneDebug.Validate();
-  return;
-#endif
-*/
-  try
-  {
-	oneDDBlt(&rect, one, display.GetBackBuffer(), fbd);
-  } 
-  catch(...)
-  {
-	errorCriticalStop("exception in viewGet");
-  }
-}
-
-//----------------------------------------------------------------------------
-void viewBlt(ONE *one, FBLT_DSCR *fbd)
-{
-  RECT rect;  // this is the bounding rectangle that became dirty during the blit.
-  HRESULT ddrval;
-
-// try to do the blit safely before we step off into the private world
-// of Direct X exclusive mode
-#if DEBUG_VIEW
-  if (oneDebug.Validate())
-		  fbd->Blt(&oneDebug, one);
-  oneDebug.Validate();
-#endif
-
-  try
-  {
-  	if (one->Validate())
-	{
-		ddrval = DDoneBlt(&rect, display.GetBackBuffer(), one, fbd);
-		if (ddrval != DD_OK)
-		  Msg("viewBlt - %s", display.GetDdError(ddrval));
-	}
-	else {
-		printf("%s(%d): Validate failed\n", __FILE__, __LINE__);
-	}
-
-  }
-  catch(...)
-  {
-	errorCriticalStop("exception in viewBlt");
-  }
+  display.Blt(&surface, &fbd);
+  memcpy(surface.m_bits, restore_buffer, restore_size);
 }

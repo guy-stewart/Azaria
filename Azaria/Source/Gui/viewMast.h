@@ -20,8 +20,7 @@
 ; 01/18/95  gas  Created.
 ; 
 ----------------------------------------------------------------------------*/
-#ifndef __VIEWMAST_INCLUDED__
-#define __VIEWMAST_INCLUDED__
+#pragma once
 
 	// view classiification:
 #define VC_MASK				0x7F00	// View Classes - mutual exclusion flag.
@@ -122,10 +121,3 @@ public:
 	inline int viewHeight()		{return Bottom() - Top() + 1;}
 	inline int viewWidth()		{return Right() - Left() + 1;}
 };
-
-BOOL viewSwapSurface(VIEW *view, ONE *newSurface);
-
-void viewBlt(ONE *one, FBLT_DSCR *fbd);
-void viewGet(ONE *one, FBLT_DSCR *fbd);
-
-#endif  // __VIEWMAST_INCLUDED__

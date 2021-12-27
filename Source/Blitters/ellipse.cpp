@@ -26,9 +26,7 @@
 #include <math.h>
 
 //----------------------------------------------------------------------------
-#if 0
 
-#else
 //----------------------------------------------------------------------------
 void FBLT_DSCR::fbltPortal(
 				ONE *oneDest,
@@ -125,7 +123,7 @@ void FBLT_DSCR::fbltPortal(
 			FBLT_DSCR::aligned_memcpy(bDest+dest_y+x, bSrc+src_y+x, length);
 	}
 }
-#endif
+
 //----------------------------------------------------------------------------
 void FBLT_DSCR::BltRectangle(ONE *oneDest,ONE *oneSrc)
 {
@@ -248,84 +246,3 @@ void FBLT_DSCR::Blt(ONE *oneDst, ONE *oneSrc)
 			break;
 		}
 }
-
-//----------------------------------------------------------------------------
-/*
- *  DDoneBlt
- *
- *  copy bits into a DirectDrawSurface
- *
- */
-HRESULT DDoneBlt(RECT *rect, IDirectDrawSurface *pdds, ONE *oneSrc, FBLT_DSCR *fbd)
-{
-    HRESULT     ddrval;
-
-    DDSURFACEDESC       ddsd;
-
-    if (oneSrc == NULL || pdds == NULL)
-        return E_FAIL;
-
-    ddsd.dwSize = sizeof(ddsd);
-    ddsd.dwFlags = DDSD_HEIGHT | DDSD_WIDTH;
-    ddrval = pdds->GetSurfaceDesc(&ddsd);
-
-	// ### This called frequently has to wait for the surface, esp when in
-	// non-exclusive mode.
-    ddrval = pdds->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL);
-
-	if (ddrval == DD_OK)
-	{
-		ONE oneDst((PIXEL*)ddsd.lpSurface, ddsd.dwWidth, ddsd.dwHeight, ddsd.lPitch);
-
-		try
-		{
-			fbd->Blt(&oneDst, oneSrc);
-		}
-		catch(...)
-		{
-			pdds->Unlock(NULL);
-			errorCriticalStop("exception in oneDDBlt");
-		}
-		ddrval = pdds->Unlock(NULL);
-    }
-
-    return ddrval;
-}
-
-//----------------------------------------------------------------------------
-HRESULT oneDDBlt(RECT *rect, ONE *oneDst, IDirectDrawSurface *pdds, FBLT_DSCR *fbd)
-{
-    HRESULT     ddrval;
-
-    DDSURFACEDESC ddsd;
-
-    if (oneDst == NULL || pdds == NULL)
-        return E_FAIL;
-
-    //
-    // get size of surface.
-    ddsd.dwSize = sizeof(ddsd);
-    ddsd.dwFlags = DDSD_HEIGHT | DDSD_WIDTH;
-    pdds->GetSurfaceDesc(&ddsd);
-
-    ddrval = pdds->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL);
-
-	if (ddrval == DD_OK)
-	{
-		ONE oneSrc((PIXEL*)ddsd.lpSurface, ddsd.dwWidth, ddsd.dwHeight, ddsd.lPitch);
-
-		try
-		{
-			fbd->Blt(oneDst, &oneSrc);
-		}
-		catch(...)
-		{
-			pdds->Unlock(NULL);
-			errorCriticalStop("exception in oneDDBlt");
-		}
-		pdds->Unlock(NULL);
-    }
-
-    return ddrval;
-}
-

@@ -131,9 +131,7 @@ void CFGNET::EnumThread(CFGNET *thing)
   for (;;)
   {
 	// go ahead and enumerate all the sessions:
-	// display.FlipToGdi(FALSE);
 	count = netman.EnumSessions();
-	// display.FlipToGdi(TRUE);
 
 	if (0 == WaitForSingleObject(Die,1000))
 	  break;
@@ -150,8 +148,8 @@ void CFGNET::EnumThread(CFGNET *thing)
 //----------------------------------------------------------------------------
 void CFGNET::OpenEnumThread()
 {
-  Die = CreateSemaphore(NULL, 0, 1, NULL);
-  Dead = CreateSemaphore(NULL, 0, 1, NULL);
+  Die = CreateSemaphore(0, 0, 1, NULL);
+  Dead = CreateSemaphore(0, 0, 1, NULL);
 
     pthread_create(&thid, NULL, (Entry)EnumThread, this);
 }
@@ -179,9 +177,7 @@ CFGVIEW(view_id)
 	{
 	case IDV_CFGPROV:
 	  // go ahead and enumerate all the service providers:
-	  display.FlipToGdi(FALSE);
 	  count = netman.Enumerate();
-	  display.FlipToGdi(TRUE);
 
 	  control[0] = listbox = new LISTBOX(this, IDS_STD_LISTBOXL, 160, 50, LB_BORDER, LB_BORDER, count, provStrings);
 	  listbox->ChangeSel(lastProvider);
@@ -248,9 +244,7 @@ void CFGNET::OnEvent(int control_id, int event_id)
 	{
 	case 1: // OK
 	  {
-	  display.FlipToGdi(FALSE);
 	  hr = netman.Create(control[0]->GetIntValue());
-	  display.FlipToGdi(TRUE);
 	  if (hr == DP_OK)
 			viewman.Load(IDV_CFGSESS);
 	  else
@@ -268,10 +262,7 @@ void CFGNET::OnEvent(int control_id, int event_id)
 	case 1: // OK
 	  {
 		CloseEnumThread();
-
-		display.FlipToGdi(FALSE);
 		hr = netman.Open(control[0]->GetIntValue(), "", DPOPEN_OPENSESSION);
-		display.FlipToGdi(TRUE);
 
 		if (hr == DP_OK)
 		{
@@ -308,10 +299,7 @@ void CFGNET::OnEvent(int control_id, int event_id)
 		HRESULT hr;
 
 		CloseEnumThread();
-
-		display.FlipToGdi(FALSE);
 		hr = netman.Open(0, control[0]->GetStrValue(), DPOPEN_CREATESESSION);
-		display.FlipToGdi(TRUE);
 
 		if (hr == DP_OK)
 		{

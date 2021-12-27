@@ -26,7 +26,7 @@
 #include "maya.h"
 #include "textutil.h"
 #include "viewman.h"
-
+#include "display.h"
 #include "cursor.h"
 #include "player.h"
 
@@ -185,8 +185,6 @@ void CURSOR::Init(int hSprite, POINT p)
 // TODO: convert from spr/fbd to sprite ...
 
 	m_hSprite = hSprite;
-
-	// m_sprite = 	new SPIRIT(&view->surface, hSprite);
 
 	// Select the sprite:
 	hSpr = sprSelect(hSprite);
@@ -459,7 +457,7 @@ void CURSOR::Show(int etime, int flags)
 
 		fbd.m_dst_x = (short)m_pos.x;
 		fbd.m_dst_y = (short)m_pos.y;
-		viewBlt(&spr->sprite, &fbd);
+		display.Blt(&spr->sprite, &fbd);
 		if (m_HasName)
 		{
 			//font->dPrint(buffer, color);

@@ -64,9 +64,7 @@ ZLISTBOX *provLoad(int view_id)
 	panel->StrVal = provStrings;
 	panel->Select = provSelect;
 
-	display.FlipToGdi(FALSE);
 	count = netman.Enumerate();
-	display.FlipToGdi(TRUE);
 
 	panel->Init(count, "Select Network");
 	panel->ChangeSel(0);
@@ -85,9 +83,7 @@ int sesSelect(ZLISTBOX *panel, int item)
 	}
 	else
 	{
-		display.FlipToGdi(FALSE);
 	  	hr = netman.Open(panel->Selected, "", DPOPEN_OPENSESSION);
-		display.FlipToGdi(TRUE);
 
 		if (hr == DP_OK)
 			viewman.Load(IDV_NEWPLAYER);
@@ -107,9 +103,7 @@ char *sesStrings(ZLISTBOX *panel, int position)
 //----------------------------------------------------------------------------
 void sesNew(EDITBOX *panel)
 {
-	display.FlipToGdi(FALSE);
 	netman.Open(0, panel->BUFF, DPOPEN_CREATESESSION);
-	display.FlipToGdi(TRUE);
 	viewman.Load(IDV_NEWPLAYER);
 }
 

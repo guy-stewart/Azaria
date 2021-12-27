@@ -137,7 +137,7 @@ int oneTextOut(ONE *one, int font_id, COLORREF color, int sx, int sy, char *buff
 	fbd.m_dx = 400; // ### must compute this
 	fbd.m_dy = 80;
 	fbd.m_style = BLT_RECT;
-	DDoneBlt(&rect, lpTextSurface, one, &fbd);
+	DDoneBlt(lpTextSurface, one, &fbd);
 
 	if(lpTextSurface->GetDC(&hdc) == DD_OK )
 	{

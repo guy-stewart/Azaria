@@ -30,7 +30,6 @@ extern PALETTE palPalette;
 // Video Adapter Direct Draw Extenstion object.
 class Display {
 private:
-	HWND hWndMain;       // the Maya window
 	SIZE m_Size;
 	UINT m_bPP;
 	int m_flipping_pages;		// how many flipping pages are there?
@@ -38,26 +37,13 @@ private:
 	int m_DirtyFrameMask;		// used by apps to dermine when all buffers are refreshed
 	BOOL  bFullscreen;    // run in fullscreen mode
 	BOOL  bExclusive;     // run in exclusive mode, we own palette
-	BOOL m_Paused;
 
 	BOOL m_PalChanged;			// set true whenever SetPalette is called, cleared by Flip
     PALETTEENTRY    m_palette[256];  // current palette entries,  used for SetPalette
 
 	int 	maintRestBfrs;
 
-	IDirectDrawSurface     *lpFrontBuffer;
-	IDirectDrawSurface     *lpBackBuffer;
-	IDirectDrawPalette     *lpDDPalette;
-
-	IDirectDraw            *lpDD;
-	IDirectDrawClipper     *lpClipper;
-
 	int     nBufferCount;
-
-	//	WS_SYSMENU		-	so we get a icon in in our tray button
-	//	WS_POPUP		-	no border, no title
-	//	WS_POPUPWINDOW	-	border, title, close button
-	//	WS_CAPTION		-	title bar
 
 #ifdef _MSC_VER // Windows
 	enum {
@@ -82,11 +68,11 @@ private:
 	BOOL SwapBuffers(void);
 	BOOL RestoreAll(void);
 
-	IDirectDrawSurface *CreateSurface( DWORD width, DWORD height, BOOL sysmem, BOOL trans );
+//	IDirectDrawSurface *CreateSurface( DWORD width, DWORD height, BOOL sysmem, BOOL trans );
 
 	//-------------------------------------------------------
 public: // interface for application configuration:
-	BOOL Init(HWND hWnd, SIZE Size, UINT bPP);
+	BOOL Init(SIZE Size, UINT bPP);
 
 	inline int BufferCount() {return nBufferCount;}
 	inline BOOL IsFullscreen() {return bFullscreen;};
@@ -94,13 +80,10 @@ public: // interface for application configuration:
 	inline BOOL IsExclusive()	{return bExclusive;};
 	inline void setExclusive(BOOL mode) {bExclusive = mode;};
 
-	void FlipToGdi(BOOL bIsActive);
-
 	BOOL ReInit();
 	BOOL Begin(VOID);
 	BOOL Disable( BOOL );
 	BOOL Restore(int active_app);
-	BOOL Clear();
 
 	BOOL CreatePalette();
 	BOOL AttachPalette();
@@ -131,18 +114,12 @@ public: // interface for game run-time:
 	inline PALETTEENTRY *GetPalette() {return m_palette;};
 
 	inline int GetBackBufferId() {return m_current_buffer;}
-	inline IDirectDrawSurface * GetBackBuffer() {return lpBackBuffer;}
+
+//	inline IDirectDrawSurface * GetBackBuffer() {return lpBackBuffer;}
 	int Flip();				// returns new backubuffer number.
+	void Blt(ONE *src, FBLT_DSCR *fbd);
+//	const char *GetDdError(HRESULT hr);
 
-	const char *GetDdError(HRESULT hr);
-
-	// FUN STUFF - for use by games
-private:
-	int blindness;
-    PALETTEENTRY    m_blind_palette[256]; // current palette with blindness gamma applied
-
-public:
-	int SetBlind(int delta);
 };
 
 extern Display display;	// The one and only video display adapter manager.

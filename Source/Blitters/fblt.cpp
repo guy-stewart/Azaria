@@ -19,7 +19,6 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-//#include <ddraw.h>
 #include "one.h"
 #include "fblt.h"
 #include "spirit.h"

@@ -365,7 +365,7 @@ static long FAR PASCAL MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
             // ExitGame();
 			Music::Pause();
             display.Disable(TRUE);        // destroy DirectDraw object
-            if (!display.Init(hWnd, GameMode, GameBPP))
+            if (!display.Init(GameMode, GameBPP))
 			{
 				errorCriticalStop("WM: Unable to restore game.");
 			}
@@ -405,10 +405,6 @@ static long FAR PASCAL MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
 			display.SetAllDirty();
 		  }
 		  break;
-		case VK_F2:
-			display.PrintPalette();
-			break;
-
         case VK_F3:
 			gameman.RestoreDisplay();
             break;
@@ -474,15 +470,6 @@ static int MissingFileMessage(int buttons)
 	);
 
   Msg(buff);
-/*
-  display.FlipToGdi(FALSE);
-  rc = MessageBox(hWndMain, buff,"Missing File ...",buttons);
-  display.FlipToGdi(TRUE);
-
-  missing_file_path1[0]=0;
-  missing_file_path2[0]=0;
-  missing_file_name[0]=0;
-*/
   return rc;
 }
 
@@ -510,7 +497,7 @@ int WinMain(const char * datapath, const char * altdatapath)
 	try
 	{
 	  // Initialize the display manager and setup our window for the 640x480 game
-	  if( !display.Init(hWndMain, GameMode, GameBPP))
+	  if( !display.Init(GameMode, GameBPP))
 		  return FALSE;
 
 	  Wave::DirectSoundCreate(NULL);

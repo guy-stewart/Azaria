@@ -21,10 +21,8 @@
 #ifndef _fblt_h
 #define _fblt_h
 #include "mask.h"
-#include "ddraw.h"
 #include "ptypes.h"
 #include "palette.h"
-
 
 typedef unsigned short *PLENS;	/* an array of scale factors */
 
@@ -124,7 +122,5 @@ public: // This stuff is not Scottish. (if it ain't Scottish, it's crap)
 };
 
 #define restore_debug "ck.>=m!"
-extern HRESULT DDoneBlt(RECT *rect, IDirectDrawSurface *pdds, ONE *one, FBLT_DSCR *fbd);
-extern HRESULT oneDDBlt(RECT *rect, ONE *oneDst, IDirectDrawSurface *pdds, FBLT_DSCR *fbd);
 extern HRESULT oneHBBlt(RECT *rect, ONE *one, HBITMAP hbm, FBLT_DSCR *fbd);
 #endif
