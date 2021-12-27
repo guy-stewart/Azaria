@@ -1,4 +1,4 @@
-Load gui
+Load GUI
 Load namefill
 Load namefill
 Load inventor
@@ -7,6 +7,82 @@ Load you
 Load teletype
 Load spacemen
 Load compass
-Load nat1p
+Load vil2
 Normal Exit:
 reshape..
+mouse(x:360, y:438)
+mouse(x:360, y:438)
+mouse(x:835, y:168)
+SMP_MAPBUTTON: 0 -GRAB(0x0)->1
+Load contin~1
+mouse(x:835, y:168)
+mouse(x:531, y:420)
+Load eyea
+mouse(x:531, y:420)
+mouse(x:588, y:448)
+Load eyeb
+mouse(x:588, y:448)
+mouse(x:588, y:448)
+Load eyec1p
+mouse(x:588, y:448)
+S24_EYETEXT: 0 -DRAGFOCUS(0x0)->20
+mouse(x:586, y:654)
+Load eyeb
+mouse(x:586, y:654)
+mouse(x:813, y:436)
+Load eyea
+mouse(x:813, y:436)
+mouse(x:813, y:436)
+Load GRNDCNT1
+mouse(x:813, y:436)
+mouse(x:652, y:537)
+Load vil2
+mouse(x:652, y:537)
+mouse(x:576, y:465)
+Load vil3
+mouse(x:576, y:465)
+mouse(x:557, y:463)
+Load vil4
+mouse(x:557, y:463)
+mouse(x:557, y:463)
+Load vil5
+mouse(x:557, y:463)
+mouse(x:557, y:463)
+Load vil6
+mouse(x:557, y:463)
+mouse(x:557, y:463)
+Load vil7
+mouse(x:557, y:463)
+mouse(x:812, y:166)
+SMP_MAPBUTTON: 0 -GRAB(0x0)->1
+Load contin~1
+mouse(x:812, y:166)
+mouse(x:475, y:514)
+Load SCN10PT0
+mouse(x:475, y:514)
+mouse(x:619, y:409)
+Load SCN10PIT
+mouse(x:619, y:409)
+mouse(x:352, y:83)
+SMP_VIAL: 1 -GRAB(0x51)->1
+mouse(x:406, y:210)
+SMP_VIAL: 1 -DRAG(0x0)->2
+S10_DRYPIT: 10 -DRAG(0x0)->31
+SMP_VIAL: 1 -DRAG(0x0)->2
+S10_DRYPIT: 10 -DRAG(0x0)->31
+SMP_VIAL: 1 -DRAG(0x0)->2
+S10_DRYPIT: 10 -DRAG(0x0)->31
+SMP_VIAL: 1 -DRAG(0x0)->2
+S10_DRYPIT: 10 -DRAG(0x0)->31
+mouse(x:121, y:875)
+mouse(x:121, y:875)
+mouse(x:662, y:701)
+Load SCN10PT0
+mouse(x:662, y:701)
+mouse(x:847, y:167)
+SMP_MAPBUTTON: 0 -GRAB(0x0)->1
+Load contin~1
+mouse(x:847, y:167)
+mouse(x:634, y:390)
+Load QUARSA
+mouse(x:634, y:390)

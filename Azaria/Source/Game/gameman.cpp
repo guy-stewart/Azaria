@@ -80,13 +80,13 @@ Game::Game()
 }
 
 //----------------------------------------------------------------------------
-void Game::InitPaths(const char * datapath)
+void Game::InitPaths(const char * datapath, const char * altdatapath)
 {
     strcpy(ViewsPath, datapath);
     strcpy(ObjectsPath, datapath);
-    strcpy(PalettesPath, datapath);
+    strcpy(PalettesPath, altdatapath);
     strcpy(MasksPath, datapath);
-    strcpy(WavePath, datapath);
+    strcpy(WavePath, altdatapath);
     
     strcat(ViewsPath, __ViewsPath);
     strcat(ObjectsPath, __ObjectsPath);
@@ -94,11 +94,11 @@ void Game::InitPaths(const char * datapath)
     strcat(MasksPath, __MasksPath);
     strcat(WavePath, __WavePath);
     
-    strcpy(AltViewsPath, datapath);
-    strcpy(AltObjectsPath, datapath);
-    strcpy(AltPalettesPath, datapath);
-    strcpy(AltMasksPath, datapath);
-    strcpy(AltWavePath, datapath);
+    strcpy(AltViewsPath, altdatapath);
+    strcpy(AltObjectsPath, altdatapath);
+    strcpy(AltPalettesPath, altdatapath);
+    strcpy(AltMasksPath, altdatapath);
+    strcpy(AltWavePath, altdatapath);
     
     strcat(AltViewsPath, __ViewsPath);
     strcat(AltObjectsPath, __ObjectsPath);

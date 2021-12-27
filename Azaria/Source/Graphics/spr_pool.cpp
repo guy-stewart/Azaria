@@ -22,7 +22,7 @@
 
 #include "maya.h"
 #include "paths.h"
-
+#include "display.h"
 #define MAX_RAM_SPRITES		100
 
 // The object table is private.
@@ -85,8 +85,8 @@ int sprSelect(int sprite_id)
 	}
 
 	// load the sprite:
-	if (!spr_pool[i].sprite.Read(AltObjectsPath, sprGetName(sprite_id))
-	  &&!spr_pool[i].sprite.Read(ObjectsPath, sprGetName(sprite_id)))
+	if (!spr_pool[i].sprite.Read(AltObjectsPath, sprGetName(sprite_id), display.GetPalette())
+	  &&!spr_pool[i].sprite.Read(ObjectsPath, sprGetName(sprite_id), display.GetPalette()))
 	{
 		strncpy(missing_file_name, sprGetName(sprite_id), _MAX_FNAME);
 		strncpy(missing_file_path1, ObjectsPath, _MAX_PATH);

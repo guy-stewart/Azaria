@@ -14,7 +14,7 @@ int MASK::Read(const char *path, const char *filename, MASK **vector)
 	makepath( lpszPathName, NULL, path, filename, NULL);
 
 	/* Open file for input: */
-	if( (fh = open( lpszPathName, O_RDONLY )) != -1 )
+	if( (fh = caseopen( lpszPathName, O_RDONLY, S_IREAD|S_IWRITE )) != -1 )
 	{
 		/* Read in size of the mask */
 		if( read( fh, &header, sizeof(MASK) ) == sizeof(MASK) )

@@ -23,8 +23,9 @@
 #define __DISPLAY_INCLUDED__
 
 #include "includes.h"
-
 #include "palette.h"
+
+extern PALETTE palPalette;
 
 // Video Adapter Direct Draw Extenstion object.
 class Display {

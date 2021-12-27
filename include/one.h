@@ -22,14 +22,30 @@
 
 #pragma once
 
-#include "ptypes.h"
 #include "xfile.h"
+#include "palette.h"
 #include <cstring>
+
+#include <stdint.h>
+#include "assert.h"
 
 class FBLT_DSCR;
 //typedef unsigned char   PIXEL;
 typedef uint32_t   PIXEL;
 
+typedef struct tagRGBA8 {
+    BYTE peRed;
+    BYTE peGreen;
+    BYTE peBlue;
+    BYTE peAlpha;
+} RGBA8;
+
+typedef struct tagRGBA16 {
+    uint16_t peRed;
+    uint16_t peGreen;
+    uint16_t peBlue;
+    uint16_t peAlpha;
+} RGBA16;
 
 // majic numbers are used to test for out-of-bounds writes to images.
 #define ONE_MAGIC	0xA55A
@@ -41,6 +57,7 @@ typedef uint32_t   PIXEL;
 #define ONE_OWNS_BITS		0x02
 #define ONE_OWNS_PAL		0x04
 #define ONE_IS_COMPRESSED	0x08
+#define IS_RGBA             0x10
 
 //----------------------------------------------------------------------------
 // DO NOT CHANGE HEADER DATA ELEMENTS. FIXED FILE I/O USED.
@@ -61,8 +78,8 @@ private:
 	unsigned short reserved_for_future_use_1;
 public:
 	unsigned int m_size;
-	WORD reserved_for_future_use_2;
-	WORD user_flags;
+	uint16_t reserved_for_future_use_2;
+	uint16_t user_flags;
 } ONE_HEADER;
 
 //----------------------------------------------------------------------------
@@ -88,7 +105,7 @@ public: // constructors, destructors.
 	};
 
 	ONE(int width, int height) {Init(width, height);}
-	ONE(void *bits, int _width, int _height, int _pitch);
+	ONE(PIXEL *bits, int _width, int _height, int _pitch);
 	ONE() {INIT();}
 	~ONE();
 
@@ -120,10 +137,12 @@ public:
 public:
 	// Handy for testing images for corruption after blitting onto.
 	BOOL Validate();
-	int Init(int width, int height);
-	int Read(const char * filename);
-	int Read(const char *path, const char *filename);
-	int ReadSprite(const char *path, const char *filename);
+	int  Init(int width, int height);
+	BOOL ReadOne(const char * filename, PALETTEENTRY *default_palette);
+	void ReadPng(const char* file_name);
+	BOOL Read(const char *path, const char *filename, PALETTEENTRY *default_palette);
+	int  ReadSprite(const char *path, const char *filename);
+	void WritePng(const char* file_name);
 
 	BOOL freeBits(); // TODO: make this private
 
@@ -131,5 +150,5 @@ private:
 	BYTE *UnCompress(BYTE *raw_bits);  // operates on raw unsigned char bitmap images
 	BOOL allocBits();
 	static BOOL freeBits(BYTE *bits);
-	void ConvertTo32bit(BYTE *raw_bits);
+	void ConvertTo32bit(BYTE *raw_bits, PALETTEENTRY *palette);
 };

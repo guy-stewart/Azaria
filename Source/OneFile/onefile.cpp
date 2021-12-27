@@ -25,15 +25,16 @@
 ;
 ----------------------------------------------------------------------------*/
 
+#include "jpegio.h"
 #include "mask.h"
 #include "xfile.h"
+#include "fcaseopen.h"
 
 #include <assert.h>
 #include <memory.h>     // for memcpy, etc, for debugging.
-
+#include <stdio.h>
 #include "one.h"
 #include "platform.h"
-#include "display.h"
 
 void WarnUser( const LPSTR fmt, ... );
 
@@ -47,10 +48,10 @@ void dumpPaletteEntries(PALETTEENTRY *e)
 {
 	int i;
 
-	Msg("  Red Green  Blue");
+	printf("  Red Green  Blue");
 	for (i=0;i<256;i++)
 	{
-		Msg("%3d: %5d %5d %5d", i, e[i].peRed, e[i].peGreen, e[i].peBlue);
+		printf("%3d: %5d %5d %5d", i, e[i].peRed, e[i].peGreen, e[i].peBlue);
 	}		
 }
 
@@ -111,16 +112,8 @@ void makepath(char* Path,const char* Drive,const char* Directory, const char* Fi
     return;
 }
 
-
-typedef struct tagRGBV {
-    BYTE peRed;
-    BYTE peGreen;
-    BYTE peBlue;
-    BYTE peAlpha;
-} RGBV;
-
 //----------------------------------------------------------------------------
-void ONE::ConvertTo32bit(BYTE *raw_bits) {
+void ONE::ConvertTo32bit(BYTE *raw_bits, PALETTEENTRY *_palette) {
 
   if (allocBits())
   {
@@ -130,19 +123,25 @@ void ONE::ConvertTo32bit(BYTE *raw_bits) {
 	  if (sizeof(PIXEL) == 1) {
 		  memcpy(m_bits, raw_bits, m_hdr.height*m_hdr.pitch);
 	  } else {
-	    RGBV rgbv;
+	    RGBA8 rgbv;
 
-	    PALETTEENTRY *m_palette = GetPalette();
-		if (!m_palette)
-			m_palette = display.GetPalette();
+	    PALETTEENTRY *palette = GetPalette(); // palette from image file
+		if (!palette)
+			palette = _palette; // some palette passed
 
 	    for (int r=0; r<m_hdr.height; r++) {
 	        for (int c=0; c<m_hdr.pitch; c++) {
-	            PALETTEENTRY * p = &m_palette[a[(r*m_hdr.pitch)+c]];
+				int palette_index = a[(r*m_hdr.pitch)+c];
+	            PALETTEENTRY * p = &palette[palette_index];
 	            rgbv.peRed = p->peRed;
 	            rgbv.peGreen = p->peGreen;
 	            rgbv.peBlue = p->peBlue;
-	            rgbv.peAlpha = 0;
+
+				if (palette_index == m_hdr.colorkey) {
+	            	rgbv.peAlpha = 0x00;
+				} else {
+	            	rgbv.peAlpha = 0xFF;
+				}
 
 	            b[(r*m_hdr.pitch)+c] = *(uint32_t*)(&rgbv);
         	}
@@ -248,7 +247,7 @@ BYTE *ONE::UnCompress(BYTE  *byte_bits)
 }
 
 //----------------------------------------------------------------------------
-ONE::ONE(void *_bits, int _width, int _height, int _pitch)
+ONE::ONE(PIXEL *_bits, int _width, int _height, int _pitch)
 {
 	INIT();
 
@@ -279,22 +278,29 @@ ONE::~ONE()
 *	There are magic numbers around the malloced block
 *	so that I can test for blits that exceed the image bounds.
 */
-BOOL ONE::allocBits()
-{
+static PIXEL *_allocBits(int height, int pitch) {
 	int *magic;
 
-	int size = m_hdr.height*m_hdr.pitch;
+	int size = height*pitch;
+	PIXEL *bits = NULL;
 
 	magic = (int*)malloc(sizeof(PIXEL)*size + sizeof(int)*2);
 	assert(magic);
 
 	if (!magic)
-		return FALSE;
+		return NULL;
 
-	m_bits = (PIXEL*)(magic + 1);
+	bits = (PIXEL*)(magic + 1);
 	*magic = ONE_MAGIC;
-	magic = (int*)(m_bits+size);
+	magic = (int*)(bits+size);
 	*magic = ONE_MAGIC;
+
+	return bits;
+}
+
+BOOL ONE::allocBits()
+{
+	m_bits = _allocBits(m_hdr.height,m_hdr.pitch);
 
 	// I will need to free the bits.
 	m_hdr.m_flags |= ONE_OWNS_BITS;
@@ -306,10 +312,10 @@ BOOL ONE::allocBits()
 //----------------------------------------------------------------------------
 // pass in a previously allocated one structure w/o bits.
 // This routine will allocate memory for the bits.
-int ONE::Read(const char *filename)
+BOOL ONE::ReadOne(const char *filename, PALETTEENTRY *default_palette)
 {
 	XFile xfile(filename);
-	int rc = FALSE;
+	BOOL rc = false;
 	int pc;
 	BYTE *raw_bits = NULL;
 
@@ -378,25 +384,82 @@ int ONE::Read(const char *filename)
 	if (IsCompressed()) {
 		raw_bits = UnCompress(raw_bits);
 	}
-	ConvertTo32bit(raw_bits);
+	ConvertTo32bit(raw_bits, default_palette);
 	return rc;
 }
 
+typedef struct {
+	int height;
+	int width;
+	int pitch;
+	int rows_read;
+	PIXEL *bits;
+} BASE_IMAGE;
+
+int read_JPEG_callback(BASE_IMAGE *bim,
+                         struct jpeg_decompress_struct *cinfo,
+						 JSAMPROW buffer,
+						 int rowstride,
+						 const char *filename) {
+    if (!bim->bits) {
+		bim->rows_read = 0;
+		bim->height = cinfo->image_height;
+		bim->width  = cinfo->image_width;
+		bim->pitch = rowstride;
+		bim->bits = _allocBits(bim->height, bim->pitch);
+	}
+
+	PIXEL *bits = bim->bits + bim->rows_read * bim->pitch;
+	for (int i=0; i<rowstride; i++) {
+		int k=i*3;
+		RGBA8 *pel = (RGBA8*)bits + i;
+		pel->peRed   = buffer[k];
+		pel->peGreen = buffer[k+1];
+		pel->peBlue  = buffer[k+2];
+	}
+
+	bim->rows_read++;
+
+	return 0;
+}
+
 //----------------------------------------------------------------------------
-int ONE::Read(const char *path, const char *filename)
+BOOL ONE::Read(const char *path, const char *filename, PALETTEENTRY *default_palette )
 {
    char filepath[_MAX_FNAME];
    char ext[_MAX_EXT];
 
    printf("%s:%d:ONE::Read(\"%s\", \"%s\")\n", __FILE__, __LINE__, path, filename);
-    
+
    // switch on extension for various file types:
    splitpath( filename, NULL, NULL, NULL, ext );
+
+	{
+		BASE_IMAGE bim;
+		memset(&bim, 0, sizeof(bim));
+		struct jpeg_decompress_struct cinfo;
+    	makepath( filepath, NULL, path, filename, "JPG");
+		do_read_JPEG_file(&cinfo, filepath, (fn_read_JPEG_callback)read_JPEG_callback, &bim);
+
+		if (bim.bits) {
+			// got something, turn it into a ONE structure ...
+			m_hdr.height = bim.height;
+			m_hdr.width = bim.width;
+			m_hdr.pitch = bim.pitch;
+			m_hdr.m_size = bim.height * bim.pitch;
+			m_hdr.frames = 1;
+
+			m_bits = bim.bits;
+			//		free(bim.bits);
+			printf("READ AS JPEG !!!!!!!!!\n");
+			return TRUE;
+		}
+	}
 
    // build complete path the the file
    makepath( filepath, NULL, path, filename, NULL);
 
-   int rc =  Read(filepath);
+   BOOL rc =  ReadOne(filepath, default_palette);
 	return rc;
 }
 
@@ -430,7 +493,7 @@ BOOL ONE::Validate()
 	magic = (int*)(m_bits + m_hdr.m_size);
 	if (*magic != ONE_MAGIC)
 	{
-		WarnUser("Image file is corrupt");
+		printf("Image file is corrupt");
 		assert(*magic == ONE_MAGIC);
 		return FALSE;
 	}
@@ -440,7 +503,7 @@ BOOL ONE::Validate()
 	magic--;
 	if (*magic != ONE_MAGIC)
 	{
-		WarnUser("Image file is corrupt");
+		printf("Image file is corrupt");
 		assert(*magic == ONE_MAGIC);
 		return FALSE;
 	}

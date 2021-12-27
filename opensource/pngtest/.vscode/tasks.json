@@ -1,0 +1,43 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "build pngtest",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${workspaceFolder}/pngtest.cpp",
+                "${workspaceFolder}/palette.cpp",
+                "${workspaceFolder}/../../opensource/fcaseopen.c",
+                "${workspaceFolder}/../../Source/OneFile/onefile.cpp",
+                "${workspaceFolder}/../../Azaria/Source/Resources/jpegio.cpp",
+                "-I",
+                "${workspaceFolder}/../../include",
+                "-I",
+                "${workspaceFolder}/../../opensource",
+                "-I",
+                "/opt/libjpeg-turbo/include",
+                "-I",
+                "${workspaceFolder}/../../Azaria/Source/Graphics",
+                "-I",
+                "${workspaceFolder}/../../Azaria/Source/Resources",
+                "-l",
+                "png",
+                "-L/opt/libjpeg-turbo/lib64",
+                "-l",
+                "ajpeg",
+                "-o",
+                "${workspaceFolder}/pngtest"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        }
+    ],
+    "version": "2.0.0"
+}

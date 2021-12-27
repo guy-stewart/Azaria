@@ -226,6 +226,7 @@ BOOL Display::CreateFlippingSurface( void )
         return FALSE;
     }
     
+    /* TODO: eliminate lpBackBuffer */
     lpBackBuffer = CreateSurface( m_Size.cx, m_Size.cy, FALSE, FALSE );
     
     if( lpBackBuffer == NULL )
@@ -233,6 +234,7 @@ BOOL Display::CreateFlippingSurface( void )
         Msg( "Can't create the backbuffer - %s", GetDdError(ddrval) );
         return FALSE;
     }
+    /**/
     
 
     return TRUE;
@@ -428,7 +430,7 @@ int Display::Flip( void )
     if (m_Paused)
         return m_current_buffer;
     
-    Restore();
+//    Restore();
     
     if( bFullscreen && (m_flipping_pages>1))
     {
@@ -477,6 +479,7 @@ BOOL Display::Begin( void )
     return TRUE;
 } /* ddxBegin */
 
+#if 0
 //----------------------------------------------------------------------------
 void Display::Restore()
 {
@@ -492,7 +495,7 @@ void Display::Restore()
     }
 #endif
 }
-
+#endif
 
 const char *Display::GetDdError(HRESULT hr)
 {

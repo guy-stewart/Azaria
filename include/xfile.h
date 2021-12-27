@@ -21,8 +21,10 @@
 #ifndef __XFILE_INCLUDED__
 #define __XFILE_INCLUDED__
 
-#include "../opensource/fcaseopen.h"
+#include "fcaseopen.h"
+
 #include "ptypes.h"
+#include <stdint.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>

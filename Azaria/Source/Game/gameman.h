@@ -22,7 +22,7 @@
 #define __GAMEMAN_INCLUDED__
 
 
-#define __ViewsPath		"/ones/views"
+#define __ViewsPath		"/ONES/VIEWS"
 #define __ObjectsPath	"/ones/objects"
 #define __PalettesPath	"/palettes"
 #define __MasksPath		"/masks"
@@ -46,7 +46,7 @@ private:
   static void  LoadLRU();
 
 public: // interface
-    void InitPaths(const char * datapath);
+    void InitPaths(const char * datapath, const char * altdatapath);
 	BOOL Init();		// Called once, Loads all the initial views.
 	void Cleanup();		// Called before exit.
 	void Tick(BOOL display_available);	// called by main program loop.

@@ -1,6 +1,6 @@
 
 #pragma once
-#include "ptypes.h"
+#include "rect.h"
 #include "xfile.h"
 #include <cstring>
 #include "one.h"

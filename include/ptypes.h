@@ -6,11 +6,14 @@
 //  Copyright © 2017 guy. All rights reserved.
 //
 
-#ifndef ptypes_h
-#define ptypes_h
+#pragma once
+
+#include "palette.h"
+#include "point.h"
 
 #include <stdint.h>
 #include "assert.h"
+
 
 void OutputDebugString(const char * buff);
 
@@ -53,8 +56,12 @@ typedef wchar_t WCHAR;
 typedef WCHAR *LPWSTR;
 
 #define BOOL bool
-#define TRUE true
-#define FALSE false
+#ifndef FALSE
+#define FALSE   false
+#endif
+#ifndef TRUE
+#define TRUE    true
+#endif
 #define UINT unsigned int
 #define LPSTR char *
 #define HWND HANDLE
@@ -72,11 +79,6 @@ typedef UINT * UINT_PTR;
 typedef UINT_PTR WPARAM;
 typedef long  * LONG_PTR;
 typedef LONG_PTR LPARAM;
-
-typedef struct tagSIZE {
-    int32_t cx;
-    int32_t cy;
-} SIZE, *PSIZE;
 
 typedef struct _GUID {
     DWORD Data1;
@@ -294,27 +296,6 @@ typedef void * LPVOID;
 
 typedef void * HBITMAP;
 
-typedef struct tagPALETTEENTRY {
-    BYTE peRed;
-    BYTE peGreen;
-    BYTE peBlue;
-    BYTE peFlags;
-} PALETTEENTRY, *LPPALETTEENTRY;
-
-typedef struct tagLOGPALETTE {
-    WORD         palVersion;
-    WORD         palNumEntries;
-    PALETTEENTRY palPalEntry[1];
-} LOGPALETTE;
-
-typedef void * HPALETTE;
-
-typedef struct {
-    WORD x;
-    WORD y;
-} POINT;
-typedef POINT * LPPOINT;
-
 // TODO: yep
 #define O_BINARY 0
 #define O_TEXT 0
@@ -329,6 +310,3 @@ typedef POINT * LPPOINT;
 #define MAX_FNAME 1024
 #define MAX_PATH  1024
 #define MAX_EXT   1024
-
-
-#endif /* ptypes_h */

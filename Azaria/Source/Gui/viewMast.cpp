@@ -279,7 +279,7 @@ VIEW::~VIEW()
 BOOL VIEW::ChangeSurface(char *newSurfaceName)
 {
 	surface.freeBits();
-	return surface.Read(ViewsPath, newSurfaceName);
+	return surface.Read(ViewsPath, newSurfaceName, display.GetPalette());
 }
 
 //----------------------------------------------------------------------------
@@ -314,8 +314,8 @@ VIEW::VIEW(int _view_id, const char *_name, int _style)
 
 	view_type = p_tbl_view->view_type;
 
-	if (!surface.Read(AltViewsPath, p_tbl_view->surface_filename)
-	  &&!surface.Read(ViewsPath, p_tbl_view->surface_filename))
+	if (!surface.Read(ViewsPath, p_tbl_view->surface_filename, display.GetPalette()))
+		if (!surface.Read(AltViewsPath, p_tbl_view->surface_filename, display.GetPalette()))
 	{
 		strncpy(missing_file_name, p_tbl_view->surface_filename, _MAX_FNAME);
 		strncpy(missing_file_path1, ViewsPath, _MAX_PATH);
@@ -341,8 +341,8 @@ VIEW::VIEW(int _view_id, const char *_name, int _style)
 
 	//---------------------------------------------------------------------
 	// load the mask for this view:
-	if (!MASK::Read(AltMasksPath, p_tbl_view->portal_filename, &fbd.m_mask)
-	  &&!MASK::Read(MasksPath, p_tbl_view->portal_filename, &fbd.m_mask))
+	if (!MASK::Read(MasksPath, p_tbl_view->portal_filename, &fbd.m_mask))
+	  if (!MASK::Read(AltMasksPath, p_tbl_view->portal_filename, &fbd.m_mask))
 	{
 		strncpy(missing_file_name, p_tbl_view->portal_filename, _MAX_FNAME);
 		strncpy(missing_file_path1, MasksPath, _MAX_PATH);

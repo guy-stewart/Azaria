@@ -275,7 +275,7 @@ HRESULT DDoneBlt(RECT *rect, IDirectDrawSurface *pdds, ONE *oneSrc, FBLT_DSCR *f
 
 	if (ddrval == DD_OK)
 	{
-		ONE oneDst(ddsd.lpSurface, ddsd.dwWidth, ddsd.dwHeight, ddsd.lPitch);
+		ONE oneDst((PIXEL*)ddsd.lpSurface, ddsd.dwWidth, ddsd.dwHeight, ddsd.lPitch);
 
 		try
 		{
@@ -312,7 +312,7 @@ HRESULT oneDDBlt(RECT *rect, ONE *oneDst, IDirectDrawSurface *pdds, FBLT_DSCR *f
 
 	if (ddrval == DD_OK)
 	{
-		ONE oneSrc(ddsd.lpSurface, ddsd.dwWidth, ddsd.dwHeight, ddsd.lPitch);
+		ONE oneSrc((PIXEL*)ddsd.lpSurface, ddsd.dwWidth, ddsd.dwHeight, ddsd.lPitch);
 
 		try
 		{

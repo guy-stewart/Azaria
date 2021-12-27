@@ -489,7 +489,7 @@ static int MissingFileMessage(int buttons)
 /*
  * WinMain
  */
-int WinMain(const char * datapath)
+int WinMain(const char * datapath, const char * altdatapath)
 {
     //MSG                 msg;
 	// int rc;
@@ -502,7 +502,7 @@ int WinMain(const char * datapath)
 	missing_file_path2[0]=0;
 	missing_file_name[0]=0;
 
-    gameman.InitPaths(datapath);
+    gameman.InitPaths(datapath, altdatapath);
     // create window and other windows things
     if( !initApplication() )
         return FALSE;
@@ -755,6 +755,7 @@ int main(int argc, char** argv) {
     glutKeyboardFunc(keyboard);
     glutIdleFunc(idle);
 
-    WinMain("/6tb/Home/Singularity/AzariaCD961112/data");
+    WinMain("/6tb/Home/Singularity/AzariaCD/DATA",
+            "/6tb/Home/Singularity/AzariaCD961112/data");
 	glutMainLoop();
 }

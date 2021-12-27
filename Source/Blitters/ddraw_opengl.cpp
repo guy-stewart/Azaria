@@ -9,6 +9,9 @@
 #include <GL/freeglut.h>
 #include "one.h"
 
+#include <SDL2/SDL.h>
+#include "SDL2/SDL_ttf.h"
+
 
 GLubyte back_buffer[640*480*4];
 GLuint rgb_buffer[640*480];
@@ -85,12 +88,6 @@ void mapbuffer(BYTE *a, uint32_t *b) {
 }
 
 void copybuffer(uint32_t *a, uint32_t *b) {
-/*
-    for (int i=0; i<640*480; i++) {
-        void * p = &palPalette.ape[a[i]];
-        b[i] = *(uint32_t*)(p);
-    }
-*/
     RGBV rgbv;
 
     for (int r=0; r<480; r++) {
