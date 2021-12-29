@@ -239,6 +239,9 @@ BltFlip(ONE *oneDest, ONE *oneSrc)
 	 || (m_dst_x >= dst_height)||(m_dst_y >= dst_width)) // rotated.
 	  return;
 
+	if (!m_mask) 
+		return;
+
 	src_y = m_src_y;
 	bSrc  = oneSrc->getBits()  
 		+ m_src_x 

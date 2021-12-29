@@ -1,18 +1,15 @@
 /*==========================================================================
  ***************************************************************************/
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <windowsx.h>
-#include <mmsystem.h>
-#include <process.h>
-#include <dsound.h>
-#include <memory.h>
-#include <cderr.h>
-#endif
+
 
 #include "dsWave.h"
 #include "dsConst.h"
+
+// https://github.com/aminosbh/sdl2-mixer-sample/blob/master/src/main.c
+// https://gist.github.com/armornick/3447121
+// https://gigi.nullneuron.net/gigilabs/playing-a-wav-file-using-sdl2/
+
+#include <SDL2/SDL_mixer.h>
 
 HRESULT WINAPI DirectSoundCreate(LPGUID lpGuid,
                                  LPDIRECTSOUND* ppDS,

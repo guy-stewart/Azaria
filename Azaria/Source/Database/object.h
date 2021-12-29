@@ -17,14 +17,11 @@
 ; 
 ----------------------------------------------------------------------------*/
 
-#ifndef __OBJECT_INCLUDED__
-#define __OBJECT_INCLUDED__
+#pragma once
 
 int objdefGetClass(WORD object_id);
 WORD objdefGetIDByName(char *name);
 int objdefGetLookIconId(WORD object_id);
 int objdefGetLookActorId(WORD object_id);
 int objdefGetLookCursorId(WORD object_id);
-
-#endif // __OBJECT_INCLUDED__
-
+const char *objdefGetName(WORD object_id);

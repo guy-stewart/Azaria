@@ -93,9 +93,7 @@ VIEW *ViewMan::Load(int view_id)
   VIEW_DESCRIPTION *tbl_view;
 
   if (view_id == 0)
-  {
 	return NULL;
-  }
 
   tbl_view = GetViewDesc(view_id);
 
@@ -230,11 +228,9 @@ void ViewMan::Release(VIEW_DESCRIPTION *tbl_view)
 //----------------------------------------------------------------------------
 void ViewMan::SetFocus(int view_id)
 {
-	if (!c_focus || (view_id != c_focus->GetViewID()))
-	{
+	if (!c_focus || (view_id != c_focus->GetViewID()))	{
 	  if (c_focus)
 		c_focus->LostFocus();
-
 	  c_focus = GetView(view_id);
 	}
 }
@@ -283,10 +279,8 @@ VIEW *ViewMan::GetView(int view_id)
 VIEW_DESCRIPTION  *ViewMan::GetFirstActive(int *position)
 {
 	int i;
-	for (i=0;i<tbl_view_count;i++)
-	{
-		if (tbl_views[i].view)
-		{
+	for (i=0;i<tbl_view_count;i++) {
+		if (tbl_views[i].view) {
 			if (position) *position = i;
 			return &tbl_views[i];
 		}
@@ -313,10 +307,8 @@ VIEW_DESCRIPTION  *ViewMan::GetNextActive(int *position)
 VIEW_DESCRIPTION *ViewMan::GetFirstbyClass(int view_type, int *position)
 {
 	int i;
-	for (i=0;i<tbl_view_count;i++)
-	{
-		if (tbl_views[i].view_type & view_type)
-		{
+	for (i=0;i<tbl_view_count;i++) {
+		if (tbl_views[i].view_type & view_type) {
 			*position = i;
 			return &tbl_views[i];
 		}

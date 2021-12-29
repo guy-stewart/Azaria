@@ -30,12 +30,9 @@ extern PALETTE palPalette;
 // Video Adapter Direct Draw Extenstion object.
 class Display {
 private:
-	SIZE m_Size;
-	UINT m_bPP;
 	int m_flipping_pages;		// how many flipping pages are there?
 	int m_current_buffer;		// what is the current buffer.
 	int m_DirtyFrameMask;		// used by apps to dermine when all buffers are refreshed
-	BOOL  bFullscreen;    // run in fullscreen mode
 	BOOL  bExclusive;     // run in exclusive mode, we own palette
 
 	BOOL m_PalChanged;			// set true whenever SetPalette is called, cleared by Flip
@@ -72,11 +69,9 @@ private:
 
 	//-------------------------------------------------------
 public: // interface for application configuration:
-	BOOL Init(SIZE Size, UINT bPP);
+	BOOL Init();
 
 	inline int BufferCount() {return nBufferCount;}
-	inline BOOL IsFullscreen() {return bFullscreen;};
-	inline void setFullscreen(BOOL mode) {bFullscreen = mode;};
 	inline BOOL IsExclusive()	{return bExclusive;};
 	inline void setExclusive(BOOL mode) {bExclusive = mode;};
 

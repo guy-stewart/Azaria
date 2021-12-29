@@ -214,6 +214,8 @@ static STR_ENTRY tbl_spr_names[] =
 	IDS_M5STRESS,	"f5str",
 	IDS_M5WAVE,		"f5wav",
 
+	IDS_BTN_MAP,    "mapbtn",
+	
 	IDS_PED1,		"1",
 	IDS_PED2,		"2",
 	IDS_PED3,		"3",

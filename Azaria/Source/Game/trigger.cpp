@@ -100,7 +100,7 @@ WORD TBL_TRIGGERS::QueryCursor(int view_id, POINT p)
 	if (trigger)
 		return IDS_HANDTRIG;
 
-	return 0;
+	return IDS_HANDIDLE;
 }
 
 //----------------------------------------------------------------------------

@@ -109,8 +109,6 @@
 #define IDV_citH3drb	0x0253
 #define IDV_citH3drc	0x0253
 
-
-
 //city library buildings 0260 - 0289
 
 #define IDV_ctychem	0x0500
@@ -176,7 +174,6 @@
 #define IDV_GRBDRT1		0x1105
 #define IDV_GRBDRT2		0x1106
 
-
 #define IDV_PATH1_1		0x1127
 #define IDV_PATH1_2		0x1128
 #define IDV_PATH1_3		0x1129
@@ -199,7 +196,6 @@
 #define IDV_TMCU3		0x1221
 #define IDV_TMCU4		0x1222
 #define IDV_TMCUT		0x1223
-
 
 // Scene 13: New Village
 #define IDV_VIL2		0x1300
@@ -306,17 +302,9 @@
 #define IDV_HIDDENR1		0x2511
 #define IDV_HIDDENR2		0x2512
 
-
 //SCENE 26: BANISHMENT
 #define IDV_BANISH		0x2612
-
-
-
 
 // Scene 60: GAME BOARD 
 // * keep this last in all the tables for quick testing of database
 #define IDV_BOARD		0x6000
-
-
-
-

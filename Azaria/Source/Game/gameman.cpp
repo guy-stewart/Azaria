@@ -39,7 +39,7 @@
 #include "gameman.h"
 #include "display.h"
 #include "cursor.h"
-
+#include "object.h"
 #include "Data/Database/idv.h"
 #include "Data/Database/Ids.h"
 
@@ -335,14 +335,11 @@ void Game::JoinNetGame(DPID pid, char *name, BOOL bOwner)
 {
 	local_player->SetPid(pid);
 
-	if (bOwner)
-	{
+	if (bOwner)	{
 		// set the game owners pid to us.
 		Msg("Setting database owner to %d", pid);
 		SetOwner(pid);
-	}
-	else
-	{
+	} else {
 		// initialize the player table:
 		netman.EnumPlayers();
 
@@ -468,16 +465,14 @@ void Game::LButtonDown(POINT p)
 	WORD ids = cursorman.GetCursor();
 
 	PLAYER *player = gdbt_players.GetByTouching(pView->GetViewID(), pView->MapToCanvas(p));
-	if (player)
-	{
+	if (player)	{
 		gdbt_players.SendIntimate(player->GetPid(), TRUE);
 	}
 
 	// if on a view and we are not already holding something:
-	if (pView)
-	{
-		switch (ids)
-		{
+	if (pView)	{
+		printf("clicked in view %s\n", pView->getName());
+		switch (ids) {
 		case IDS_HANDIDLE:
 		  break;
 		case IDS_HANDMACH:
@@ -514,6 +509,7 @@ void Game::LButtonUp(POINT p)
 		obj_def_id = cursorman.DropObject(&pCenter, &pPos);
 		if (obj_def_id)
 		{
+			printf("%s:%d dropping object %s(%d)\n", __FILE__, __LINE__, objdefGetName(obj_def_id), obj_def_id);
 			// try to drop the object into a machine
 			p.x = pPos.x + pCenter.x;
 			p.y = pPos.y + pCenter.y;

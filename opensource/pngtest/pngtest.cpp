@@ -236,6 +236,11 @@ int main()
         convert_one_file("/6tb/Home/Singularity/AzariaCD961112/DATA/ONES/OBJECTS","bomb1", &pal);
         convert_one_file("/6tb/Home/Singularity/AzariaCD/DATA/ONES/OBJECTS","bomb2", &pal);
 
+        convert_one_file("/6tb/Home/Singularity/AzariaCD961112/DATA/ONES/OBJECTS","cEditBxM", &pal);
+        convert_one_file("/6tb/Home/Singularity/AzariaCD/DATA/ONES/OBJECTS","cListBxS", &pal);
+        convert_one_file("/6tb/Home/Singularity/AzariaCD/DATA/ONES/OBJECTS","cListBxM", &pal);
+        convert_one_file("/6tb/Home/Singularity/AzariaCD/DATA/ONES/OBJECTS","cListBxL", &pal);
+
         return 0;
 }
 

@@ -190,16 +190,6 @@ private: // file I/O stuff
 	int CloseReadFile();
 
 private:
-#ifdef _WIN32
-	int CreateFile(char *, HMMIO *, WAVEFORMATEX *, MMCKINFO *, MMCKINFO *);
-	int StartDataWrite(HMMIO *, MMCKINFO *, MMIOINFO *);
-	int WriteFile(HMMIO, UINT, BYTE *, MMCKINFO *, UINT *, MMIOINFO *);
-	int CloseWriteFile(HMMIO *, MMCKINFO *, MMCKINFO *, MMIOINFO *, DWORD);
-    int SaveFile(char *, UINT, DWORD, WAVEFORMATEX *);
-    static int CopyUselessChunks(HMMIO *, MMCKINFO *, MMCKINFO *, HMMIO *,
-                                 MMCKINFO *, MMCKINFO *);
-    static BOOL riffCopyChunk(HMMIO hmmioSrc, HMMIO hmmioDst, const LPMMCKINFO lpck);
-#endif
 	int LoadFile(char *filename);
 	BOOL TransferDataToDirectSoundBuffer();
 
@@ -213,11 +203,6 @@ private:
   static Wave			**ramWave;
 private:
     WAVEFORMATEX         *pwfx;             /* Wave Format data structure */
-#ifdef _WIN32
-    HMMIO                hmmio;             /* MM I/O handle for the WAVE */
-    MMCKINFO             mmck;              /* Multimedia RIFF chunk */
-    MMCKINFO             mmckInRIFF;        /* Use in opening a WAVE file */
-#endif
     LPDIRECTSOUNDBUFFER  lpDSBStreamBuffer; /* Points to DirectSoundBuffer */
     DWORD                dwBufferSize;      /* Size of the entire buffer */
     DWORD                dwNextWriteOffset; /* Offset to next buffer segment */

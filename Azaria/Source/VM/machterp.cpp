@@ -1784,7 +1784,7 @@ WORD GDBT_MACHINES::QueryCursor(WORD view_id, WORD obj_def_id, POINT p)
 	  if (tbl_altviews.Link(view_id, p, FALSE))
 		return IDS_HANDALT;
 	}
-	return 0;
+	return IDS_HANDIDLE;
 }
 
 //----------------------------------------------------------------------------

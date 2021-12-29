@@ -18,6 +18,7 @@
 ; 01/18/95  gas  Created.
 ; 
 ----------------------------------------------------------------------------*/
+
 #include "azaria.h"
 
 #include "includes.h"
@@ -38,51 +39,10 @@
 #include "rcids.h"      // for MAYA_ICON
 #include "resource.h"
 
-#include <GL/freeglut.h>
-
-
-#define GAME_SX 640
-#define GAME_SY 480
-#define GAME_BPP 8
-
-#define WM_QUERYNEWPALETTE 1001
-#define  WM_DISPLAYCHANGE 19002
-#define  WM_CREATE 19003
-#define  WM_SETCURSOR 19004
-#define  WM_NCMOUSEMOVE 19005
-#define  WM_CAPTURECHANGED 19006
-#define  WM_MOUSEMOVE 19007
-#define  WM_LBUTTONDBLCLK 19008
-#define  WM_LBUTTONDOWN 19009
-#define  WM_LBUTTONUP 190010
-#define  WM_RBUTTONDBLCLK 190011
-#define  WM_RBUTTONDOWN 190012
-#define  WM_RBUTTONUP 190013
-#define  WM_SYSKEYDOWN 190014
-#define  WM_CHAR 190015
-#define  WM_KEYUP 190016
-#define  WM_KEYDOWN 190017
-#define  WM_PAINT    190018
-#define  WM_DESTROY  190019
-#define  WM_SYSKEYUP 190020
-
-#define WM_SIZE 100
-#define WM_MOVE 101
-#define WM_ACTIVATEAPP 201
-#define WM_PALETTECHANGED 300
-
-#define VK_RETURN 700100
-#define VK_F1  700101
-#define VK_F2  700102
-#define VK_F3  700103
-#define VK_F4  700104
-#define VK_F5  700105
-#define VK_F6  700106
-#define VK_F7  700107
-#define VK_F8  700108
-#define VK_F9  700109
-#define VK_F10 700110
-#define VK_F11 700111
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
+#include <SDL2/SDL_image.h> 
+#include <SDL2/SDL_timer.h> 
 
 static HWND		hWndMain;
 RECT			rcWindow;
@@ -92,373 +52,13 @@ BOOL			bPaused;
 BOOL			bPlayingVideo;
 BOOL			bPostQuitMessage = FALSE;
 BOOL			bIsForeground;
-static SIZE		GameMode;   // display mode size
-static UINT		GameBPP;    // the bpp we want
-
-void InvalidateRect(HWND, int, int)
-{
-    assert(false);
-}
-HWND GetForegroundWindow()
-{
-    return hWndMain;
-}
-bool GetClientRect(HWND hWnd, RECT *rc)
-{
-    assert(false);
-    return true;
-}
-
-bool ClientToScreen(HWND hWnd, POINT *point)
-{
-    return true;
-}
 
 bool IsIconic(HWND hWnd)
 {
     return false;
 }
 
-void ShowCursor(bool show)
-{
-    
-}
-
-/*
- * PauseGame()
- */
-static void PauseGame()
-{
-    Msg("**** PAUSE");
-    bPaused = TRUE;
-    InvalidateRect(hWndMain, 0, TRUE);
-}
-
-/*
- * UnPauseGame()
- */
-static void UnPauseGame()
-{
-    if (GetForegroundWindow() == hWndMain)
-    {
-        Msg("**** UNPAUSE");
-        bPaused = FALSE;
-    }
-}
-
-#define MCIWNDM_NOTIFYMODE 1
-#define MCI_MODE_STOP      2
-#define MCIWNDF_SHOWALL    4
-#define MCIWNDF_NOTIFYMODE 8
-
-void MCIWndDestroy(HWND hMCIEnd)
-{
-}
-
-HWND MCIWndCreate(HWND hWnd, int unused, int mode, const char * avi)
-{
-    return 0;
-}
-
-LONG MCIWndPlay(HWND hMCIWnd)
-{
-    return 0;
-}
-void MCIWndSetZoom(HWND hMCIWnd, int zoom)
-{
-    
-}
-
-/*
- * MainWndProc
- *
- * Callback for all Windows messages
- */
-static long FAR PASCAL MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
-{
-	static BOOL bCaptured = FALSE;
-	POINT p;
-    // TODO:
-	p.x = LOWORD((uint64_t)lParam);
-    p.y = HIWORD((uint64_t)lParam); // TODO: HIWORD does not work with 64 bit types
-	static HWND hMCIWnd;
-
-    switch( message )
-    {
-	case MCIWNDM_NOTIFYMODE:
-	  switch ((uint64_t)lParam) {
-	  case MCI_MODE_STOP:
-		MCIWndDestroy(hMCIWnd);
-		bPlayingVideo = FALSE;
-		display.SetAllDirty();
-		break;
-	  }
-
-	  break;
-
-    case WM_SIZE:
-    case WM_MOVE:
-		// All backbuffers need repainting:
-
-		gameman.RestoreDisplay();
-
-        if (IsIconic(hWnd))
-        {
-            Msg("WM: minimized, pausing");
-            PauseGame();
-			bWasIconic = TRUE;
-        }
-
-        if (display.IsFullscreen())
-        {
-			RECT rc;
-            SetRect(&rcWindow, 0, 0, GAME_SX, GAME_SY);
-            GetClientRect(hWnd, &rc);
-			Msg("WM: fullscreen(%d, %d)", rc.right-rc.left, rc.bottom-rc.top);
-            ClientToScreen(hWnd, (LPPOINT)&rc);
-            ClientToScreen(hWnd, (LPPOINT)&rc+1);
-			Msg("WM: fullscreen(%d, %d)", rc.right-rc.left, rc.bottom-rc.top);
-        }
-        else
-        {
-            GetClientRect(hWnd, &rcWindow);
-            ClientToScreen(hWnd, (LPPOINT)&rcWindow);
-            ClientToScreen(hWnd, (LPPOINT)&rcWindow+1);
-
-			// Msg("size/move != fullscreen(%d, %d)", rcWindow.right-rcWindow.left, rcWindow.bottom-rcWindow.top);
-        }
-        break;
-
-    case WM_ACTIVATEAPP:
-		Msg("WM_ACTIVATEAPP(%d, %d)", rcWindow.right-rcWindow.left, rcWindow.bottom-rcWindow.top);
-		bIsForeground = (BOOL)wParam && GetForegroundWindow() == hWnd;
-        bIsActive = !IsIconic(hWnd) && bIsForeground;
-
-        if (bIsActive)
-		{
-            Msg("WM: Azaria is active");
-			if (bWasIconic)
-			{
-				display.ReInit();
-				bWasIconic = FALSE;
-			}
-		}
-        else
-            Msg("WM: Azaria is not active");
-
-        if (bIsForeground)
-            Msg("WM: Azaria is Foreground");
-        else
-            Msg("WM: Azaria is not Foreground");
-
-        //
-        // while we were not-active something bad happened that caused us
-        // to pause, like a surface restore failing or we got a palette
-        // changed, now that we are active try to fix things
-        //
-        if (bPaused && bIsActive)
-        {
-            if (display.Restore(GetForegroundWindow() == hWnd))
-            {
-                UnPauseGame();
-            }
-        }
-        break;
-
-    case WM_PALETTECHANGED:
-        //
-        //  if another app changed the palette we dont have full control
-        //  of the palette. NOTE this only applies for Maya in a window
-        //  when we are fullscreen we get all the palette all of the time.
-        //
-        if ((HWND)wParam != hWnd)
-        {
-            if (!display.IsFullscreen())
-            {
-				Msg("WM: Lost control of palette.");
-            }
-        }
-        break;
-
-    case WM_QUERYNEWPALETTE:
-		// All backbuffers need repainting:
-		display.SetAllDirty();
-
-        //
-        //  we are getting the palette focus, select our palette
-        //
-        if (!display.IsFullscreen())
-        {
-			// set the palette on the front buffer
-			display.AttachPalette();
-        }
-        break;
-            
-    case WM_DISPLAYCHANGE:
-		// All backbuffers need repainting:
-		gameman.RestoreDisplay();
-
-		Msg("WM_DISPLAYCHANGE(%d, %d)", rcWindow.right-rcWindow.left, rcWindow.bottom-rcWindow.top);
-        break;
-
-    case WM_CREATE:
-        break;
-
-    case WM_SETCURSOR:
-        break;
-
-	case WM_NCMOUSEMOVE:
-		p.x = -1;
-		p.y = -1;
-		userMouseMove(p);
-
-		if (bCaptured)
-		{
-			ShowCursor(TRUE);
-			bCaptured = FALSE;
-		}
-		break;
-
-	case WM_CAPTURECHANGED:
-		p.x = -1;
-		p.y = -1;
-		userMouseMove(p);
-		break;
-	case WM_MOUSEMOVE:
-		if (!bCaptured)
-		{
-			bCaptured = TRUE;
-			ShowCursor(FALSE);
-		}
-		userMouseMove(p);
-		break;
-
-	case WM_LBUTTONDBLCLK:
-	case WM_LBUTTONDOWN:
-		userLButtonDown(p);
-		break;
-	case WM_LBUTTONUP:
-		userLButtonUp(p);
-		break;
-
-	case WM_RBUTTONDBLCLK:
-	case WM_RBUTTONDOWN:
-		userRButtonDown(p);
-		break;
-	case WM_RBUTTONUP:
-		userRButtonUp(p);
-		break;
-
-/*
-	case WM_RASDIALEVENT:
-		PostMessage(hWndMain, WM_CLOSE, 0, 0);
-		break;
-*/
-
-    case WM_SYSKEYDOWN:
-        switch( (long long)wParam )
-        {
-        // handle ALT+ENTER (fullscreen)
-        case VK_RETURN:
-            display.setFullscreen(!display.IsFullscreen());
-			/* display.ReInit(); */
-            // ExitGame();
-			Music::Pause();
-            display.Disable(TRUE);        // destroy DirectDraw object
-            if (!display.Init(GameMode, GameBPP))
-			{
-				errorCriticalStop("WM: Unable to restore game.");
-			}
-			else
-			  Music::Resume();
-            break;
-		}
-        break;
-
-	case WM_CHAR:
-	  userKeyPressed((WORD)(size_t)wParam, FALSE);
-	  break;
-
-	case WM_KEYUP:
-		userKeyReleased((WORD)(size_t)wParam, TRUE);
-		break;
-        
-    case WM_KEYDOWN:
-		if (userKeyPressed((uint64_t)wParam, TRUE)) switch ((uint64_t)wParam)
-		{
-		case VK_F1:
-		  if (!bPlayingVideo)
-		  {
-			hMCIWnd=MCIWndCreate(hWnd, NULL, 
-			  MCIWNDF_SHOWALL|MCIWNDF_NOTIFYMODE, "f:\\funstuff\\videos\\goodtime.avi");
-			if (hMCIWnd)
-			{
-				MCIWndPlay(hMCIWnd);
-				MCIWndSetZoom(hMCIWnd, 200);
-  				bPlayingVideo = TRUE;
-			}
-		  }
-		  else
-		  {
-			MCIWndDestroy(hMCIWnd);
-			bPlayingVideo = FALSE;
-			display.SetAllDirty();
-		  }
-		  break;
-        case VK_F3:
-			gameman.RestoreDisplay();
-            break;
-
-        case VK_F4:
-            // treat F4 like ALT+ENTER (fullscreen)
-            // PostMessage(hWnd, WM_SYSKEYUP, VK_RETURN, 0);
-            break;
-
-        case VK_F5:
-			display.setExclusive(!display.IsExclusive());
-			display.ReInit();
-            break;
-
-        case VK_F6:
-			display.setExclusive(FALSE);
-			display.setFullscreen(FALSE);
-			display.ReInit();
-            break;
-		}
-        break;
-
-    case WM_PAINT:
-        //hdc = BeginPaint( hWnd, &ps );
-        if (bPaused && !display.IsFullscreen())
-        {
-			Msg("WM: Painting during paused game");
-        }
-        //EndPaint( hWnd, &ps );
-        return 1;
-
-    case WM_DESTROY:
-		bIsActive = FALSE;
-        hWndMain = NULL;
-        // PostQuitMessage( 0 );
-        break;
-    }
-
-    return 0; //DefWindowProc(hWnd, message, wParam, lParam);
-} /* MainWndProc */
-
-/*
- * initApplication
- *
- * Do that Windows initialization stuff...
- */
-static BOOL initApplication( void )
-{
-
-    return TRUE;
-} /* initApplication */
-
-static int MissingFileMessage(int buttons)
-{
+static int MissingFileMessage(int buttons) {
   int rc=0;
   char buff[MAX_PATH+128];
 
@@ -466,8 +66,7 @@ static int MissingFileMessage(int buttons)
 	"Azaria cannot find a required file:\n%s\n%s\n%s\nYou may need to re-install Azaria",
 	missing_file_name,
 	missing_file_path2,
-	missing_file_path1
-	);
+	missing_file_path1);
 
   Msg(buff);
   return rc;
@@ -478,26 +77,15 @@ static int MissingFileMessage(int buttons)
  */
 int WinMain(const char * datapath, const char * altdatapath)
 {
-    //MSG                 msg;
-	// int rc;
-
-    GameMode.cx = GAME_SX;
-    GameMode.cy = GAME_SY;
-    GameBPP = GAME_BPP;
-
 	missing_file_path1[0]=0;
 	missing_file_path2[0]=0;
 	missing_file_name[0]=0;
 
     gameman.InitPaths(datapath, altdatapath);
-    // create window and other windows things
-    if( !initApplication() )
-        return FALSE;
 
-	try
-	{
+	try	{
 	  // Initialize the display manager and setup our window for the 640x480 game
-	  if( !display.Init(GameMode, GameBPP))
+	  if( !display.Init())
 		  return FALSE;
 
 	  Wave::DirectSoundCreate(NULL);
@@ -507,11 +95,8 @@ int WinMain(const char * datapath, const char * altdatapath)
 	  // start up the Game Manager.
 	  if ( !gameman.Init() )
 		goto FileError;
-	}
-	catch (int e)
-	{
-	  switch (e)
-	  {
+	} catch (int e)	{
+	  switch (e) {
 	  case ERROR_FILE_NOT_FOUND:
 		MissingFileMessage(0);
 		break;
@@ -528,7 +113,6 @@ FileError:
     Msg("FileError Exit:");
     display.Disable(TRUE);        // destroy DirectDraw object
     netman.Close(FALSE);
-    ShowCursor(TRUE);
     Wave::Release();
     return 0; //msg.wParam;    return 0;
 }
@@ -589,160 +173,190 @@ FileError:
 	Msg("FileError Exit:");
 	display.Disable(TRUE);        // destroy DirectDraw object
 	netman.Close(FALSE);
-	ShowCursor(TRUE);
 	Wave::Release();
     return 0; //msg.wParam;
 
 } /* WinMain */
 
-void idle() {
-    WinLoop();
-    glutPostRedisplay();
+SDL_Renderer* rend;
+float x_scale=2;
+float y_scale=2;
 
+void HandleSdlEvent(SDL_Event &event) {
+    switch (event.type) {
+        /* Keyboard events */
+        case SDL_KEYDOWN:
+            userKeyPressed(event.key.keysym.sym, false);
+            break;
+        case SDL_KEYUP:
+            userKeyReleased(event.key.keysym.sym, true);
+            break;
+        case SDL_TEXTEDITING:
+            // printf("SDL_TEXTEDITING\n");
+            break;
+        case SDL_TEXTINPUT:
+            // printf("SDL_TEXTINPUT\n");
+            break;
+        case SDL_KEYMAPCHANGED:
+            // printf("SDL_KEYMAPCHANGED\n");
+            break;
+
+        /* Mouse events */
+        case SDL_MOUSEMOTION:
+            {
+                POINT p;
+                p.x = event.motion.x/x_scale;
+                p.y = event.motion.y/y_scale;
+	            userMouseMove(p);
+            }
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            {
+                POINT p;
+                p.x = event.button.x/x_scale;
+                p.y = event.button.y/y_scale;
+               	userMouseMove(p);
+                switch (event.button.button) {
+                    case SDL_BUTTON_LEFT:
+   		                userLButtonDown(p);
+                        break;
+                    case SDL_BUTTON_RIGHT:
+   		                userRButtonDown(p);
+                        break;
+                }
+                printf("SDL_MOUSEBUTTONDOWN((x:%d, y:%d)\n", p.x, p.y);
+            }
+            break;
+        case SDL_MOUSEBUTTONUP:
+            {
+                POINT p;
+                p.x = event.button.x/x_scale;
+                p.y = event.button.y/y_scale;
+               	userMouseMove(p);
+                switch (event.button.button) {
+                    case SDL_BUTTON_LEFT:
+   		                userLButtonUp(p);
+                        break;
+                    case SDL_BUTTON_RIGHT:
+   		                userRButtonUp(p);
+                        break;
+                }
+                printf("SDL_MOUSEBUTTONUP(x:%d, y:%d)\n", p.x, p.y);
+            }
+            break;
+        case SDL_MOUSEWHEEL:
+            printf("SDL_MOUSEWHEEL\n");
+            break;
+        case SDL_WINDOWEVENT:
+            if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                x_scale = (float)(event.window.data1) / 640;
+                y_scale = (float)(event.window.data2) / 480;
+                printf("resized\n");
+            }
+            // printf("SDL_WINDOWEVENT\n");
+            break;
+        default:
+            printf("SDL EVENT TYPE %x\n", event.type);
+            break;
+    }
 }
 
-GLfloat spin=0.0;
- 
-void init(void)
-{
-    glClearColor(0.0,0.0,0.0,0.0);
-    //glShadeModel(GL_FLAT);
-}
- 
+void __paint__(unsigned char *data) {
+    // Set up the pixel format color masks for RGB(A) byte arrays.
+    // Only STBI_rgb (3) and STBI_rgb_alpha (4) are supported here!
+    Uint32 rmask, gmask, bmask, amask;
+    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    int shift = (req_format == STBI_rgb) ? 8 : 0;
+    rmask = 0xff000000 >> shift;
+    gmask = 0x00ff0000 >> shift;
+    bmask = 0x0000ff00 >> shift;
+    amask = 0x000000ff >> shift;
+    #else // little endian, like x86
+    rmask = 0x000000ff;
+    gmask = 0x0000ff00;
+    bmask = 0x00ff0000;
+    amask = 0x00000000;
+    #endif
 
+    int width = 640;
+    int height = 480;
+    int depth=32;
+    int pitch = 4*width;
 
- // Return a random float in the range 0.0 to 1.0.
+    SDL_Surface* surf = SDL_CreateRGBSurfaceFrom((void*)data, width, height, depth, pitch,
+                                             rmask, gmask, bmask, amask);
 
-
-void fn_display(void)
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-	display.SetAllDirty();
-
-    WinLoop();
-
-    glFlush();
-
-    glutSwapBuffers();
-}
- 
-
-void reshape(int w, int h)
-{
-    Msg("reshape..");
-    glViewport(0,0,(GLsizei) w, (GLsizei) h);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluOrtho2D(0, 2*640, 0, 2*480);
-}
- 
-void mouse(int button,int state,int x,int y)
-{
-    POINT p;
-
-    p.x = x/2;
-    p.y = y/2;
-
-    Msg("mouse(x:%d, y:%d)", x, y);
-	userMouseMove(p);
-    switch(button)
-    {
-    case GLUT_LEFT_BUTTON:
-        if (state==GLUT_DOWN) {
-		  userLButtonDown(p);
-        }
-        if (state==GLUT_UP) {
-		  userLButtonUp(p);
-        }
-        break;
- 
-    case GLUT_RIGHT_BUTTON:
-        if (state==GLUT_DOWN) {
-		    userRButtonDown(p);
-        }
-        if (state==GLUT_UP) {
-		    userRButtonUp(p);
-        }
+    if (surf == NULL) {
+        SDL_Log("Creating surface failed: %s", SDL_GetError());
     }
 
+	SDL_Texture* tex = SDL_CreateTextureFromSurface(rend, surf); 
+
+    // ... do something useful with the surface ...
+    // ...
+	SDL_RenderCopy(rend, tex, NULL, NULL); 
+
+    // when you don't need the surface anymore, free it..
+    SDL_FreeSurface(surf);
+   	SDL_DestroyTexture(tex); 
+
+   	display.SetAllDirty();
 }
 
-/*
-; The motion callback for a window is called when the mouse moves within
-; the window while one or more mouse buttons are pressed.
-*/
-void mouseMove(int x, int y) {
-    POINT p;
+int sdl2_main() 
+{
+    // retutns zero on success else non-zero 
+	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) { 
+		printf("error initializing SDL: %s\n", SDL_GetError()); 
+	}
 
-    p.x = x/2;
-    p.y = y/2;
-	userMouseMove(p);
-    // printf("mouseMove(x:%d, y:%d)", x, y);
-    /*
-    	case WM_MOUSEMOVE:
-		if (!bCaptured)
-		{
-			bCaptured = TRUE;
-			ShowCursor(FALSE);
-		}
-		break;
-        */
-}
+	SDL_Window* win = SDL_CreateWindow("AZARIA", // creates a window 
+									SDL_WINDOWPOS_CENTERED, 
+									SDL_WINDOWPOS_CENTERED, 
+									640*x_scale, 480*y_scale, SDL_WINDOW_RESIZABLE); 
 
-/*
-; The passive motion callback for a window is called when the mouse moves
-; within the window while no mouse buttons are pressed
-*/
-void mousePassiveMove(int x, int y) {
-    POINT p;
+	rend = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED); 
 
-    p.x = x/2;
-    p.y = y/2;
-	userMouseMove(p);
-    // printf("mouseMove(x:%d, y:%d)", x, y);
-    /*
-    	case WM_MOUSEMOVE:
-		if (!bCaptured)
-		{
-			bCaptured = TRUE;
-			ShowCursor(FALSE);
-		}
-		break;
-        */
-}
+	// annimation loop 
+	int close = 0; 
+	while (!close) { 
+		SDL_Event event; 
 
-void mouseEntry(int state) {
-    printf("mouseEntry(state:%d)\n", state);
-}
+		// Events mangement 
+		while (SDL_PollEvent(&event)) { 
+			if (event.type == SDL_QUIT) {
+				// handling of close button 
+				close = 1; 
+				break; 
+            } else {
+                HandleSdlEvent(event);
+            }
+		} 
 
-void keyboard(unsigned char key, int x, int y) {
-    Msg("keyboard..");
+		// clears the screen 
+		SDL_RenderClear(rend); 
+        WinLoop();
 
-    userKeyPressed(key, FALSE);
-	userKeyReleased(key, TRUE);
+		// triggers the double buffers 
+		// for multiple rendering 
+		SDL_RenderPresent(rend); 
+
+		// calculates to 60 fps 
+		SDL_Delay(1000 / 120); 
+	} 
+
+	SDL_DestroyRenderer(rend); 
+	SDL_DestroyWindow(win); 
+	return 0; 
 }
 
 /*
 ; https://www.opengl.org/resources/libraries/glut/spec3/spec3.html
 */
 int main(int argc, char** argv) {
-    glutInit(&argc,argv);
-    glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA);
-    glutInitWindowSize(2*640,2*480);
-    glutInitWindowPosition(500,500);
-    glutCreateWindow("Azaria");
-    init();
-    glutDisplayFunc(fn_display);
-    glutReshapeFunc(reshape);
-    glutMouseFunc(mouse);
-    glutPassiveMotionFunc(mousePassiveMove);
-    glutMotionFunc(mouseMove);
-    glutEntryFunc(mouseEntry);
-
-    glutKeyboardFunc(keyboard);
-    glutIdleFunc(idle);
 
     WinMain("/6tb/Home/Singularity/AzariaCD/DATA",
             "/6tb/Home/Singularity/AzariaCD961112/data");
-	glutMainLoop();
+
+    sdl2_main();
 }

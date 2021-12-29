@@ -146,8 +146,7 @@ WORD INVENTORY::Grab(POINT p, BOOL bClickOnly, POINT *obj_pos)
 //----------------------------------------------------------------------------
 BOOL INVENTORY::Drop(WORD *obj_def_id, POINT p)
 {
-	if (m_count >= MAX_INV_OBJECTS)
-	{
+	if (m_count >= MAX_INV_OBJECTS)	{
 		return FALSE;
 	}
 

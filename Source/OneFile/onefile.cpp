@@ -327,13 +327,9 @@ BOOL ONE::ReadOne(const char *filename, PALETTEENTRY *default_palette)
 	m_bits = NULL;
 
 	/* Open file for input: */
-	if(xfile.Open(XFile::modeRead))
-	{
+	if(xfile.Open(XFile::modeRead))	{
 	  /* Read in file header */
-	  if( xfile.Read( &m_hdr, sizeof(ONE_HEADER) ) == sizeof(ONE_HEADER) )
-	  {
-		// if compressed, then read the offsets array:
-		printf("width:%d, height:%d, pitch:%d, frames:%d\n", m_hdr.width, m_hdr.height, m_hdr.pitch, m_hdr.frames);
+	  if( xfile.Read( &m_hdr, sizeof(ONE_HEADER) ) == sizeof(ONE_HEADER) ) {
 		if (m_hdr.frames == 82) {
 			printf("**** probably a bad file???  %s\n", filename);
 			m_hdr.frames = 1;
@@ -342,9 +338,7 @@ BOOL ONE::ReadOne(const char *filename, PALETTEENTRY *default_palette)
 			printf("**** probably a bad file???  %s\n", filename);
 			m_hdr.frames = 1;
 		}
-		if (IsCompressed())
-		{
-		  printf("IsCompressed()\n");
+		if (IsCompressed())	{
 		  m_frame_offset = (int32_t*)malloc(sizeof(int32_t)*m_hdr.frames);
 		  xfile.Read(m_frame_offset, sizeof(int32_t)*m_hdr.frames);
 		}
@@ -352,8 +346,7 @@ BOOL ONE::ReadOne(const char *filename, PALETTEENTRY *default_palette)
 		/* alloc bits: */
 		raw_bits = (BYTE*)malloc(m_hdr.m_size);
 		assert(raw_bits);
-		if (raw_bits)
-		{
+		if (raw_bits) {
             size_t count = xfile.Read( raw_bits, m_hdr.m_size);
             rc = (count == m_hdr.m_size);
             if (count != m_hdr.m_size) {
@@ -361,19 +354,14 @@ BOOL ONE::ReadOne(const char *filename, PALETTEENTRY *default_palette)
             }
 		}
 	  }
-	  if (m_hdr.m_flags & CUSTOM_PALETTE)
-	  {
-		printf("CUSTOM_PALETTE\n");
+	  if (m_hdr.m_flags & CUSTOM_PALETTE) {
 		m_pal = (PALETTEENTRY*)malloc(sizeof(PALETTEENTRY)*256);
-		if (m_pal)
-		{
+		if (m_pal) {
 			pc = xfile.Read( m_pal, sizeof(PALETTEENTRY)*256);
-			if (pc < sizeof(PALETTEENTRY)*256)
-			{
+			if (pc < sizeof(PALETTEENTRY)*256) {
 				free(m_pal);
 				m_pal = NULL;
-			}
-			else {
+			} else {
 				m_hdr.m_flags |= ONE_OWNS_PAL;
 				// dumpPaletteEntries(m_pal);
 			}
@@ -405,7 +393,7 @@ int read_JPEG_callback(BASE_IMAGE *bim,
 		bim->rows_read = 0;
 		bim->height = cinfo->image_height;
 		bim->width  = cinfo->image_width;
-		bim->pitch = rowstride;
+		bim->pitch = (rowstride*4)/3;
 		bim->bits = _allocBits(bim->height, bim->pitch);
 	}
 
@@ -416,6 +404,7 @@ int read_JPEG_callback(BASE_IMAGE *bim,
 		pel->peRed   = buffer[k];
 		pel->peGreen = buffer[k+1];
 		pel->peBlue  = buffer[k+2];
+		pel->peAlpha = 0;
 	}
 
 	bim->rows_read++;
@@ -431,6 +420,9 @@ BOOL ONE::Read(const char *path, const char *filename, PALETTEENTRY *default_pal
 
    printf("%s:%d:ONE::Read(\"%s\", \"%s\")\n", __FILE__, __LINE__, path, filename);
 
+	if (!stricmp("mapbtn", filename)) {
+		printf("the file you are looking for?\n");
+	}
    // switch on extension for various file types:
    splitpath( filename, NULL, NULL, NULL, ext );
 

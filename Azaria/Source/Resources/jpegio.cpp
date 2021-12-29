@@ -323,7 +323,6 @@ int do_read_JPEG_file(struct jpeg_decompress_struct *cinfo,
    */
 
   if ((infile = fcaseopen(filename, "rb")) == NULL) {
-    fprintf(stderr, "can't open %s\n", filename);
     return 0;
   }
 

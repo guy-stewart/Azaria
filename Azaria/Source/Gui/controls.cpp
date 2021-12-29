@@ -51,6 +51,8 @@ CONTROL::CONTROL(CFGVIEW *xView, WORD xCid, WORD ids_background, int x, int y)
   m_spr = sprGet(m_hSprite);
   m_fbd.SpriteInit(&m_spr->sprite);
 
+  // TODO: if you wnt to blit to a surround you need to make a mask and blit rotated.
+  m_fbd.m_style = BLT_RECT;
   m_fbd.m_dst_x = x;
   m_fbd.m_dst_y = y;
 

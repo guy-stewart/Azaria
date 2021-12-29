@@ -181,49 +181,48 @@ WORD SURROUND::QueryCursor(SRECT r)
   p.x = r.left;
   p.y = r.top;
 
-  int thickness_x = (fbd.m_brect.right - fbd.m_brect.left) / 4;
-  int thickness_y = (fbd.m_brect.bottom - fbd.m_brect.top) / 3;
+  int thickness_x = (fbd.m_brect.right - fbd.m_brect.left) / 8;
+  int thickness_y = (fbd.m_brect.bottom - fbd.m_brect.top) / 4;
 
   m_mousepos = MapToCanvas(p);
   int theta = (m_mousepos.x * 36000)/surface.GetHeight();
 
-  if (p.y < (fbd.m_brect.top + thickness_y*2))
-  {
-    m_accx=0;
-	if (Cardinal(view_id, theta, FALSE, FALSE))
-		ids = IDS_HANDFWD;
-  }
-  else if (p.y > (fbd.m_brect.bottom - thickness_y))
-  {
-    m_accx=0;
-	if (Cardinal(view_id, theta, TRUE, FALSE))
-		ids = IDS_HANDBACK;
-  }
-
-  {
 	// if near the top or bottom of the view ...
 	if (p.y < (fbd.m_brect.top + thickness_y/2)
 	||  p.y > (fbd.m_brect.bottom - thickness_y))
 		thickness_x /= 2; // ... then skinny up the scroll control
 
-	if (r.left < (fbd.m_brect.left + thickness_x))
-	{
+	m_accx = 0;
+	if (r.left < (fbd.m_brect.left + thickness_x)) {
 		m_accx=-1;
 		int t = (fbd.m_brect.left+thickness_x);
 		m_px.SetTerminal(TERMINAL_VELOCITY*(t-r.left)/(thickness_x));
-		return IDS_HANDLEFT;
+		ids = IDS_HANDLEFT;
 	}
-	else if (r.right > (fbd.m_brect.right - thickness_x))
-	{
+	else if (r.right > (fbd.m_brect.right - thickness_x)) {
 		m_accx=1;
 		int t = (fbd.m_brect.right-thickness_x);
 		m_px.SetTerminal(TERMINAL_VELOCITY*(r.right-t)/(thickness_x));
-		return IDS_HANDRIGHT;
+		ids = IDS_HANDRIGHT;
+	}
+
+
+  if (p.y < (fbd.m_brect.bottom - thickness_y/2)) {
+    //m_accx=0;
+	if (Cardinal(view_id, theta, FALSE, FALSE)) {
+		ids = IDS_HANDFWD;
+	}
+  }
+  if (p.y > (fbd.m_brect.bottom - thickness_y)) {
+    //m_accx=0;
+	if (Cardinal(view_id, theta, TRUE, FALSE)) {
+		ids = IDS_HANDBACK;
 	}
   }
 
-  if (!vids || vids == IDS_HANDIDLE)
+  if (!vids || vids == IDS_HANDIDLE) {
 	vids = ids;
+  }
 
   return vids;
 }

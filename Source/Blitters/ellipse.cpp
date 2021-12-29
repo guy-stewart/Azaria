@@ -189,11 +189,11 @@ void FBLT_DSCR::BltRectangle(ONE *oneDest,ONE *oneSrc)
 	else
 	{
 		// clip to bottom of source:
-		if ((dy) >= (src_height - src_y))
+		if ((dy) > (src_height - src_y))
 			dy = (src_height - src_y);
 
 		// clip to bottom of destination:
-		if (dy >= (dst_height - dst_y))
+		if (dy > (dst_height - dst_y))
 			dy = (dst_height - dst_y);
 
 		for (y=0; y<dy; y++)

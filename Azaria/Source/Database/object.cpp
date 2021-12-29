@@ -66,6 +66,20 @@ WORD objdefGetIDByName(char *name)
 }
 
 //----------------------------------------------------------------------------
+const char * objdefGetName(WORD object_id)
+{
+	OBJECT_DEF *object;
+
+	object = objdefGet(object_id);
+
+	if (object)
+		return object->name;
+
+	return "0";
+}
+
+
+//----------------------------------------------------------------------------
 int objdefGetClass(WORD object_id)
 {
 	OBJECT_DEF *object;

@@ -123,6 +123,27 @@ WORD CFGVIEW::QueryCursor(SRECT r)
 
 #include <dirent.h>
 
+static char * _ext = "Mx7";
+
+/* when return 1, scandir will put this dirent to the list */
+   static int parse_ext(const struct dirent *dir)
+   {
+     if(!dir)
+       return 0;
+
+     if(dir->d_type == DT_REG) { /* only deal with regular file */
+         const char *ext = strrchr(dir->d_name,'.');
+         if((!ext) || (ext == dir->d_name))
+           return 0;
+         else {
+           if(strcmp(ext+1, _ext) == 0)
+             return 1;
+         }
+     }
+
+     return 0;
+   }
+
 //----------------------------------------------------------------------------
 int CFGVIEW::CfgDir(int startat, char *dir, char *ext)
 {
@@ -130,11 +151,12 @@ int CFGVIEW::CfgDir(int startat, char *dir, char *ext)
     int index = 0;
     char path[_MAX_PATH];
     
-    makepath(path, NULL, dir, "*", ext);
+    makepath(path, NULL, dir, NULL, NULL);
     mkdir(dir, 0777);
     struct dirent **namelist;
     int n;
-    n = scandir(path, &namelist, 0, alphasort);
+    _ext = ext;
+    n = scandir(path, &namelist, parse_ext, alphasort);
     
     if (n < 0) {
         printf("scandir(%s, ...)\n", path);
@@ -158,8 +180,8 @@ int CFGVIEW::CfgDir(int startat, char *dir, char *ext)
                 if (index >= NAMES_PER_PAGE)
                     break;
             }
-            free(namelist);
         }
+        free(namelist);
     }
     
     return index;

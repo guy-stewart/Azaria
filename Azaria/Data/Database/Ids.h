@@ -255,6 +255,10 @@
 #define IDS_AURA2		0x01db
 #define IDS_AURA3		0x01dc
 
+//---- Buttons for scene 1 (the main panel)
+#define IDS_BTN_MENU    0x01e0
+#define IDS_BTN_MAP     0x01e1
+
 //-------------------------------
 // Scene 2 sprites:
 #define IDS_CITY_KEY	0x0200

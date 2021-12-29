@@ -28,7 +28,6 @@
  */
 DWORD VideoThread(LPVOID lParam);
 int oneFixPal(ONE *one);
-BOOL makeFontStuff( void );
 
 #define QUOTE(x) #x
 #define QQUOTE(y) QUOTE(y)

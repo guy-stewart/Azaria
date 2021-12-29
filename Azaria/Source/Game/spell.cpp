@@ -376,11 +376,9 @@ BOOL WIZARD::Parse(char *buffer)
   //-------------------------------
   // start parsing:
   if (!stricmp(token, "help")
-	||!strcmp(token, "?"))
-  {
+	||!strcmp(token, "?")) {
 	token = strtok( NULL, seps );
-    if (token && !stricmp(token, "x"))
-	{
+    if (token && !stricmp(token, "x")) {
 		TELETYPE::Msg(0, ";POS - get cursor position on canvas");
 		TELETYPE::Msg(0, ";DPOS - delta from last cursor position");
 
@@ -399,8 +397,7 @@ BOOL WIZARD::Parse(char *buffer)
 			}
 		}
 	}
-	else
-	{
+	else {
 		TELETYPE::Msg(0, ";FIND <player name>, -or- ;LOOK <player_name>");
 		TELETYPE::Msg(0, ";WHERE - Current locataion.");
 		TELETYPE::Msg(0, ";<location> - Go to location.");
@@ -437,24 +434,18 @@ BOOL WIZARD::Parse(char *buffer)
 	  allow = TRUE;
 	}
   }
-  else if (!stricmp(token, "find"))
-  {
+  else if (!stricmp(token, "find"))  {
 	PLAYER *player = gdbt_players.GetByName(token+strlen(token)+1);
-	if (player)
-	{
+	if (player)	{
 	  viewman.Load(player->GetView());
 	}
   }
-  else if (!stricmp(token, "follow"))
-  {
+  else if (!stricmp(token, "follow"))  {
 	PLAYER *player = gdbt_players.GetByName(token+strlen(token)+1);
-	if (player)
-	{
+	if (player)	{
 	  viewman.Load(player->GetView());
 	  local_player->SetFollow(player->GetPid());
-	}
-	else
-	{
+	} else {
 	  local_player->SetFollow(0);
 	}
   }
@@ -470,8 +461,7 @@ BOOL WIZARD::Parse(char *buffer)
   else if (!stricmp(token, "get") && (allow))
   {
 	token = strtok( NULL, seps );
-	if (token)
-	{
+	if (token)	{
 	  char objName[32];
 	  strcpy(objName, "idd_");
 	  strcat(objName, token);
@@ -482,64 +472,50 @@ BOOL WIZARD::Parse(char *buffer)
 		cursorman.LoadObject(id, pos);
 	}
   }
-  else if (!stricmp(token, "where"))
-  {
+  else if (!stricmp(token, "where"))  {
 	TELETYPE::Msg(0, "%s.", viewman.GetWhere());
   }
-  else if (!stricmp(token, "wealth"))
-  {
+  else if (!stricmp(token, "wealth"))  {
 	local_player->SetWealth(20);
   }
-  else if (!stricmp(token, "pos"))
-  {
+  else if (!stricmp(token, "pos"))  {
 	POINT p = local_player->GetPos();
 	VIEW *pview = viewman.Hit(user.mousePos);
-	if (pview)
-	{
+	if (pview) {
 	  p = pview->MapToCanvas(p);
 	  last_pos = p;
 	}
 	TELETYPE::Msg(0, "x:%d, y:%d.", p.x, p.y);
   }
-  else if (!stricmp(token, "dpos"))
-  {
+  else if (!stricmp(token, "dpos")) {
 	POINT p = local_player->GetPos();
 	VIEW *pview = viewman.Hit(user.mousePos);
-	if (pview)
-	{
+	if (pview) {
 	  p = pview->MapToCanvas(p);
 	}
 	TELETYPE::Msg(0, "dx:%d, dy:%d.", last_pos.x-p.x, last_pos.y-p.y);
   }
-  else if (!stricmp(token, "font"))
-  {
+  else if (!stricmp(token, "font")) {
 	token = strtok( NULL, seps );
-	if (!token)
-	{
+	if (!token)	{
 		TELETYPE::Msg(0, ";font [tnr | parent | village | city | big | small]");
 	}
-	else if (!stricmp(token, "tnr"))
-	{
+	else if (!stricmp(token, "tnr")) {
 	  TELETYPE::c_lang = 0;
 	}
-	else if (!stricmp(token, "parent"))
-	{
+	else if (!stricmp(token, "parent"))	{
 	  TELETYPE::c_lang = 1;
 	}
-	else if (!stricmp(token, "village"))
-	{
+	else if (!stricmp(token, "village")) {
 	  TELETYPE::c_lang = 2;
 	}
-	else if (!stricmp(token, "city"))
-	{
+	else if (!stricmp(token, "city")) {
 	  TELETYPE::c_lang = 3;
 	}
-	else if (!stricmp(token, "big"))
-	{
+	else if (!stricmp(token, "big")) {
 	  TELETYPE::c_pitch = 1;
 	}
-	else if (!stricmp(token, "small"))
-	{
+	else if (!stricmp(token, "small")) {
 	  TELETYPE::c_pitch = 0;
 	}
   }

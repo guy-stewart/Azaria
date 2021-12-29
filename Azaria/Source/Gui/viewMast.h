@@ -45,15 +45,15 @@
 #define BUFFNUM(FLAGS)	 (FLAGS&MSK_BUFFER)
 #define MSK_FRAME(FLAGS) (1<<BUFFNUM(FLAGS))
 
+#define MAX_VNLEN 32
 // RAM VIEWS.  Instantiated views are stored in this structure:
 class VIEW {
 
 public:
 	VIEW(int view_id, const char *name, int style);
 	virtual ~VIEW();
-
 private:
-	char name[16];	// for debugging purposes.
+	char name[MAX_VNLEN];	// for debugging purposes.
 	int updatedFrames;		// keep track of frames that need to be refreshed.
 	BOOL spr_changed;	// is there 1 or more sprites that need to be drawn
 	BOOL m_machines_changed;
@@ -94,7 +94,7 @@ public:
 
 	BOOL ChangeSurface(char *newSurfaceName);
     void Move(int x_delta, int y_delta);
-
+	const char * getName() {return name;};
 public:
 	inline BOOL NeedsPainting(int frame) 
 	{

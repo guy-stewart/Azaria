@@ -26,9 +26,12 @@
 #include "paths.h" // for path the palette.
 #include "../include/fblt.h"
 
+// mixing SDL2 and OpenGL
+// https://gist.github.com/anonymous/6450139
 #include <SDL2/SDL.h>
-#include "SDL2/SDL_ttf.h"
-#include <GL/freeglut.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_opengl.h>
+// #include <GL/freeglut.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <cstring>
@@ -78,27 +81,26 @@ void copybuffer(uint32_t *a, uint32_t *b) {
             b[((479-r)*640)+c] = *(uint32_t*)(&a[(r*640)+c]);
         }
     }
-    // memset(a, 0, 640*480);
 }
+
+void __paint__(unsigned char *data);
 
 void paintBuffer(RGBA8Image * _surface)
 {
-    glClear(GL_COLOR_BUFFER_BIT);
-    glRasterPos2i (0, 0);
-    copybuffer((uint32_t*)_surface->bitmapData, rgb_buffer);
-    glPixelZoom( 2, 2 );
-    glDrawPixels(640, 480,  GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, rgb_buffer);
+    // glClear(GL_COLOR_BUFFER_BIT);
+    // glRasterPos2i (0, 0);
+    // copybuffer((uint32_t*)_surface->bitmapData, rgb_buffer);
+    // glPixelZoom( 2, 2 );
+    // glDrawPixels(640, 480,  GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, rgb_buffer);
+    __paint__((unsigned char *)_surface->bitmapData);
 }
 
 /*
  * intitilize the display manager.
  */
-BOOL Display::Init(SIZE GameSize, UINT bPP )
+BOOL Display::Init()
 {
   static BOOL havepal = FALSE;
-
-  m_Size = GameSize;
-  m_bPP = bPP;
 
   /*
    * init DirectDraw, set mode, ...
@@ -130,7 +132,6 @@ BOOL Display::Init(SIZE GameSize, UINT bPP )
 BOOL Display::Enable( void )
 {
     Msg("Enable");
-    bFullscreen = TRUE;
     
     m_flipping_pages = 2;
     nBufferCount = 2;
@@ -279,7 +280,7 @@ int Display::Flip( void )
 {
     HRESULT     ddrval;
 
-    if( bFullscreen && (m_flipping_pages>1))
+    if(m_flipping_pages>1)
     {
         paintBuffer(&BackBuffer);
 

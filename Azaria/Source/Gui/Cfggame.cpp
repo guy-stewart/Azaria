@@ -35,12 +35,9 @@
 #include "gdb.h"
 #include "machterp.h"
 #include "gameman.h"
-
 #include "Data/Database/Ids.h"
 #include "Data/Database/idv.h"
-
 #include "netctrl.h"
-
 #include "user.h"
 
 //----------------------------------------------------------------------------
@@ -48,7 +45,6 @@ CFGGAME::CFGGAME(int view_id):
 CFGVIEW(view_id)
 {
   int count;
-
 	switch (view_id)
 	{
 	case IDV_CFGGAME:
@@ -60,7 +56,6 @@ CFGVIEW(view_id)
 	  control[4] = new BUTTON(this, 4, 320, 250, IDS_BTN_LOAD, IDS_BTN_LOAD_HI);
 	  control[5] = new BUTTON(this, 5, 380, 250, IDS_BTN_DELETE, IDS_BTN_DELETE_HI);
 	  control[6] = new BUTTON(this, 6, 20, 150, IDS_BTN_NEW, IDS_BTN_NEW_HI);
-
 	  control_count = 7;
 	  break;
 	}
@@ -72,11 +67,9 @@ void CFGGAME::OnEvent(int control_id, int event_id)
   char path[_MAX_PATH];
   const char *name;
 
-  switch (view_id)
-  {
+  switch (view_id)  {
   case IDV_CFGGAME:
-	switch (control_id)
-	{
+	switch (control_id)	{
 	case 2: // OK
 	  viewman.Load(IDV_TOPMENU);
 	  Game::SetGameName(control[1]->GetStrValue());
@@ -112,4 +105,3 @@ void CFGGAME::OnEvent(int control_id, int event_id)
   }
   return;
 }
-

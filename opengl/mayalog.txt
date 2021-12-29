@@ -7,6 +7,60 @@ Load you
 Load teletype
 Load spacemen
 Load compass
-Load fh1pan
+Load ctya
 Normal Exit:
-reshape..
+Load ctye
+Load ctyf
+Load ctyh
+Load ctyj
+Load ctylib2a
+Load ctylib2b
+Load ctylib2a
+Load ctyj
+Load ctylib2a
+Load ctylib2b
+Load ctylib2a
+Load ctyj
+Load ctyi
+Load ctyp
+Load ctyq
+Load ctyr
+Load ctytrade
+Load ctyr
+Load ctyl
+Load ctyk
+Load ctyd
+Load ctyb
+Load ctyhouse
+Load chouse1
+Load ctyhouse
+Load ctyb
+Load ctyd
+Load ctyk
+Load ctys
+Load ctyt
+Load ctyr
+Load ctytrade
+Load ctyr
+Load ctyq
+Load ctyp
+Load ctyi
+Load ctyj
+Load ctylib1a
+Load ctylib1b
+Load PEZPAN6
+S06_PEZPOP+5*5+0: 0 -GRAB(0x0)->1
+S06_PEZPOP+5*5+2: 0 -GRAB(0x0)->1
+S06_PEZPOP+5*5+2: 3 -GRAB(0x61c)->4
+S06_PEZPOP+5*5+0: 3 -GRAB(0x61a)->4
+S06_PEZPOP+5*5+3: 0 -GRAB(0x0)->1
+S06_PEZPOP+5*5+3: 3 -GRAB(0x61d)->4
+SMP_INV_RIGHT: 0 -GRAB(0x0)->1
+SMP_INV_RIGHT: 0 -GRAB(0x0)->1
+S06_PEZPOP+5*5+4: 0 -GRAB(0x0)->1
+S06_PEZPOP+5*5+4: 3 -GRAB(0x61e)->4
+S06_PEZPOP+5*5+0: 0 -GRAB(0x0)->1
+S06_PEZPOP+5*5+1: 0 -GRAB(0x0)->1
+S06_PEZPOP+5*5+1: 3 -GRAB(0x61b)->4
+S06_PEZPOP+5*5+0: 3 -GRAB(0x61a)->4
+Load ctylib1b

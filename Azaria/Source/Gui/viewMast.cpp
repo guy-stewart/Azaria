@@ -211,8 +211,9 @@ WORD VIEW::QueryCursor(SRECT r)
   {
 	ids = trgQueryCursor(view_id, p);
 
-	if (!ids)
+	if (!ids) {
   	  ids = IDS_HANDIDLE;
+	}
   }
 
   return ids;
@@ -296,17 +297,16 @@ void VIEW::Move(int x_delta, int y_delta)
 //----------------------------------------------------------------------------
 VIEW::VIEW(int _view_id, const char *_name, int _style)
 {
-	VIEW_DESCRIPTION *p_tbl_view;
-
-	strcpy(name, _name);
 	view_id = _view_id;
 
-	p_tbl_view = GetViewDesc(view_id);
+	VIEW_DESCRIPTION *p_tbl_view = GetViewDesc(view_id);
 	if (!p_tbl_view)
 		return; // FALSE
 
 	view_type = p_tbl_view->view_type;
 
+	strncpy(name, p_tbl_view->surface_filename, MAX_VNLEN-1);
+	name[MAX_VNLEN-1] = 0;
 	if (!surface.Read(ViewsPath, p_tbl_view->surface_filename, display.GetPalette()))
 		if (!surface.Read(AltViewsPath, p_tbl_view->surface_filename, display.GetPalette()))
 	{
@@ -379,5 +379,5 @@ VIEW::VIEW(int _view_id, const char *_name, int _style)
 void VIEW::BlitToDisplay()
 {
   display.Blt(&surface, &fbd);
-  memcpy(surface.m_bits, restore_buffer, restore_size);
+  // memcpy(surface.m_bits, restore_buffer, restore_size);
 }
