@@ -207,13 +207,8 @@ WORD VIEW::QueryCursor(SRECT r)
 
   WORD ids = gdbt_machines.QueryCursor(view_id, 0, p);
 
-  if (!ids)
-  {
+  if (ids == IDS_HANDIDLE) {
 	ids = trgQueryCursor(view_id, p);
-
-	if (!ids) {
-  	  ids = IDS_HANDIDLE;
-	}
   }
 
   return ids;

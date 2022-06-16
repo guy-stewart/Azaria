@@ -22,6 +22,7 @@
 #include "tables.h"
 #include "spr_pool.h"
 #include "spirit.h"
+#include "effects.h"
 
 /*
  * fn prototypes

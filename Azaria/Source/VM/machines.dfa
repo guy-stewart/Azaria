@@ -1,0 +1,88 @@
+
+
+
+class TRANSITION {
+    next_state;
+    input;
+    output;
+    code;
+}
+class STATE {
+    id;
+    show;
+    on_enter;
+    on_exit;
+    transitions[];
+};
+
+class DFA {
+    name
+    state
+    states[]
+}
+
+M24_EYEPLATE {
+	S0: show(empty) [
+        on (DROP, 0, IDD_EYEFUSE) {
+            SIGNALi, 0, S24_BIGEYE;
+        } => S4;
+    ];
+
+    S4: show(IDS_EYEPLATE, animate) [
+        on (DROP, CLASS, IDC_BOMB) {
+	        VIDEO, 0, IDS_EXPLODE1;
+	        PLAYWAVE, 0, SOUND_EXPLODE;
+	        SIGNALi, SIG_BOMB, S24_BIGEYE;
+        } => S0;
+    ];
+}
+
+
+
+	//------------------------------------------------------
+	// Scene 24: Eye of God.
+	{M24_EYEPLATE,	0, 1, DROP, 0, IDD_EYEFUSE},
+	{M24_EYEPLATE,	1, 2, SIGNALi, 0, S24_BIGEYE},
+	{M24_EYEPLATE,	2, 3, C_ACCEPT, 0, IDC_BOMB},
+	{M24_EYEPLATE,	3, 4, ASHOW, 0, IDS_EYEPLATE},
+	{M24_EYEPLATE,	4, 50, DROP},
+	{M24_EYEPLATE, 50, 51, VIDEO, 0, IDS_EXPLODE1},
+	{M24_EYEPLATE, 51, 52, PLAYWAVE, 0, SOUND_EXPLODE},
+	{M24_EYEPLATE, 52, 53, SHOW},
+	{M24_EYEPLATE, 53, 54, O_ACCEPT, 0, IDD_EYEFUSE},
+	{M24_EYEPLATE, 54,  0, SIGNALi, SIG_BOMB, S24_BIGEYE},
+
+
+
+
+	{M24_EYESPELL,	0, 1, DROP, 0, IDD_EYESPELL},
+	{M24_EYESPELL,	1, 2, SIGNALi, 0, S24_BIGEYE},
+	{M24_EYESPELL,	2, 3, C_ACCEPT, 0, IDC_BOMB},
+	{M24_EYESPELL,	3, 4, ASHOW, 0, IDS_EYESPELL},
+	{M24_EYESPELL,	4, 50, DROP},
+	{M24_EYESPELL, 50, 51, VIDEO, 0, IDS_EXPLODE1},
+	{M24_EYESPELL, 51, 52, PLAYWAVE, 0, SOUND_EXPLODE},
+	{M24_EYESPELL, 52, 53, SHOW},
+	{M24_EYESPELL, 53, 54, O_ACCEPT, 0, IDD_EYESPELL},
+	{M24_EYESPELL, 54,  0, SIGNALi, SIG_BOMB, S24_BIGEYE},
+
+	{M24_BIGEYE,	0, 10, WAIT},
+	{M24_BIGEYE,	10, 50, IFSTATEi, 0, S24_EYEPLATE1},
+	{M24_BIGEYE,	10, 50, IFSTATEi, 0, S24_EYEPLATE2},
+	{M24_BIGEYE,	10, 50, IFSTATEi, 0, S24_EYEPLATE3},
+	{M24_BIGEYE,	10, 50, IFSTATEi, 0, S24_EYESPELL1},
+	//{M24_BIGEYE,	10, 50, IFSTATEi, 0, S24_EYESPELL2},
+	{M24_BIGEYE,	10, 50, IFSTATEi, 0, S24_EYESPELL3},
+	{M24_BIGEYE,	10, 20}, // looks like all is in place ...
+	{M24_BIGEYE,	20, 30, ASHOW, 0, IDS_BIGEYE1},
+	{M24_BIGEYE,	30, 30, GRAB, 0, IDD_EYEWAND},
+	{M24_BIGEYE,	30, 50, WAIT, 0, SIG_BOMB},
+	{M24_BIGEYE,	50, 0, SHOW},
+
+	{M24_EYETEXT,	0, 10, DRAG, 0, IDD_EYEWAND},
+	{M24_EYETEXT,	0, 20, DRAGFOCUS, 0, FALSE},
+	{M24_EYETEXT,	0, 20, WAIT, 0, SIG_INIT},
+	{M24_EYETEXT,	10,11, MOV, WSPRITE, WIP1},
+	{M24_EYETEXT,	11, 0, SHOW, WSPRITE},
+	{M24_EYETEXT,	20, 0, SHOW},
+

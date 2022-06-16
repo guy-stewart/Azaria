@@ -19,6 +19,7 @@
 ; 
 ----------------------------------------------------------------------------*/
 
+#include "Window.h"
 #include "display.h"
 #include "palette.h"
 #include "one.h"
@@ -46,7 +47,7 @@ PALETTE palPalette;
 Display display;	// The one and only video display adapter.
 
 static GLubyte back_buffer[640*480*4];
-static GLuint rgb_buffer[640*480];
+// static GLuint rgb_buffer[640*480];
 
 typedef uint32_t   PIXEL;
 
@@ -81,18 +82,6 @@ void copybuffer(uint32_t *a, uint32_t *b) {
             b[((479-r)*640)+c] = *(uint32_t*)(&a[(r*640)+c]);
         }
     }
-}
-
-void __paint__(unsigned char *data);
-
-void paintBuffer(RGBA8Image * _surface)
-{
-    // glClear(GL_COLOR_BUFFER_BIT);
-    // glRasterPos2i (0, 0);
-    // copybuffer((uint32_t*)_surface->bitmapData, rgb_buffer);
-    // glPixelZoom( 2, 2 );
-    // glDrawPixels(640, 480,  GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, rgb_buffer);
-    __paint__((unsigned char *)_surface->bitmapData);
 }
 
 /*
@@ -184,21 +173,6 @@ BOOL Display::Restore(int active_app)
 
 //___________________________________________________________________________
 //
-/*
- * DDCreateFlippingSurface
- *
- * create a FrontBuffer and a BackBuffer(s)
- *
- */
-BOOL Display::CreateFlippingSurface( void )
-{
-  //  lpBackBuffer = new OpenglDirectDrawSurface();
-  //  assert(lpBackBuffer);
-    return TRUE;
-} /* DDCreateFlippingSurface */
-
-//___________________________________________________________________________
-//
 BOOL Display::CreatePalette()
 {
 	AttachPalette();
@@ -282,7 +256,7 @@ int Display::Flip( void )
 
     if(m_flipping_pages>1)
     {
-        paintBuffer(&BackBuffer);
+        gameWindow->Paint((unsigned char*)BackBuffer.bitmapData);
 
         if( true ) {
             m_current_buffer++;
@@ -303,11 +277,6 @@ BOOL Display::Begin( void )
         return FALSE;
     }
 
-    if( !CreateFlippingSurface() )
-    {
-        Disable(TRUE);
-        return FALSE;
-    }
     return TRUE;
 } /* ddxBegin */
 

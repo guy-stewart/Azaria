@@ -19,6 +19,7 @@
 ; 
 ----------------------------------------------------------------------------*/
 
+#include "Window.h"
 #include "azaria.h"
 
 #include "includes.h"
@@ -88,9 +89,7 @@ int WinMain(const char * datapath, const char * altdatapath)
 	  if( !display.Init())
 		  return FALSE;
 
-	  Wave::DirectSoundCreate(NULL);
-	  Wave::SetCooperativeLevel( hWndMain, 0 /*DSSCL_NORMAL*/ );
-        // TODO: Wave::Load(TBL_WAVE_COUNT, WavePath, AltWavePath, waveRamFileNames);
+	  Wave::Init();
 
 	  // start up the Game Manager.
 	  if ( !gameman.Init() )
@@ -117,20 +116,10 @@ FileError:
     return 0; //msg.wParam;    return 0;
 }
 
-int WinLoop(void)
+void WinLoop(void)
  {
      POINT pos;
      RECT wr;
-     //GetCursorPos(&pos);
-     //GetWindowRect(hWndMain, &wr);
-     /*
-     if (!sPtInRect(&wr, pos))
-     {
-         pos.x = -1;
-         pos.y = -1;
-         userMouseMove(pos);
-     }
-     */
      if (bPostQuitMessage)
      {
          //PostMessage(hWndMain, WM_CLOSE, 0, 0);
@@ -155,34 +144,16 @@ int WinLoop(void)
          switch (e)
          {
              case ERROR_FILE_NOT_FOUND:
-                 //rc = MissingFileMessage(MB_ICONEXCLAMATION|MB_RETRYCANCEL);
-                 //if (rc == IDCANCEL)
-                 goto FileError;
+                 printf("%s:%d - Exception: ERROR_FILE_NOT_FOUND\n", __FILE__, __LINE__);
                  break;
              default:
-                 goto FileError;
+                 printf("%s:%d - Exception(%d)\n", __FILE__, __LINE__, e);
                  break;
          }
      }
+}
 
-//NormalExit:
-    // printf(".");
-    return 0; //msg.wParam;
-
-FileError:
-	Msg("FileError Exit:");
-	display.Disable(TRUE);        // destroy DirectDraw object
-	netman.Close(FALSE);
-	Wave::Release();
-    return 0; //msg.wParam;
-
-} /* WinMain */
-
-SDL_Renderer* rend;
-float x_scale=2;
-float y_scale=2;
-
-void HandleSdlEvent(SDL_Event &event) {
+void HandleGameEvent(SDL_Event &event, float x_scale, float y_scale) {
     switch (event.type) {
         /* Keyboard events */
         case SDL_KEYDOWN:
@@ -261,92 +232,21 @@ void HandleSdlEvent(SDL_Event &event) {
     }
 }
 
-void __paint__(unsigned char *data) {
-    // Set up the pixel format color masks for RGB(A) byte arrays.
-    // Only STBI_rgb (3) and STBI_rgb_alpha (4) are supported here!
-    Uint32 rmask, gmask, bmask, amask;
-    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-    int shift = (req_format == STBI_rgb) ? 8 : 0;
-    rmask = 0xff000000 >> shift;
-    gmask = 0x00ff0000 >> shift;
-    bmask = 0x0000ff00 >> shift;
-    amask = 0x000000ff >> shift;
-    #else // little endian, like x86
-    rmask = 0x000000ff;
-    gmask = 0x0000ff00;
-    bmask = 0x00ff0000;
-    amask = 0x00000000;
-    #endif
-
-    int width = 640;
-    int height = 480;
-    int depth=32;
-    int pitch = 4*width;
-
-    SDL_Surface* surf = SDL_CreateRGBSurfaceFrom((void*)data, width, height, depth, pitch,
-                                             rmask, gmask, bmask, amask);
-
-    if (surf == NULL) {
-        SDL_Log("Creating surface failed: %s", SDL_GetError());
-    }
-
-	SDL_Texture* tex = SDL_CreateTextureFromSurface(rend, surf); 
-
-    // ... do something useful with the surface ...
-    // ...
-	SDL_RenderCopy(rend, tex, NULL, NULL); 
-
-    // when you don't need the surface anymore, free it..
-    SDL_FreeSurface(surf);
-   	SDL_DestroyTexture(tex); 
-
-   	display.SetAllDirty();
-}
 
 int sdl2_main() 
 {
+
     // retutns zero on success else non-zero 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) { 
 		printf("error initializing SDL: %s\n", SDL_GetError()); 
 	}
 
-	SDL_Window* win = SDL_CreateWindow("AZARIA", // creates a window 
-									SDL_WINDOWPOS_CENTERED, 
-									SDL_WINDOWPOS_CENTERED, 
-									640*x_scale, 480*y_scale, SDL_WINDOW_RESIZABLE); 
-
-	rend = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED); 
+    gameWindow = new Window("AZARIA", 640, 480);
 
 	// annimation loop 
-	int close = 0; 
-	while (!close) { 
-		SDL_Event event; 
+    gameWindow->RunLoop(&HandleGameEvent, &WinLoop);
 
-		// Events mangement 
-		while (SDL_PollEvent(&event)) { 
-			if (event.type == SDL_QUIT) {
-				// handling of close button 
-				close = 1; 
-				break; 
-            } else {
-                HandleSdlEvent(event);
-            }
-		} 
-
-		// clears the screen 
-		SDL_RenderClear(rend); 
-        WinLoop();
-
-		// triggers the double buffers 
-		// for multiple rendering 
-		SDL_RenderPresent(rend); 
-
-		// calculates to 60 fps 
-		SDL_Delay(1000 / 120); 
-	} 
-
-	SDL_DestroyRenderer(rend); 
-	SDL_DestroyWindow(win); 
+    delete gameWindow;
 	return 0; 
 }
 
@@ -354,9 +254,13 @@ int sdl2_main()
 ; https://www.opengl.org/resources/libraries/glut/spec3/spec3.html
 */
 int main(int argc, char** argv) {
-
-    WinMain("/6tb/Home/Singularity/AzariaCD/DATA",
+#if 0
+    WinMain("/6tb/Home/Singularity/AzariaCD961112/DATA",
             "/6tb/Home/Singularity/AzariaCD961112/data");
+#else
+    WinMain("/6tb/Home/Singularity/AzariaCD2020/data",
+            "/6tb/Home/Singularity/AzariaCD2020/data");
+#endif            
 
     sdl2_main();
 }

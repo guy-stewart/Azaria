@@ -47,7 +47,7 @@ public:
 	BYTE	m_new_state;
 	BYTE	m_input;
 	BYTE	m_bParm;
-	WORD	m_wParm;
+	DWORD	m_wParm;
 
 public:
 	inline int GetGroupKey() {return MAKELONGKEY(m_machine_id,m_state);}

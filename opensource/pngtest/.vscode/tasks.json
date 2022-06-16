@@ -11,6 +11,7 @@
                 "${workspaceFolder}/palette.cpp",
                 "${workspaceFolder}/../../opensource/fcaseopen.c",
                 "${workspaceFolder}/../../Source/OneFile/onefile.cpp",
+                "${workspaceFolder}/../../Source/OneFile/onePng.cpp",
                 "${workspaceFolder}/../../Azaria/Source/Resources/jpegio.cpp",
                 "-I",
                 "${workspaceFolder}/../../include",

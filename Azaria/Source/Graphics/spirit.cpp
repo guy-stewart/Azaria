@@ -95,8 +95,6 @@ SPIRIT::~SPIRIT()
   sprRelease(m_hSprite);
 }
 
-
-
 //----------------------------------------------------------------------------
 void SPIRIT::SetFrame(int frame)
 {
@@ -127,17 +125,14 @@ void SPIRIT::ON()
 //----------------------------------------------------------------------------
 void SPIRIT::OFF()
 {
-
 	assert(this);
 	if (!this)
 		return;
 
-	if (m_on)  // don't replace the background if we are not on the canvas:
-	{
+	if (m_on)  { // don't replace the background if we are not on the canvas:
 		// replace the background:
   		m_fbdBones.BonesOn(m_fbd.m_dst_x, m_fbd.m_dst_y);
 		m_fbdBones.Blt(m_canvas,&m_bone);
-
 		m_on = FALSE;
 	}
 }

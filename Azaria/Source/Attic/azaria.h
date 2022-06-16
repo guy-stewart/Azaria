@@ -12,9 +12,8 @@
 #if defined __cplusplus
 extern "C" {
 #endif
-    
+   
     int WinMain(const char *  datapath);
-    int WinLoop(void);
 #if defined __cplusplus
 };
 #endif

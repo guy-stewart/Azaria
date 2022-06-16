@@ -59,7 +59,6 @@ private:
 
 	void Restore();
 	BOOL Enable( void );
-	BOOL CreateFlippingSurface( void );
     void ReadPalFile( const char *path, const char *filename, PALETTE *pal);
 
 	BOOL SwapBuffers(void);

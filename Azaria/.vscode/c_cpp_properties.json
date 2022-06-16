@@ -3,7 +3,8 @@
         {
             "name": "Linux",
             "includePath": [
-                "${default}"
+                "${default}",
+                "${workspaceFolder}/Source/Gui"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

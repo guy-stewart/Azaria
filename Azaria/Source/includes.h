@@ -6,8 +6,8 @@
 //  Copyright © 2017 guy. All rights reserved.
 //
 
-#ifndef includes_h
-#define includes_h
+#pragma once
+
 #include "../include/ptypes.h"
 #include "../include/platform.h"
 #include "../include/stdapp.h"
@@ -15,5 +15,3 @@
 #include "../include/fblt.h"
 #include "../include/dsWave.h"
 #include "../include/xfile.h"
-
-#endif /* includes_h */

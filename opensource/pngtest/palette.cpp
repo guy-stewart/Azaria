@@ -15,7 +15,10 @@ void ReadPalFile( const char *filename, PALETTE *pal)
 
         if (fh != -1)
         {
-            read(fh, pal, sizeof(PALETTE));
+            size_t bytes_read = read(fh, pal, sizeof(PALETTE));
+            if (bytes_read != sizeof(PALETTE)) {
+                printf("%s:%d - palette is not the right size\n", __FILE__, __LINE__);
+            }
             close(fh);
         }
 		else

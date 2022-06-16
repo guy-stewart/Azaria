@@ -26,6 +26,7 @@
 #include "Data/Database/tbl_wave.h"
 #include "Data/Database/Ids.h"
 
+#include "effects.h"
 #include "gdb.h"
 #include "btable.h"
 #include "gameman.h"
@@ -54,7 +55,7 @@ WORD MACHINE::c_RefMachine;
 void __cdecl _Msg( const LPSTR fmt, ... );
 
 #define MACH_LOWER_DEBUG_LIMIT 0x0100
-BOOL mon_machines = FALSE;
+BOOL mon_machines = TRUE;
 BOOL mon_user_mach = TRUE;
 
 //----------------------------------------------------------------------------
@@ -151,9 +152,9 @@ TRANSITION *TBL_MACHINE_DEF::FindTransition(MACHINE *machine, BYTE state, BYTE i
 	int position;
 	int key = MAKELONGKEY(machine->m_machine_id, state); // the table is sorted by [machine:state]
 
+	assert(state == machine->m_reg.state);
 	TRANSITION *trans = GetFirst(key, &position);
-	while (trans)
-	{
+	while (trans) {
 		WORD obj_def_id = (trans->m_bParm)
 					?machine->GetRegVal(trans->m_bParm)
 					:trans->m_wParm;
@@ -175,8 +176,7 @@ TRANSITION *TBL_MACHINE_DEF::FindFirstAutoTrans(WORD machine_id, BYTE state, int
 	int key = MAKELONGKEY(machine_id, state); // the table is sorted by [machine:state]
 	TRANSITION *t = GetFirst(key, position);
 
-	while (t && (t->m_input>LAST_AOP))
-	{
+	while (t && (t->m_input>LAST_AOP))	{
 		t = GetNext(key, position);
 	}
 
@@ -496,7 +496,7 @@ BOOL MACHINE::AutoTransition(int etime)
 				if (local_player->GetView() == m_view_id
 				 || m_AlwaysVisible)
 				{
-				 Wave::Play((WAVE_RAMID)trans->m_wParm);
+				 Effects::Play((WAVE_RAMID)trans->m_wParm);
 				}
 				break;
 			case STOPWAVE:
@@ -631,8 +631,7 @@ BOOL MACHINE::AutoTransition(int etime)
 			case ASHOW:
 			case SHOW: // set wSprite, show it, animate.
 				MakeTransition = TRUE;
-				switch (trans->m_bParm)
-				{
+				switch (trans->m_bParm)	{
 				case IMMEDIATE:
 					m_reg.wSprite = trans->m_wParm;
 					break;
@@ -641,10 +640,7 @@ BOOL MACHINE::AutoTransition(int etime)
 				default:
 					m_reg.wSprite = objdefGetLookActorId(GetRegVal(trans->m_bParm));
 				}
-
-
 				m_NewSprite = TRUE;
-
 				m_reg.Animate = m_reg.Loop = (trans->m_input == ASHOW);
 				break;
 
@@ -837,6 +833,8 @@ BOOL MACHINE::AutoTransition(int etime)
 					MACHINE *machine = gdbt_machines.Get(trans->m_wParm);
 					if (machine)
 						machine->Signal(trans->m_bParm);
+					else
+						Msg("Missing machine 0x%x", trans->m_wParm);
 				}
 				break;
 			case SIGNAL:
@@ -1042,20 +1040,18 @@ BOOL MACHINE::AutoTransition(int etime)
 				  if ((SliceCount % 8)==0)
 				  {
 					  if (SliceCount == 0)
-						_Msg("%s: (B:%hx  W:%hx  O:%hx  A:%hx  S:%hx  F:%hx  E:%hx) state:%hd",
+						_Msg("%s: (B:%hx  W:%hx  Object:%hx  Accept:%hx  Sprite:%hx  Frame:%hx  Etime:%hx) state:%hd",
 							m_name, 
 							m_reg.bParm, m_reg.wParm, m_reg.wObject, m_reg.wAccept, 
 							m_reg.wSprite, m_reg.bFrame, m_reg.dEtime,
 							m_reg.state);
 					  else
-						_Msg("\n\t");
+						_Msg("\nSliceCount:%d\t", SliceCount);
 				  }
-
-
 				  if ((trans->m_input >= FIRST_AOP) && (trans->m_input <= LAST_AOP))
-					_Msg(" -%s->%hd", strAutoOps[trans->m_input], trans->m_new_state);
+					_Msg("; -%s =>%hd", strAutoOps[trans->m_input], trans->m_new_state);
 				  else
-					_Msg(" -x%hx->%hd", trans->m_input, trans->m_new_state);
+					_Msg("; -x%hx =>%hd", trans->m_input, trans->m_new_state);
 				}
 #endif
 
@@ -1080,16 +1076,12 @@ BOOL MACHINE::AutoTransition(int etime)
 	}
 
 ExceededTimeSlice:
-
 	if (mon_machines && m_id >= MACH_LOWER_DEBUG_LIMIT && SliceCount) _Msg("\n");
-
 	// If there are AutoTransitions from the current state -
-	if (AddToAgenda && !m_onAgenda)
-	{
+	if (AddToAgenda && !m_onAgenda)	{
 		gdbt_machines.AddAgenda(this);
 		m_onAgenda = 1;
 	}
-
 	return AddToAgenda;
 }
 
@@ -1251,6 +1243,8 @@ WORD MACHINE::Grab(BOOL local, BOOL autoTrans, BOOL bClickOnly)
 	WORD wObject;
 	BOOL bTransition = FALSE;
 
+	printf("%s:%d MACHINE::Grab(this:%s(state:%d), ...)\n", __FILE__, __LINE__, m_name, m_reg.state);
+
 	trans = btbl_machine_def.FindTransition(this, m_reg.state, CLICK, 0, 0);
 
 	if (!trans && !bClickOnly)
@@ -1281,7 +1275,9 @@ WORD MACHINE::Grab(BOOL local, BOOL autoTrans, BOOL bClickOnly)
 		  else
 			wObject = 0;
 
-		  if (mon_user_mach) Msg("%s: %hd -GRAB(0x%x)->%hd", m_name, m_reg.state, (int)wObject, trans->m_new_state);
+		  if (mon_user_mach) {
+			  Msg("%s:%d %s: %hd -GRAB(0x%x)->%hd", __FILE__, __LINE__, m_name, m_reg.state, (int)wObject, trans->m_new_state);
+		  }
 
 		  Transition(trans,0);
 

@@ -1,0 +1,42 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "build darkroom",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-g",
+                "-march=native",
+                "${workspaceFolder}/darkroom.cpp",
+                "${workspaceFolder}/onefile.cpp",
+                "-I",
+                "${workspaceFolder}/",
+                "-I",
+                "${workspaceFolder}/../include",
+                "-l",
+                "GL",
+                "-l",
+                "GLU",
+                "-l",
+                "glut",
+                "-l",
+                "pthread",
+                "-l",
+                "ssl",
+                "-l",
+                "crypto",
+                "-o",
+                "${workspaceFolder}/darkroom"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        }
+    ],
+    "version": "2.0.0"
+}
+

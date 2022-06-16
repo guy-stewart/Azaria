@@ -70,7 +70,7 @@ enum {
 
 static VIEW_DESCRIPTION tbl_views[] = {
 	// view ID,  Map (see above), Z order,  
-	{IDV_MAIN_PANEL,{M0,0,0},	0,0,0,0, VC_PANEL|OBJECTLESS_VIEW,VB_DEFAULT,"mpmask.vct","GUI"},
+	{IDV_MAIN_PANEL,{M0,0,0},	0,0,0,0, VC_PANEL,VB_DEFAULT,"mpmask.vct","GUI"},
 
 	{IDV_INVENTORY,{M0,0,0},	1,0,0,0, VC_UNIQUE|ICON_VIEW, VB_INVENTORY,INVENTORY_MASK, "inventor"},
 

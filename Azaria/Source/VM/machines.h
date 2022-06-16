@@ -70,6 +70,9 @@
 #define SOD_BADGE01	0x004C
 #define SOD_HALO	0x004D	
 
+#define SMP_EYEINFO 0x0070
+#define SMP_RECYCLE 0x0071
+
 //-------------------------------------------
 // Scene 2 machines:
 #define S02_EBIN__00	0x0200
@@ -418,6 +421,9 @@
 #define M_OBJECTMAP		0x0052  // map a drag'd object to something surprisingly new!
 #define M_BTN_1phase	0x0053
 #define M_BTN_2phase	0x0054
+
+#define M_EYEINFO       0x0070
+#define M_RECYCLE       0x0071
 
 //----------------------------
 // Scene 2 machines:

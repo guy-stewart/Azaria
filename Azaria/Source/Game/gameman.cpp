@@ -21,6 +21,7 @@
 ----------------------------------------------------------------------------*/
 
 #include "includes.h"
+#include "effects.h"
 #include "netctrl.h"
 #include "tables.h"
 #include "spr_pool.h"
@@ -55,13 +56,13 @@ char ViewsPath[MAX_PATH];
 char ObjectsPath[MAX_PATH];
 char PalettesPath[MAX_PATH];
 char MasksPath[MAX_PATH];
-char WavePath[MAX_PATH];
+char EffectsPath[MAX_PATH];
+char MusicPath[MAX_PATH];
 
 char AltViewsPath[MAX_PATH];
 char AltObjectsPath[MAX_PATH];
 char AltPalettesPath[MAX_PATH];
 char AltMasksPath[MAX_PATH];
-char AltWavePath[MAX_PATH];
 
 Game gameman; // The one and only game manager.
 
@@ -86,25 +87,25 @@ void Game::InitPaths(const char * datapath, const char * altdatapath)
     strcpy(ObjectsPath, datapath);
     strcpy(PalettesPath, altdatapath);
     strcpy(MasksPath, datapath);
-    strcpy(WavePath, altdatapath);
+    strcpy(EffectsPath, datapath);
+    strcpy(MusicPath, datapath);
     
     strcat(ViewsPath, __ViewsPath);
     strcat(ObjectsPath, __ObjectsPath);
     strcat(PalettesPath, __PalettesPath);
     strcat(MasksPath, __MasksPath);
-    strcat(WavePath, __WavePath);
+    strcat(EffectsPath, __EffectsPath);
+    strcat(MusicPath, __MusicPath);
     
     strcpy(AltViewsPath, altdatapath);
     strcpy(AltObjectsPath, altdatapath);
     strcpy(AltPalettesPath, altdatapath);
     strcpy(AltMasksPath, altdatapath);
-    strcpy(AltWavePath, altdatapath);
     
     strcat(AltViewsPath, __ViewsPath);
     strcat(AltObjectsPath, __ObjectsPath);
     strcat(AltPalettesPath, __PalettesPath);
     strcat(AltMasksPath, __MasksPath);
-    strcat(AltWavePath, __WavePath);
 }
 
 //----------------------------------------------------------------------------
@@ -236,8 +237,9 @@ BOOL Game::Init()
 	gdbt_machines.Init();
 
 	// and a little mood music:
-	Music::Init();
-
+	Music::Init(MusicPath);
+	Effects::Init(EffectsPath);
+	
 	return TRUE;
 }
 

@@ -97,6 +97,11 @@ BOOL B_TABLE_PARMS::Validate()
 	// ### Assure that the table is sorted by GROUPKEY
 	for (i=1;i<m_count;i++)
 	{
+		if (m_table[i-1].GetGroupKey() > m_table[i].GetGroupKey()) {
+			printf("the table is NOT sorted by GROUPKEY\n");
+			printf("assert(m_table[%d].GetGroupKey()=%d <= m_table[%d].GetGroupKey()=%d)\n",
+					 i-1, m_table[i-1].GetGroupKey(), i, m_table[i].GetGroupKey());
+		}
 		assert(m_table[i-1].GetGroupKey() <= m_table[i].GetGroupKey());
 	}
 

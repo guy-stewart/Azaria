@@ -308,7 +308,6 @@ BOOL ONE::allocBits()
 	return TRUE;
 }
 
-
 //----------------------------------------------------------------------------
 // pass in a previously allocated one structure w/o bits.
 // This routine will allocate memory for the bits.
@@ -334,6 +333,11 @@ BOOL ONE::ReadOne(const char *filename, PALETTEENTRY *default_palette)
 			printf("**** probably a bad file???  %s\n", filename);
 			m_hdr.frames = 1;
 		}
+		if (m_hdr.frames == m_hdr.width) {
+			printf("%s:%d frames(%d)==width(%d)- probably a bad file???  %s\n",
+			          __FILE__, __LINE__, m_hdr.frames, m_hdr.width, filename);
+			// m_hdr.frames = 1;
+		}
 		if (m_hdr.frames == 0) {
 			printf("**** probably a bad file???  %s\n", filename);
 			m_hdr.frames = 1;
@@ -350,7 +354,7 @@ BOOL ONE::ReadOne(const char *filename, PALETTEENTRY *default_palette)
             size_t count = xfile.Read( raw_bits, m_hdr.m_size);
             rc = (count == m_hdr.m_size);
             if (count != m_hdr.m_size) {
-                printf("xfile.Read(\"%s\", %d) --> %zu\n", xfile.GetPath(), m_hdr.m_size, count);
+                printf("%s:%d ERROR xfile.Read(\"%s\", %d) --> %zu\n", __FILE__, __LINE__, xfile.GetPath(), m_hdr.m_size, count);
             }
 		}
 	  }
@@ -420,7 +424,7 @@ BOOL ONE::Read(const char *path, const char *filename, PALETTEENTRY *default_pal
 
    printf("%s:%d:ONE::Read(\"%s\", \"%s\")\n", __FILE__, __LINE__, path, filename);
 
-	if (!stricmp("mapbtn", filename)) {
+	if (!stricmp("flower9", filename)) {
 		printf("the file you are looking for?\n");
 	}
    // switch on extension for various file types:
@@ -448,10 +452,21 @@ BOOL ONE::Read(const char *path, const char *filename, PALETTEENTRY *default_pal
 		}
 	}
 
+	if (!stricmp("bigeye1", filename)) {
+		printf("the file you are looking for?\n");
+	}
+
    // build complete path the the file
    makepath( filepath, NULL, path, filename, NULL);
 
    BOOL rc =  ReadOne(filepath, default_palette);
+
+   	if (!stricmp("bigeye1", filename)) {
+		printf("Inspecting %s?\n", filename);
+		printf("height:%d, width:%d, pitch:%d, size:%d, frames:%d",
+				m_hdr.height, m_hdr.width, m_hdr.pitch, m_hdr.m_size, m_hdr.frames);
+				m_hdr.width = m_hdr.pitch;
+	}
 	return rc;
 }
 

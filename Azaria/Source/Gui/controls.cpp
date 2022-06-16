@@ -27,8 +27,6 @@
 #include "cfgview.h"
 
 #include "Data/Database/Ids.h"
-#include "Data/Database/tbl_wave.h"
-
 #include "user.h"
 
 void SetRect(RECT * rect, int xLeft, int yTop, int xRight, int yBottom)
@@ -135,7 +133,7 @@ SPIRIT *BUTTON::LoadBtnImage(ONE *canvas,
 //----------------------------------------------------------------------------
 WORD BUTTON::Grab(POINT p)
 {
-    Wave::Play(SOUND_BTNPRESS);
+    Effects::Play(SOUND_BTNPRESS);
 	view->OnEvent(control_id, 0);
 	return 0;
 }
@@ -157,7 +155,7 @@ void BUTTON::SetFocus(POINT p, BOOL bHasFocus)
 {
   if (bHasFocus)
   {
-    Wave::Play(SOUND_BTNDRAG);
+    Effects::Play(SOUND_BTNDRAG);
 	  sprBtn->OFF();
 	  sprHilight->ON();
   }
@@ -187,7 +185,7 @@ void CHECKBOX::SetFocus(POINT p, BOOL bHasFocus)
 {
   if (bHasFocus)
   {
-    Wave::Play(SOUND_BTNDRAG);
+    Effects::Play(SOUND_BTNDRAG);
   }
 }
 
@@ -213,7 +211,7 @@ void CHECKBOX::SetChecked(BOOL bChecked)
 //----------------------------------------------------------------------------
 WORD CHECKBOX::Grab(POINT p)
 {
-  Wave::Play(SOUND_BTNPRESS);
+  Effects::Play(SOUND_BTNPRESS);
 
   SetChecked(!bIsChecked);
 
@@ -252,7 +250,7 @@ LISTBOX::~LISTBOX()
 //----------------------------------------------------------------------------
 WORD LISTBOX::Grab(POINT p)
 {
-  Wave::Play(SOUND_CLICK);
+  Effects::Play(SOUND_CLICK);
   int row = (p.y - top)/m_row_height;
   ChangeSel(row);
   return FALSE;
@@ -300,7 +298,7 @@ int LISTBOX::Keycmd(int input, int flags)
     {
     case KEY_UP: 
     case KEY_LEFT:
-	  Wave::Play(SOUND_CLICK);
+	  Effects::Play(SOUND_CLICK);
 		if (Selected > 0)
 			ChangeSel(Selected-1);
 		input = 0; // handled
@@ -308,7 +306,7 @@ int LISTBOX::Keycmd(int input, int flags)
 
     case KEY_DOWN:
     case KEY_RIGHT:
-	  Wave::Play(SOUND_CLICK);
+	  Effects::Play(SOUND_CLICK);
 		if (Selected < (m_count-1))
 			ChangeSel(Selected+1);
 		input = 0; // handled
@@ -482,7 +480,7 @@ WORD SLIDER::Grab(POINT p)
 	  value = max;
   }
 
-  Wave::Play(SOUND_CLICK);
+  Effects::Play(SOUND_CLICK);
 
   thumb.OFF();
   thumb.Move(x+(value*width/(max-min)), y, 0);

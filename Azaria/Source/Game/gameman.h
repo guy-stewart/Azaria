@@ -22,12 +22,12 @@
 #define __GAMEMAN_INCLUDED__
 
 
-#define __ViewsPath		"/ONES/VIEWS"
+#define __ViewsPath		"/ones/views"
 #define __ObjectsPath	"/ones/objects"
 #define __PalettesPath	"/palettes"
 #define __MasksPath		"/masks"
-#define __WavePath		"/sounds/wave"
-#define __MidiPath		"/sounds/midi"
+#define __EffectsPath	"/sounds/effects"
+#define __MusicPath		"/sounds/22k16bst"
 
 #define MAX_GAME_NAME 80
 

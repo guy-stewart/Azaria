@@ -123,6 +123,8 @@ void CTRL_VIEW::OnEvent(int control_id, int iParm)
 }
 
 void CTRL_VIEW::Paint(int etime, int flags) {
-  CONTROL *ctrl = control[0];
-  ctrl->Refresh();
+	if (control_count >0) {
+		CONTROL *ctrl = control[0];
+		ctrl->Refresh();
+	}
 }

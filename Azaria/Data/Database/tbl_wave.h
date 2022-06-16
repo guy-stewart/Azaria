@@ -1,25 +1,9 @@
 
-#ifndef _tbl_wave_h
-#define _tbl_wave_h
-
-enum  WAVE_FILEID
-{
-    SOUND_CHOOSE = 0,
-	NUMSOUNDS,
-};
-
-// I want to leave these here so they will be easier to edit:
-
-#ifdef __WAVETABLE_OWNER__
-static char *waveFileNames[] = {
-	"choose.wav",
-};
-#endif
+#pragma once
 
 enum WAVE_RAMID
 {
-	SOUND_STARTUP = 0,
-	SOUND_BTNDRAG,
+	SOUND_BTNDRAG = 0,
 	SOUND_BTNPRESS,
     SOUND_POPUP,
 	SOUND_CLUNK,
@@ -39,30 +23,23 @@ enum WAVE_RAMID
 	TBL_WAVE_COUNT//last in enum
 };
 
-// I want to leave these here so they will be easier to edit:
-#ifdef __WAVETABLE_OWNER__
-// data\\sounds\\wave
 static const char *waveRamFileNames[] = {
-	"startup",
-	"BtnDrag",
-	"BtnPress",
-	"Door",
+	"btndrag",
+	"btnpress",
+	"lever",
 	"clunk",
 	"fire",
 	"choose",
-	"Hurt",
-	"Burble",
-	"Thunder",
-	"Explode",
+	"hurt",
+	"burble",
+	"thunder",
+	"explode",
 	"pop",
 	"movingar",
 	"ton",
-	"Slurp",
-	"Spit",
-	"FuzzBuzz",
-	"BuzzFuzz",
+	"slurp",
+	"spit",
+	"fuzzbuzz",
+	"buzzfuzz",
 };
-#endif
-
-#endif
 

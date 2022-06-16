@@ -118,6 +118,10 @@ public:
 	inline int32_t GetHeight() {return m_hdr.height;}
 	inline BYTE GetFrameCount() {return m_hdr.frames;}
 	inline BYTE GetFP10S() {return (m_hdr.fp10s)?m_hdr.fp10s:100;}
+	inline PIXEL getColorKey() {
+					if (m_hdr.colorkey && m_pal) return ((PIXEL*)m_pal)[m_hdr.colorkey];
+					else return m_bits[0];
+				}
 
 	void SetCustomPalette(PALETTEENTRY *pal) {m_hdr.m_flags|=CUSTOM_PALETTE; m_pal = pal;}
 	inline PALETTEENTRY *GetPalette() {return (m_hdr.m_flags&CUSTOM_PALETTE)?m_pal:NULL;}
